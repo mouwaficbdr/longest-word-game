@@ -15,6 +15,6 @@ extern int nbreTours;
 extern char choixConsonneVoyelle;
 
 // Déclaration des fonctions
-
+extern void hashWord(char*word, int size);
 
 #endif

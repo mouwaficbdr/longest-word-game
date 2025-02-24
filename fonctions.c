@@ -16,3 +16,31 @@ int nbreTours;
 char choixConsonneVoyelle;
 
 // Définition des fonctions
+
+     //-----hashage-----
+    void hashWord( char *word , int size){
+        int i = 0 ;
+        char ch ;
+
+        while(i < size-1){
+            ch = getch() ;
+            // sortie lorsque l'utilisateur appuie la touche entrée
+            if( ch == '\r'){
+            word[i]='\0' ;
+            break ; 
+            }
+
+            // supression d'un indice lorsque l'utilisateur appuie la touche backspace
+            if( ch == '\b' && i > 0){
+                    printf("\b \b") ;
+                    i-- ;
+            }
+            //incrémentation de caractère à la chaîne
+            else{
+                word[i] = ch ;
+                printf("*") ;
+                i++ ;
+            }
+
+        }
+    }
