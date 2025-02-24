@@ -1,0 +1,7 @@
+Nom Joueur 1: Joueur1
+Nom Joueur 2: Joueur2
+Score Joueur 1: 10
+Score Joueur 2: 15
+Tours joués: 3
+Tours totaux: 5
+Grille: ABCDEFGHI
