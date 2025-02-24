@@ -15,6 +15,7 @@ extern int nbreTours;
 extern char choixConsonneVoyelle;
 
 // Déclaration des fonctions
-
+void sauvegarderPartie(const char *nomJoueur1, const char *nomJoueur2, int scoreJoueur1, int scoreJoueur2, int toursJoues, int toursTotaux, const char grille[9]);
+int chargerPartie(char *nomJoueur1, char *nomJoueur2, int *scoreJoueur1, int *scoreJoueur2, int *toursJoues, int *toursTotaux, char grille[9]);
 
 #endif
