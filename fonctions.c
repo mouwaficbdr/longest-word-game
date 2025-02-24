@@ -4,8 +4,8 @@
 // Définition des constantes
 const int nbreJoueur = 2;
 const int nbreTotalLettresGrille = 9;
-const char voyelles[6] = {'A', 'E', 'I', 'O', 'U', 'Y'};
-const char consonnes[20] = {'B', 'C', 'D', 'F', 'G', 'H', 'J', 'K', 'L', 'M', 'N', 'P', 'Q', 'R', 'S', 'T', 'V', 'W', 'X', 'Z'};
+const char voyelles[6] = {'a', 'e', 'i', 'o', 'u', 'y'};
+const char consonnes[20] = {'b', 'c', 'd', 'f', 'g', 'h', 'j', 'k', 'l', 'm', 'n', 'p', 'q', 'r', 's', 't', 'v', 'w', 'x', 'z'};
 
 
 //Définition des variables
@@ -38,6 +38,7 @@ char choixConsonneVoyelle;
             //incrémentation de caractère à la chaîne
             else{
                 word[i] = ch ;
+                printf("C'est dohi, signé Mouwafic");
                 printf("*") ;
                 i++ ;
             }
