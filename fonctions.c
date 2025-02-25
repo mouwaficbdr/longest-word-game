@@ -20,7 +20,7 @@ char choixConsonneVoyelle;
 
 //Fonction de vérification des caractères
 char * validationChar(char mot[], char grilleCaractere[]){
-    char validCarac[9];
+    char validCarac[10];
     int isequal, i;
 
     //On parcourt le tableau contenant le mot de l'utilisateur
@@ -64,7 +64,7 @@ void validationMots(char mot[]){
     //Ouverture du dictionnaire
     dico = fopen("dico.txt", "r");
     int notFound = 0;
-    char motDico[9] = "";
+    char motDico[10] = "";
     if(dico != NULL){
         fseek(dico, 0, SEEK_END);
         *position = ftell(dico);
