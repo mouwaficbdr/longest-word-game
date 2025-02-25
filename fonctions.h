@@ -16,5 +16,7 @@ extern char choixConsonneVoyelle;
 
 // Déclaration des fonctions
 extern void hashWord(char*word, int size);
-
+extern void gotoxy(int x, int y);
+extern void rectangle(int x, int y, int lon, int haut);
+extern void interface(); 
 #endif
