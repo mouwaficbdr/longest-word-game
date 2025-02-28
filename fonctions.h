@@ -53,4 +53,14 @@ int notUsed(char tab[], char c);
  * @return int 1 si le mot est valide et 0 sinon
  */
 int validationChar(char mot[], char grilleCaractere[]);
+
+
+/**
+ * @brief 
+ * Recherche le mot le plus long dans une grille
+ * @param grille 
+ * @return char* le plus long mot
+ */
+ char *LongestWord(char grille[]);
+
 #endif

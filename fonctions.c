@@ -149,5 +149,78 @@ void RangerDico(){
         return 0;
        }
     
-    
-     
+
+  char *LongestWord(char grille[])
+       {
+           //i pacours la grille
+          int i=0;
+       // le mot valide le plus long de taille 0 à l'initialisation
+         char *valideMot=malloc(sizeof(char)+1);
+         valideMot[0]='\0';
+       
+         char name[11]={'d','i','c','o','/','a','.','t','x','t'};
+       //On initialise des copies de la grille pour l'itération et pour les lettres non utilisés
+         char *copieGrille= malloc(sizeof(char)*(strlen(grille)+1));
+         char *notUsedchar=malloc(sizeof(char)*(strlen(grille)+1));
+         strcpy(notUsedchar,grille);
+       
+         //le mot courant
+        char mot[30]={'\0'};
+       while(grille[i]!='\0')
+       {
+          if(notUsed(notUsedchar,grille[i]))
+            {
+             name[5]=grille[i];
+             FILE *fichier=NULL;
+             fichier=fopen(name,"r");
+       
+             if(fichier==NULL)
+             {
+                perror("Erreur d'ouverture de fichier");
+             }else
+             {
+          //Si le fichier est bien ouvert on récupère le mot de chaque ligne en remplacant le contenu de la case de \n par \0
+               fgets(mot,30,fichier);
+              mot[strlen(mot)-1]='\0';
+       
+             while(!feof(fichier))
+                {
+                  //On effectue à chauqe fois une copie de la grille ca lors de chaque validation elle est modifiée
+                 strcpy(copieGrille,grille);
+                   if(validationChar(mot,copieGrille))
+                     {
+                  //On alloue et on récupère le mot valide seulement s'il est plus long que le précedent
+                     if(strlen(mot)>strlen(valideMot))
+                         {
+                         valideMot=malloc(sizeof(char)*(strlen(mot)+1));
+                         strcpy(valideMot,mot);
+                  //Si le mot récupéré est aussi long que la grille des lettres il est le plus long
+                         if(strlen(valideMot)==nbreTotalLettresGrille)
+                             {
+                           return valideMot;
+                             }
+                         }else
+                         {
+                         fgets(mot,30,fichier);
+                         mot[strlen(mot)-1]='\0';
+       
+                         }
+       
+                     }else
+                         {
+                         fgets(mot,30,fichier);
+                         mot[strlen(mot)-1]='\0';
+                         }
+                 }
+             }
+             fclose(fichier);
+         }
+         //le caractère courant est supprimé des caractères non utilisés
+         removeSameChar(notUsedchar,grille[i]);
+              i++;
+         }
+         free(notUsedchar);
+         free(copieGrille);
+             return valideMot;
+    }
+       
