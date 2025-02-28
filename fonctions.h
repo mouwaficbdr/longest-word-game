@@ -24,4 +24,33 @@ extern char choixConsonneVoyelle;
  */
 void RangerDico();
 
+
+  /**
+ * @brief 
+ * Supprimer toutes les occurences d'un caractère dans une chaine
+ * @param chaine *chaine
+ * @param c le caractère
+ */
+void removeSameChar(char *chaine, char c);
+
+
+/**
+ * @brief 
+ * Verifier si un caractère a deja été utilisé lors de la recherche dans le dictionnaire
+ * pour éviter les doubles parcours pour un même caractère
+ * @param tab chaine des caractères restants
+ * @param c le caractère 
+ * @return 1 si le caractère est dans la chaine (soit il est non utilisé) et 0 sinon
+ */
+int notUsed(char tab[], char c);
+
+
+/**
+ * @brief 
+ * Vérifie si un mot repond au caractère de la grille
+ * @param mot 
+ * @param grilleCaractere 
+ * @return int 1 si le mot est valide et 0 sinon
+ */
+int validationChar(char mot[], char grilleCaractere[]);
 #endif

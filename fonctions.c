@@ -76,3 +76,78 @@ void RangerDico(){
     }
 
    
+    int validationChar(char mot[], char grilleCaractere[]){
+        int isequal, i=0;
+        if(strlen(mot)>nbreTotalLettresGrille){
+            return 0;
+        }
+        //On parcourt le tableau contenant le mot de l'utilisateur
+        while(mot[i] != '\0'){
+    
+            //On initialise à 0 pour dire que le caractère à l'indice i n'est égale à aucun parmi ceux de la grille
+            isequal = 0;
+    
+            //On parcourt la grille de caractères
+            for(int j = 0; j < nbreTotalLettresGrille; j++){
+    
+                //Si le caractère à l'indice i correspond à un caractère parmi ceux de la grille, isequal passe à 1 pour dire vrai
+                //on vide la case contenant le caractère dans la grille
+                //on passe au caractère suivant
+                if(mot[i] == grilleCaractere[j]){
+                    isequal = 1;
+                    grilleCaractere[j] = '\0';
+                    break;
+                }
+            }
+    
+            //Si la variable isequal est toujours à 0, alors le caractère dans le mot de l'utilisateur n'a pas de correspondant dans la grille
+            //On retourne la valeur 0 pour stopper la validation
+            //Le mot ne respecte pas les caractères de la grille
+            if(isequal == 0){
+                return 0;
+            }
+            i++;
+        }
+    
+        //si tout s'est bien passé, on renvoie 1
+        return 1;
+    }
+    
+    
+    void removeSameChar(char *chaine, char c) {
+       int i=0;
+       int j=0;
+       //On compte le nombre d'occurence de la lettre dans le mot et on alloue de la memoire pour une chaine en conséquence
+      while(chaine[i]!='\0'){
+       if(chaine[i]==c){
+           j++;
+       }
+       i++;
+      }
+      i=0;
+       char *str=malloc(sizeof(char)*(strlen(chaine)-j+1));
+       // On insère dans str les caratères différents de celui à supprimer
+       j=0;
+       while(chaine[i]!='\0'){
+           if(chaine[i]!= c){
+           str[j]=chaine[i];
+           j++;
+           }
+           i++;
+      }
+      str[j]='\0';
+    }
+    
+    
+     int notUsed(char tab[], char c){
+    
+           for(int j=0; j<strlen(tab); j++){
+           if(c==tab[j]){
+               return 1;
+           }
+         }
+        return 0;
+       }
+    
+    
+     
