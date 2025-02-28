@@ -1,5 +1,7 @@
 #ifndef FONCTIONS_H
 #define FONCTIONS_H
+#include <string.h>
+#include <ctype.h>
 
 // Déclaration des constantes
 extern const int nbreJoueur;
@@ -16,5 +18,10 @@ extern char choixConsonneVoyelle;
 
 // Déclaration des fonctions
 
+/**
+ * @brief 
+ * Ranger le dictionnaire suivant les lettres de l'alphabet 
+ */
+void RangerDico();
 
 #endif
