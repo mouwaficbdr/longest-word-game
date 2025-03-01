@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 #include "fonctions.h"
 
 // Définition des constantes
@@ -24,7 +25,7 @@ char * validationChar(char mot[], char grilleCaractere[]){
     int isequal, i;
 
     //On parcourt le tableau contenant le mot de l'utilisateur
-    while(mot[i] != "\0"){
+    while(mot[i] != '\0'){
 
         //On initialise à 0 pour dire que le caractère à l'indice i n'est égale à aucun parmi ceux de la grille
         isequal = 0;
@@ -37,16 +38,16 @@ char * validationChar(char mot[], char grilleCaractere[]){
             //on passe au caractère suivant
             if(mot[i] == grilleCaractere[j]){
                 isequal = 1;
-                grilleCaractere[j] = "\0";
+                grilleCaractere[j] = '\0';
                 break;
             }
         }
 
         //Si la variable isequal est toujours à 0, alors le caractère dans le mot de l'utilisateur n'a pas de correspondant dans la grille
-        //On retourne la valeur 0 pour stopper la validation
+        //On retourne la valeur NULL pour stopper la validation
         //Le mot ne respecte pas les caractères de la grille 
         if(isequal == 0){
-            return 0;
+            return NULL;
         }
         i++;
     }
@@ -56,7 +57,7 @@ char * validationChar(char mot[], char grilleCaractere[]){
 }
 
 
-void validationMots(char mot[]){
+int validationMots(char mot[]){
     int *position, i = 0;
     //Pointeur sur le fichier du dictionnaire
     FILE * dico = NULL; 
@@ -85,7 +86,7 @@ void validationMots(char mot[]){
         }while(!notFound);
 
         if(notFound){
-            while(mot[i] != "\0"){
+            while(mot[i] != '\0'){
                 i++;
                 return i;
             }

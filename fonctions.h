@@ -16,5 +16,6 @@ extern char choixConsonneVoyelle;
 
 // Déclaration des fonctions
 
+char * validationChar(char mot[], char grilleCaractere[]);
 
 #endif
