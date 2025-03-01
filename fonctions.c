@@ -1,4 +1,6 @@
 #include <stdio.h>
+#include <conio.h>
+#include <windows.h>
 #include "fonctions.h"
 
 // Définition des constantes
@@ -38,7 +40,6 @@ char choixConsonneVoyelle;
             //incrémentation de caractère à la chaîne
             else{
                 word[i] = ch ;
-                printf("C'est dohi, signé Mouwafic");
                 printf("*") ;
                 i++ ;
             }
@@ -80,7 +81,7 @@ char choixConsonneVoyelle;
        
 
     //-----Interfaces-----
-    void interface(){
+    void Interface(){
 
         int i=0;
         int scorefieldX1 =12 ,scorefieldY1=5, scorefieldLong=12, scorefieldHeight=4, scorefieldCursorX1 = scorefieldX1+(scorefieldLong/2) , scorefieldCursorY1=scorefieldY1+(scorefieldHeight/2);
@@ -99,7 +100,7 @@ char choixConsonneVoyelle;
         rectangle(EntryFieldX2, EntryFieldY2, EntryFieldLong, EntryFieldHeight);
         rectangle(AIX,AIY,EntryFieldLong,EntryFieldHeight);
         for(i=0;i<15;i++){
-            printf("\n\n");
+            printf("\n");
         }
 
     }

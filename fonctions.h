@@ -18,5 +18,5 @@ extern char choixConsonneVoyelle;
 extern void hashWord(char*word, int size);
 extern void gotoxy(int x, int y);
 extern void rectangle(int x, int y, int lon, int haut);
-extern void interface(); 
+extern void Interface(); 
 #endif
