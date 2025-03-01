@@ -10,10 +10,14 @@ int main()
     int toursJoues = 3;
     int toursTotaux = 5;
     char grille[9] = {'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I'};
+    char motsJoueur1[3][20] = {"MOT1", "MOT2", "MOT3"};
+    char motsJoueur2[3][20] = {"MOT4", "MOT5", "MOT6"};
+    int scoresJoueur1[3] = {3, 4, 5};
+    int scoresJoueur2[3] = {2, 3, 4};
 
     // Test de la fonction de sauvegarde
     printf("Test de la fonction de sauvegarde :\n");
-    sauvegarderPartie(nomJoueur1, nomJoueur2, scoreJoueur1, scoreJoueur2, toursJoues, toursTotaux, grille);
+    sauvegarderPartie(nomJoueur1, nomJoueur2, scoreJoueur1, scoreJoueur2, toursJoues, toursTotaux, grille, motsJoueur1, motsJoueur2, scoresJoueur1, scoresJoueur2);
 
     // Test de la fonction de chargement
     printf("\nTest de la fonction de chargement :\n");
@@ -35,6 +39,10 @@ int main()
             printf("%c", grilleCharge[i]);
         }
         printf("\n");
+
+        // Appel de la fonction de review
+        printf("\nReview de la partie:\n");
+        reviewPartie();
     } else {
         printf("Échec du chargement de la partie.\n");
     }
