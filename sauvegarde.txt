@@ -5,3 +5,13 @@ Score Joueur 2: 15
 Tours joués: 3
 Tours totaux: 5
 Grille: ABCDEFGHI
+Review de la partie:
+Tour 1:
+Joueur 1 - Mot: MOT1, Score: 3
+Joueur 2 - Mot: MOT4, Score: 2
+Tour 2:
+Joueur 1 - Mot: MOT2, Score: 4
+Joueur 2 - Mot: MOT5, Score: 3
+Tour 3:
+Joueur 1 - Mot: MOT3, Score: 5
+Joueur 2 - Mot: MOT6, Score: 4
