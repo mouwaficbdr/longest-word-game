@@ -1,10 +1,11 @@
 #include <stdio.h>
 #include <stdlib.h>
-#include "fonctions.h"
+#include <string.h>
+#include <ctype.h>
 
 // Définition des constantes
 const int nbreJoueur = 2;
-const int nbreTotalLettresGrille = 12;
+const int nbreTotalLettresGrille = 9;
 const char voyelles[6] = {'A', 'E', 'I', 'O', 'U', 'Y'};
 const char consonnes[20] = {'B', 'C', 'D', 'F', 'G', 'H', 'J', 'K', 'L', 'M', 'N', 'P', 'Q', 'R', 'S', 'T', 'V', 'W', 'X', 'Z'};
 
@@ -78,41 +79,48 @@ void RangerDico(){
    
     int validationChar(char mot[], char grilleCaractere[]){
         int isequal, i=0;
+
         if(strlen(mot)>nbreTotalLettresGrille){
             return 0;
         }
+
+        int taille= strlen(grilleCaractere)+1;
+        char *copieGrille = malloc(sizeof(char)*taille);
+        strcpy(copieGrille, grilleCaractere);
         //On parcourt le tableau contenant le mot de l'utilisateur
         while(mot[i] != '\0'){
-    
+
             //On initialise à 0 pour dire que le caractère à l'indice i n'est égale à aucun parmi ceux de la grille
             isequal = 0;
-    
+
             //On parcourt la grille de caractères
             for(int j = 0; j < nbreTotalLettresGrille; j++){
-    
+
                 //Si le caractère à l'indice i correspond à un caractère parmi ceux de la grille, isequal passe à 1 pour dire vrai
                 //on vide la case contenant le caractère dans la grille
                 //on passe au caractère suivant
-                if(mot[i] == grilleCaractere[j]){
+                if(mot[i] == copieGrille[j]){
                     isequal = 1;
-                    grilleCaractere[j] = '\0';
+                    copieGrille[j] = '\0';
                     break;
                 }
             }
-    
+
             //Si la variable isequal est toujours à 0, alors le caractère dans le mot de l'utilisateur n'a pas de correspondant dans la grille
             //On retourne la valeur 0 pour stopper la validation
             //Le mot ne respecte pas les caractères de la grille
             if(isequal == 0){
+                free(copieGrille);
                 return 0;
             }
             i++;
         }
-    
+
+        free(copieGrille);
         //si tout s'est bien passé, on renvoie 1
         return 1;
     }
-    
+
     
     void removeSameChar(char *chaine, char c) {
        int i=0;
@@ -158,19 +166,18 @@ void RangerDico(){
          char *valideMot=malloc(sizeof(char)+1);
          valideMot[0]='\0';
        
-         char name[11]={'d','i','c','o','/','a','.','t','x','t'};
+         char name[15]={'.','.','/','d','i','c','o','/','a','.','t','x','t'};
        //On initialise des copies de la grille pour l'itération et pour les lettres non utilisés
-         char *copieGrille= malloc(sizeof(char)*(strlen(grille)+1));
          char *notUsedchar=malloc(sizeof(char)*(strlen(grille)+1));
          strcpy(notUsedchar,grille);
        
-         //le mot courant
+         //le mot courant du dictionnaire
         char mot[30]={'\0'};
        while(grille[i]!='\0')
        {
           if(notUsed(notUsedchar,grille[i]))
             {
-             name[5]=grille[i];
+             name[8]=grille[i];
              FILE *fichier=NULL;
              fichier=fopen(name,"r");
        
@@ -185,9 +192,8 @@ void RangerDico(){
        
              while(!feof(fichier))
                 {
-                  //On effectue à chauqe fois une copie de la grille ca lors de chaque validation elle est modifiée
-                 strcpy(copieGrille,grille);
-                   if(validationChar(mot,copieGrille))
+                 //Si le mot du dictionnaire respecte les lettres de la grille
+                   if(validationChar(mot,grille))
                      {
                   //On alloue et on récupère le mot valide seulement s'il est plus long que le précedent
                      if(strlen(mot)>strlen(valideMot))
@@ -220,7 +226,6 @@ void RangerDico(){
               i++;
          }
          free(notUsedchar);
-         free(copieGrille);
              return valideMot;
     }
        

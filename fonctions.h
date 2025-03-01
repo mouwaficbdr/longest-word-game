@@ -1,7 +1,5 @@
 #ifndef FONCTIONS_H
 #define FONCTIONS_H
-#include <string.h>
-#include <ctype.h>
 
 // Déclaration des constantes
 extern const int nbreJoueur;
