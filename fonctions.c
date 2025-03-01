@@ -58,7 +58,8 @@ char * validationChar(char mot[], char grilleCaractere[]){
 
 
 int validationMots(char mot[]){
-    int *position, i = 0;
+    
+    int i = 0;
     //Pointeur sur le fichier du dictionnaire
     FILE * dico = NULL; 
 
@@ -68,19 +69,19 @@ int validationMots(char mot[]){
     char motDico[10] = "";
     if(dico != NULL){
         fseek(dico, 0, SEEK_END);
-        *position = ftell(dico);
-        fseek(dico, *position/2, SEEK_SET);
+        position = ftell(dico);
+        fseek(dico, position/2, SEEK_SET);
         do{
             fgets(motDico, 9, dico);
             if(strcmp(mot, motDico) == 0){
                 notFound = 1;
             }else{
                 if(strcmp(mot, motDico) < 0){
-                    *position = ftell(dico);
-                    fseek(dico, -(*position/2), SEEK_CUR);
+                    position = ftell(dico);
+                    fseek(dico, -(position/2), SEEK_CUR);
                 }else{
-                    *position = ftell(dico);
-                    fseek(dico, (*position/2), SEEK_CUR);
+                    position = ftell(dico);
+                    fseek(dico, (position/2), SEEK_CUR);
                 }
             }
         }while(!notFound);
