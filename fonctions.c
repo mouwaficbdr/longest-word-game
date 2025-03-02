@@ -219,11 +219,7 @@ int validationMots(char mot[]){
 
             //Création dynamique d'une chaine de caractères
             //de taille égale à celle du mot stocké dans la liste
-            char motFormed[listLength + 1];
-
-            //Copie de la valeur du mot dans la variable motFormed
-            //après regroupement des caractères de ce dernier avec la fonction motFormation
-            strcpy(motFormed, motFormation(*currentMot, listLength + 1));
+            char *motFormed = motFormation(*currentMot, listLength + 1);
 
             //Si le mot stocké est égale au mot de l'utilisateur on retourne la taille du mot de l'utilisateur
             if(strcmp(mot, motFormed) == 0){
