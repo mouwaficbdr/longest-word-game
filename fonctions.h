@@ -14,6 +14,20 @@ extern int numJoueurCommencerPartie;
 extern int nbreTours;
 extern char choixConsonneVoyelle;
 
+//Déclaration des structures
+
+typedef struct Caractere Caractere;
+typedef struct LCaractere LCaractere;
+
+struct Caractere{
+    char caractere;
+    Caractere * suiv;
+};
+
+struct LCaractere{
+    Caractere *head;
+};
+
 // Déclaration des fonctions
 
 //La fonction validationChar vérifie si un mot respecte les critères de la grille (si tous ses caractères sont conformes à ceux donnés par la grille)
@@ -36,4 +50,6 @@ int motLength(char mot[]);
 
 //La fonction validationMots vérifie si un mot se retrouve dans le dictionnaire. Si oui, il renvoie la taille du mot (correspondant au score du joueur) si non il renvoie 0 pour indiquer que le mot n'existe pas dans le dictionnaire
 int validationMots(char mot[]);
+
+
 #endif

@@ -17,33 +17,17 @@ int numJoueurCommencerPartie;
 int nbreTours;
 char choixConsonneVoyelle;
 
-//Définition des structures
-
-typedef struct Caractere Caractere;
-typedef struct LCaractere LCaractere;
-
-struct Caractere{
-    char caractere;
-    Caractere * suiv;
-};
-
-struct LCaractere{
-    Caractere *head;
-};
-
 
 // Définition des fonctions
 
 //Fonction d'insertion en tete d'un caractère
 void insertCharUp(char data, LCaractere * liste){
-    Caractere *p;
     Caractere *newCarac;
 
-    p = liste->head;
     newCarac = (Caractere*) malloc(sizeof(Caractere));
     newCarac->caractere = data;
-    newCarac->suiv = p;
-    p = newCarac;
+    newCarac->suiv = liste->head;
+    liste->head = newCarac;
 }
 
 //Fonction d'insertion en queue d'un caractère
@@ -55,8 +39,8 @@ void insertCharEnd(char data, LCaractere * liste){
     newCarac = (Caractere*) malloc(sizeof(Caractere));
     newCarac->suiv = NULL;
 
-    if(p == NULL){
-        p = newCarac;
+    if(liste->head == NULL){
+        liste->head = newCarac;
     }else{
         while(p->suiv != NULL){
             p = p->suiv;
@@ -164,7 +148,7 @@ int validationMots(char mot[]){
     //dans le fichier du dictionnaire 
     char carac;
 
-    fichier = fopen("dico.txt", 'r');
+    fichier = fopen("dico.txt", "r");
 
     if(fichier != NULL){
 
@@ -191,7 +175,7 @@ int validationMots(char mot[]){
                 fseek(fichier, -2, SEEK_CUR);
 
                 //On récupère les valeurs caractère par caractère vers l'arrière
-                while(carac = fgetc(fichier) != '\n'){
+                while((carac = fgetc(fichier)) != '\n'){
 
                     //On fait une insertion en tête pour respecter l'ordre des caractères
                     //dans le vocabulaire du mot
@@ -218,7 +202,7 @@ int validationMots(char mot[]){
                 //Et on fait une récupération mais en marche inversée
                 //Cette fois ci, une insertion en tête
                 fseek(fichier, middle - 1, SEEK_SET);
-                while(carac = fgetc(fichier) != '\n'){
+                while((carac = fgetc(fichier)) != '\n'){
                     insertCharUp(carac, currentMot);
                     fseek(fichier, -2, SEEK_CUR);
                 }
