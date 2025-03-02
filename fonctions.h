@@ -59,4 +59,13 @@ void reviewPartie();
  */
 int verifSauvegarde(void);
 
+/**
+ * Efface le fichier de sauvegarde s'il existe.
+ * Cette fonction permet de supprimer une sauvegarde existante
+ * avant de commencer une nouvelle partie.
+ * 
+ * @return 1 si la sauvegarde a été effacée avec succès ou n'existait pas, 0 en cas d'échec
+ */
+int effacerSauvegarde(void);
+
 #endif
