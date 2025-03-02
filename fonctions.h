@@ -15,6 +15,9 @@ extern int nbreTours;
 extern char choixConsonneVoyelle;
 
 // Déclaration des fonctions
-
+//Fonction pour generer les variables aleatoire
+void genererVariablesAleatoires();
+//Fonction demande a l'utilisateur d'entrer une lettre entre consonne et voyelle
+void entrerlettre();
 
 #endif
