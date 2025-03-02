@@ -52,4 +52,11 @@ int chargerPartie(void);
  */
 void reviewPartie();
 
+/**
+ * Vérifie si une sauvegarde existe déjà dans le fichier sauvegarde.txt.
+ * 
+ * @return 1 si une sauvegarde existe et est valide, 0 sinon
+ */
+int verifSauvegarde(void);
+
 #endif
