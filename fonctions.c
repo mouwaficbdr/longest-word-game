@@ -82,8 +82,6 @@ int chargerPartie(void) {
     fscanf(fichier, "Tours joués: %d\n", &toursJoues);
     fscanf(fichier, "Tours totaux: %d\n", &nbreTours);
 
-    // La grille n'est plus chargée car elle sera régénérée à la reprise
-
     fclose(fichier);
     printf("Partie chargée avec succès.\n");
     return 1;
@@ -113,7 +111,6 @@ void reviewPartie() {
     fscanf(fichier, "Tours joués: %d\n", &toursJouesSauvegarde);
     fscanf(fichier, "Tours totaux: %d\n", &toursTotauxTemp);
     
-    // La grille n'est plus affichée car elle n'est plus sauvegardée
 
     // Affichage des informations générales
     printf("Informations de la partie:\n");
@@ -131,4 +128,32 @@ void reviewPartie() {
     }
 
     fclose(fichier);
+}
+
+/**
+ * Vérifie si une sauvegarde existe déjà dans le fichier sauvegarde.txt.
+ * 
+ * @return 1 si une sauvegarde existe et est valide, 0 sinon
+ */
+int verifSauvegarde(void) {
+    FILE *fichier = fopen("sauvegarde.txt", "r");
+    if (fichier == NULL) {
+        // Le fichier n'existe pas ou n'est pas accessible
+        return 0;
+    }
+
+    // Vérifier que le fichier contient au moins les informations essentielles
+    char ligne[100];
+    int compteurLignes = 0;
+    
+    // On vérifie que le fichier contient au moins les 6 premières lignes
+    // qui correspondent aux informations d'une sauvegarde
+    while (fgets(ligne, sizeof(ligne), fichier) != NULL && compteurLignes < 6) {
+        compteurLignes++;
+    }
+    
+    fclose(fichier);
+    
+    // Si on a trouvé au moins 6 lignes, on considère que c'est une sauvegarde valide
+    return (compteurLignes >= 6) ? 1 : 0;
 }
