@@ -15,25 +15,28 @@ int main()
     int scoresJoueur1[3] = {3, 4, 5};
     int scoresJoueur2[3] = {2, 3, 4};
 
+    // Définir le nombre total de tours dans la variable globale
+    nbreTours = toursTotaux;
+
     // Test de la fonction de sauvegarde
     printf("Test de la fonction de sauvegarde :\n");
-    sauvegarderPartie(nomJoueur1, nomJoueur2, scoreJoueur1, scoreJoueur2, toursJoues, toursTotaux, grille, motsJoueur1, motsJoueur2, scoresJoueur1, scoresJoueur2);
+    sauvegarderPartie(nomJoueur1, nomJoueur2, scoreJoueur1, scoreJoueur2, toursJoues, grille, motsJoueur1, motsJoueur2, scoresJoueur1, scoresJoueur2);
 
     // Test de la fonction de chargement
     printf("\nTest de la fonction de chargement :\n");
     char nomJoueur1Charge[10];
     char nomJoueur2Charge[10];
-    int scoreJoueur1Charge, scoreJoueur2Charge, toursJouesCharge, toursTotauxCharge;
+    int scoreJoueur1Charge, scoreJoueur2Charge, toursJouesCharge;
     char grilleCharge[9];
 
-    if (chargerPartie(nomJoueur1Charge, nomJoueur2Charge, &scoreJoueur1Charge, &scoreJoueur2Charge, &toursJouesCharge, &toursTotauxCharge, grilleCharge)) {
+    if (chargerPartie(nomJoueur1Charge, nomJoueur2Charge, &scoreJoueur1Charge, &scoreJoueur2Charge, &toursJouesCharge, grilleCharge)) {
         printf("Partie chargée avec succès.\n");
         printf("Nom Joueur 1: %s\n", nomJoueur1Charge);
         printf("Nom Joueur 2: %s\n", nomJoueur2Charge);
         printf("Score Joueur 1: %d\n", scoreJoueur1Charge);
         printf("Score Joueur 2: %d\n", scoreJoueur2Charge);
         printf("Tours joués: %d\n", toursJouesCharge);
-        printf("Tours totaux: %d\n", toursTotauxCharge);
+        printf("Tours totaux: %d\n", nbreTours);
         printf("Grille: ");
         for (int i = 0; i < 9; i++) {
             printf("%c", grilleCharge[i]);
