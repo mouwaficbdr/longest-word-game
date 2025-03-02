@@ -162,7 +162,7 @@ int gambaseX, gamebaseY;
         rectangle(AIX,AIY,EntryFieldLong,EntryFieldHeight);
         
         for(i=0;i<15;i++){
-            printf("\n\n");
+            printf("\n");
         }
 
     }
