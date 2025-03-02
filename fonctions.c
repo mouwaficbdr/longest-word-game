@@ -17,14 +17,20 @@ int numJoueurCommencerPartie;
 int nbreTours;
 char choixConsonneVoyelle;
 
+// Définition des variables globales supplémentaires
+int scoreJoueur1 = 0;           // Score du joueur 1, initialisé à 0
+int scoreJoueur2 = 0;           // Score du joueur 2, initialisé à 0
+int toursJoues = 0;             // Nombre de tours joués, initialisé à 0
+char grille[nbreTotalLettresGrille] = {0}; // Grille de jeu, initialisée avec des caractères nuls
+
 // Définition des fonctions
 
 /**
  * Sauvegarde l'état actuel de la partie dans un fichier texte (sauvegarde.txt).
- * Utilise la variable globale nbreTours pour le nombre total de tours.
+ * Utilise les variables globales pour les informations de la partie.
  * Inclut l'historique des mots joués et leurs scores pour chaque joueur.
  */
-void sauvegarderPartie(const char *nomJoueur1, const char *nomJoueur2, int scoreJoueur1, int scoreJoueur2, int toursJoues, const char grille[9], const char motsJoueur1[][20], const char motsJoueur2[][20], const int scoresJoueur1[], const int scoresJoueur2[]) {
+void sauvegarderPartie(const char motsJoueur1[][20], const char motsJoueur2[][20], const int scoresJoueur1[], const int scoresJoueur2[]) {
     FILE *fichier = fopen("sauvegarde.txt", "w");
     if (fichier == NULL) {
         printf("Erreur lors de l'ouverture du fichier de sauvegarde.\n");
@@ -37,8 +43,10 @@ void sauvegarderPartie(const char *nomJoueur1, const char *nomJoueur2, int score
     fprintf(fichier, "Score Joueur 2: %d\n", scoreJoueur2);
     fprintf(fichier, "Tours joués: %d\n", toursJoues);
     fprintf(fichier, "Tours totaux: %d\n", nbreTours);
+    
+    // Écriture de la grille en utilisant une boucle
     fprintf(fichier, "Grille: ");
-    for (int i = 0; i < 9; i++) {
+    for (int i = 0; i < nbreTotalLettresGrille; i++) {
         fprintf(fichier, "%c", grille[i]);
     }
     fprintf(fichier, "\n");
@@ -56,9 +64,11 @@ void sauvegarderPartie(const char *nomJoueur1, const char *nomJoueur2, int score
 
 /**
  * Charge une partie précédemment sauvegardée à partir du fichier sauvegarde.txt.
- * Le nombre total de tours est chargé dans la variable globale nbreTours.
+ * Les données sont chargées directement dans les variables globales définies dans le module.
+ * 
+ * @return 1 si le chargement a réussi, 0 en cas d'échec
  */
-int chargerPartie(char *nomJoueur1, char *nomJoueur2, int *scoreJoueur1, int *scoreJoueur2, int *toursJoues, char grille[9]) {
+int chargerPartie(void) {
     FILE *fichier = fopen("sauvegarde.txt", "r");
     if (fichier == NULL) {
         printf("Erreur lors de l'ouverture du fichier de sauvegarde.\n");
@@ -70,15 +80,19 @@ int chargerPartie(char *nomJoueur1, char *nomJoueur2, int *scoreJoueur1, int *sc
     fscanf(fichier, "Nom Joueur 2: %s\n", nomJoueur2);
 
     // Lecture des scores
-    fscanf(fichier, "Score Joueur 1: %d\n", scoreJoueur1);
-    fscanf(fichier, "Score Joueur 2: %d\n", scoreJoueur2);
+    fscanf(fichier, "Score Joueur 1: %d\n", &scoreJoueur1);
+    fscanf(fichier, "Score Joueur 2: %d\n", &scoreJoueur2);
 
     // Lecture du nombre de tours
-    fscanf(fichier, "Tours joués: %d\n", toursJoues);
+    fscanf(fichier, "Tours joués: %d\n", &toursJoues);
     fscanf(fichier, "Tours totaux: %d\n", &nbreTours);
 
     // Lecture de la grille
-    fscanf(fichier, "Grille: %c%c%c%c%c%c%c%c%c\n", &grille[0], &grille[1], &grille[2], &grille[3], &grille[4], &grille[5], &grille[6], &grille[7], &grille[8]);
+    fscanf(fichier, "Grille: ");
+    for (int i = 0; i < nbreTotalLettresGrille; i++) {
+        fscanf(fichier, "%c", &grille[i]);
+    }
+    fscanf(fichier, "\n");
 
     fclose(fichier);
     printf("Partie chargée avec succès.\n");
@@ -96,29 +110,37 @@ void reviewPartie() {
         return;
     }
 
-    char nomJoueur1[10], nomJoueur2[10];
-    int scoreJoueur1, scoreJoueur2, toursJoues;
-    char grille[9];
+    char nomJoueurSauvegarde1[10], nomJoueurSauvegarde2[10];
+    int scoreJoueurSauvegarde1, scoreJoueurSauvegarde2, toursJouesSauvegarde;
+    char grilleSauvegarde[nbreTotalLettresGrille];
     char ligne[100];
     int toursTotauxTemp; // Variable temporaire pour lire la valeur
 
     // Lecture des informations de base
-    fscanf(fichier, "Nom Joueur 1: %s\n", nomJoueur1);
-    fscanf(fichier, "Nom Joueur 2: %s\n", nomJoueur2);
-    fscanf(fichier, "Score Joueur 1: %d\n", &scoreJoueur1);
-    fscanf(fichier, "Score Joueur 2: %d\n", &scoreJoueur2);
-    fscanf(fichier, "Tours joués: %d\n", &toursJoues);
+    fscanf(fichier, "Nom Joueur 1: %s\n", nomJoueurSauvegarde1);
+    fscanf(fichier, "Nom Joueur 2: %s\n", nomJoueurSauvegarde2);
+    fscanf(fichier, "Score Joueur 1: %d\n", &scoreJoueurSauvegarde1);
+    fscanf(fichier, "Score Joueur 2: %d\n", &scoreJoueurSauvegarde2);
+    fscanf(fichier, "Tours joués: %d\n", &toursJouesSauvegarde);
     fscanf(fichier, "Tours totaux: %d\n", &toursTotauxTemp);
-    fscanf(fichier, "Grille: %c%c%c%c%c%c%c%c%c\n", &grille[0], &grille[1], &grille[2], &grille[3], &grille[4], &grille[5], &grille[6], &grille[7], &grille[8]);
+    
+    // Lecture de la grille
+    fscanf(fichier, "Grille: ");
+    for (int i = 0; i < nbreTotalLettresGrille; i++) {
+        fscanf(fichier, "%c", &grilleSauvegarde[i]);
+    }
+    fscanf(fichier, "\n");
 
     // Affichage des informations générales
     printf("Informations de la partie:\n");
-    printf("Joueur 1: %s (Score: %d)\n", nomJoueur1, scoreJoueur1);
-    printf("Joueur 2: %s (Score: %d)\n", nomJoueur2, scoreJoueur2);
-    printf("Progression: %d tours joués sur %d\n", toursJoues, toursTotauxTemp);
+    printf("Joueur 1: %s (Score: %d)\n", nomJoueurSauvegarde1, scoreJoueurSauvegarde1);
+    printf("Joueur 2: %s (Score: %d)\n", nomJoueurSauvegarde2, scoreJoueurSauvegarde2);
+    printf("Progression: %d tours joués sur %d\n", toursJouesSauvegarde, toursTotauxTemp);
+    
+    // Affichage de la grille
     printf("Grille actuelle: ");
-    for (int i = 0; i < 9; i++) {
-        printf("%c ", grille[i]);
+    for (int i = 0; i < nbreTotalLettresGrille; i++) {
+        printf("%c ", grilleSauvegarde[i]);
     }
     printf("\n\n");
 
