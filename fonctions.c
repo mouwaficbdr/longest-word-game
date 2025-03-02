@@ -157,3 +157,30 @@ int verifSauvegarde(void) {
     // Si on a trouvé au moins 6 lignes, on considère que c'est une sauvegarde valide
     return (compteurLignes >= 6) ? 1 : 0;
 }
+
+/**
+ * Efface le fichier de sauvegarde s'il existe.
+ * Cette fonction permet de supprimer une sauvegarde existante
+ * avant de commencer une nouvelle partie.
+ * 
+ * @return 1 si la sauvegarde a été effacée avec succès ou n'existait pas, 0 en cas d'échec
+ */
+int effacerSauvegarde(void) {
+    // Vérifier d'abord si le fichier existe
+    if (verifSauvegarde()) {
+        // Le fichier existe, on tente de le supprimer
+        int resultat = remove("sauvegarde.txt");
+        
+        if (resultat == 0) {
+            printf("Sauvegarde précédente effacée avec succès.\n");
+            return 1;
+        } else {
+            printf("Erreur lors de la suppression de la sauvegarde.\n");
+            return 0;
+        }
+    } else {
+        // Le fichier n'existe pas ou n'est pas valide, rien à faire
+        printf("Aucune sauvegarde à effacer.\n");
+        return 1;  // On considère que c'est un succès puisqu'il n'y a rien à effacer
+    }
+}
