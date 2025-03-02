@@ -13,20 +13,6 @@ extern char nomJoueur2[10];
 extern int numJoueurCommencerPartie;
 extern int nbreTours;
 extern char choixConsonneVoyelle;
-
-// Déclaration des fonctions
-extern void hashWord(char*word, int size);
-extern void gotoxy(int x, int y);
-extern void rectangle(int x, int y, int lon, int haut);
-extern void afficherInterface();
-extern void initialiserVariables();
-extern void player1();
-extern void player2();
-extern void AImove();
-extern void player1Score();
-extern void player2Score();
-extern void EntryField();
-//Declarationde variables
 extern int scorefieldX1, scorefieldY1, scorefieldLong, scorefieldHeight;
 extern int scorefieldCursorX1, scorefieldCursorY1;
 extern int mainframeX, mainframeY, mainframeLong, mainframeHeight;
@@ -41,4 +27,19 @@ extern int AImoveX, AImoveY;
 extern int score1moveX, score1moveY;
 extern int score2moveX, score2moveY;
 extern int gambaseX, gamebaseY;
+
+// Déclaration des fonctions
+extern void hashWord(char*word, int size);
+extern void gotoxy(int x, int y);
+extern void rectangle(int x, int y, int lon, int haut);
+extern void afficherInterface();
+extern void initialiserVariables();
+extern void player1();
+extern void player2();
+extern void AImove();
+extern void player1Score();
+extern void player2Score();
+extern void EntryField();
+
+
 #endif
