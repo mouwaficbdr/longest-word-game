@@ -22,7 +22,7 @@ char choixConsonneVoyelle;
 //Fonction de vérification des caractères
 char * validationChar(char mot[], char grilleCaractere[]){
     char validCarac[10];
-    int isequal, i;
+    int isequal, i=0;
 
     //On parcourt le tableau contenant le mot de l'utilisateur
     while(mot[i] != '\0'){
@@ -57,31 +57,45 @@ char * validationChar(char mot[], char grilleCaractere[]){
 }
 
 
+
 int validationMots(char mot[]){
+    int i = 0, notFound = 0;
+    long start, final, middle;
     
     int i = 0;
     //Pointeur sur le fichier du dictionnaire
-    FILE * dico = NULL; 
+    FILE * dico = NULL;
 
     //Ouverture du dictionnaire
     dico = fopen("dico.txt", "r");
-    int notFound = 0;
-    char motDico[10] = "";
+
+    //Initialisation de la chaine à une chaine vide
+    char motDico[30] = "";
+
+    //Si le fichier est bien ouvert
     if(dico != NULL){
+
+        //On récupère le nombre totale de ligne du dictionnaire
         fseek(dico, 0, SEEK_END);
-        position = ftell(dico);
-        fseek(dico, position/2, SEEK_SET);
+        //position = ftell(dico);
+        //fseek(dico, position/2, SEEK_SET);
+        //position = ftell(dico);
+        //fseek(dico, position/2, SEEK_SET);
         do{
             fgets(motDico, 9, dico);
             if(strcmp(mot, motDico) == 0){
                 notFound = 1;
             }else{
                 if(strcmp(mot, motDico) < 0){
-                    position = ftell(dico);
-                    fseek(dico, -(position/2), SEEK_CUR);
+                    //position = ftell(dico);
+                    //fseek(dico, -(position/2), SEEK_CUR);
+                    //position = ftell(dico);
+                    //fseek(dico, -(position/2), SEEK_CUR);
                 }else{
-                    position = ftell(dico);
-                    fseek(dico, (position/2), SEEK_CUR);
+                    //position = ftell(dico);
+                    //fseek(dico, (position/2), SEEK_CUR);
+                    //position = ftell(dico);
+                    //fseek(dico, (position/2), SEEK_CUR);
                 }
             }
         }while(!notFound);
