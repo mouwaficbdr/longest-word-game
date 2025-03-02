@@ -17,9 +17,6 @@ int main()
    scoreJoueur2 = 15;
    toursJoues = 3;
    nbreTours = 5;
-   
-   // L'initialisation de la grille a été supprimée car la grille n'est plus utilisée
-   // dans la sauvegarde/chargement/affichage
 
    // Test de la fonction de sauvegarde
    printf("Test de la fonction de sauvegarde :\n");
