@@ -17,7 +17,94 @@ int numJoueurCommencerPartie;
 int nbreTours;
 char choixConsonneVoyelle;
 
+//Définition des structures
+
+typedef struct Caractere Caractere;
+typedef struct LCaractere LCaractere;
+
+struct Caractere{
+    char caractere;
+    Caractere * suiv;
+};
+
+struct LCaractere{
+    Caractere *head;
+};
+
+
 // Définition des fonctions
+
+//Fonction d'insertion en tete d'un caractère
+void insertCharUp(char data, LCaractere * liste){
+    Caractere *p;
+    Caractere *newCarac;
+
+    p = liste->head;
+    newCarac = (Caractere*) malloc(sizeof(Caractere));
+    newCarac->caractere = data;
+    newCarac->suiv = p;
+    p = newCarac;
+}
+
+//Fonction d'insertion en queue d'un caractère
+void insertCharEnd(char data, LCaractere * liste){
+    Caractere *p;
+    Caractere *newCarac;
+
+    p = liste->head;
+    newCarac = (Caractere*) malloc(sizeof(Caractere));
+    newCarac->suiv = NULL;
+
+    if(p == NULL){
+        p = newCarac;
+    }else{
+        while(p->suiv != NULL){
+            p = p->suiv;
+        }
+        p->suiv = newCarac;
+    }
+}
+
+//Fonction de comptage du nombre de noeuds (caractères) présents dans le liste
+
+int wordLength(LCaractere liste){
+    Caractere *p;
+    int compte;
+    p = liste.head;
+    while(p != NULL){
+        compte++;
+        p = p->suiv;
+    }
+
+    return compte;
+}
+
+//Fonction pour copier le mot formé dans la chaine de caractères correspondante
+
+char * motFormation(LCaractere liste, int tailleMot){
+    char *motFormed;
+    Caractere *p;
+    int i = 0;
+
+    motFormed = (char*) malloc(tailleMot * sizeof(char));
+    p = liste.head;
+    while(p != NULL){
+        motFormed[i] = p->caractere;
+        i++;
+    }
+
+    return motFormed;
+}
+
+//Fonction pour compter le nombre de caractères dans un mot
+
+int motLength(char mot[]){
+    int i = 0;
+    while(mot[i] != '\0'){
+        i++;
+    }
+    return i;
+}
 
 //Fonction de vérification des caractères
 char * validationChar(char mot[], char grilleCaractere[]){
@@ -59,56 +146,141 @@ char * validationChar(char mot[], char grilleCaractere[]){
 
 
 int validationMots(char mot[]){
-    int i = 0, notFound = 0;
-    long start, final, middle;
-    
-    int i = 0;
-    //Pointeur sur le fichier du dictionnaire
-    FILE * dico = NULL;
+    //Déclaration des variables pour la validation dans le disctionnaire
+    FILE *fichier;
 
-    //Ouverture du dictionnaire
-    dico = fopen("dico.txt", "r");
+    //Variable qui contient la liste de caractères de la ligne à laquelle on se retrouve
+    LCaractere *currentMot = malloc(sizeof(LCaractere));
 
-    //Initialisation de la chaine à une chaine vide
-    char motDico[30] = "";
+    //On considère 3 variables qui contiendront les positions de fin début et milieu lors du déplacement
+    //dans le fichier du dictionnaire
+    long start = 0, middle, end;
 
-    //Si le fichier est bien ouvert
-    if(dico != NULL){
+    //Variable qui récupère le nombre de caractères dans la liste
+    //Ce qui correspond à la taille du mot de la ligne
+    int listLength;
 
-        //On récupère le nombre totale de ligne du dictionnaire
-        fseek(dico, 0, SEEK_END);
-        //position = ftell(dico);
-        //fseek(dico, position/2, SEEK_SET);
-        //position = ftell(dico);
-        //fseek(dico, position/2, SEEK_SET);
+    //Variable qui récupère chaque caractère courant lors de notre déplacement caractère par caractère
+    //dans le fichier du dictionnaire 
+    char carac;
+
+    fichier = fopen("dico.txt", 'r');
+
+    if(fichier != NULL){
+
+        //On se positionne à la fin du fichier
+        fseek(fichier, 0, SEEK_END);
+
+        //On stocke la position à laquelle on se retrouve à la fin du fichier
+        end = ftell(fichier) - 1;
+
         do{
-            fgets(motDico, 9, dico);
-            if(strcmp(mot, motDico) == 0){
-                notFound = 1;
+            //Calcul du milieu du fichier et positionnement à ce niveau
+            middle = start + (end - start)/2;
+            fseek(fichier, middle, SEEK_SET);
+
+            //On initialise notre liste de caractères à NULL et on récupère le premier caractère qu'on 
+            //rencontre
+            currentMot->head = NULL;
+            carac = fgetc(fichier);
+
+            //Si le premier caractère rencontré est \n
+            if(carac == '\n'){
+
+                //On fait un bond en arrière d'un caractère
+                fseek(fichier, -2, SEEK_CUR);
+
+                //On récupère les valeurs caractère par caractère vers l'arrière
+                while(carac = fgetc(fichier) != '\n'){
+
+                    //On fait une insertion en tête pour respecter l'ordre des caractères
+                    //dans le vocabulaire du mot
+                    insertCharUp(carac, currentMot);
+                    fseek(fichier, -2, SEEK_CUR);
+
+                    //On reprend le processus jusqu'à ce qu'on rencontre un \n
+                    //dans notre marche inversée
+                }
+
+                //Si le premier caractère n'est pas un \n
             }else{
-                if(strcmp(mot, motDico) < 0){
-                    //position = ftell(dico);
-                    //fseek(dico, -(position/2), SEEK_CUR);
-                    //position = ftell(dico);
-                    //fseek(dico, -(position/2), SEEK_CUR);
-                }else{
-                    //position = ftell(dico);
-                    //fseek(dico, (position/2), SEEK_CUR);
-                    //position = ftell(dico);
-                    //fseek(dico, (position/2), SEEK_CUR);
+
+                //On fait des bonds en avant (étant donné que nous pouvons être au beau milieu d'un mot)
+                //On récupère les caractères de notre position jusqu'à le fin du mot (jusqu'à le \n)
+                //Et on les stocke en queue dans notre liste de caractères
+                while(carac != '\n'){
+                    insertCharEnd(carac, currentMot);
+                    carac = fgetc(fichier);
+                }
+
+                //On se repositionne ensuite au caractère
+                //juste avant celui auquel on était avant de commencer le stockage
+                //Et on fait une récupération mais en marche inversée
+                //Cette fois ci, une insertion en tête
+                fseek(fichier, middle - 1, SEEK_SET);
+                while(carac = fgetc(fichier) != '\n'){
+                    insertCharUp(carac, currentMot);
+                    fseek(fichier, -2, SEEK_CUR);
                 }
             }
-        }while(!notFound);
 
-        if(notFound){
-            while(mot[i] != '\0'){
-                i++;
-                return i;
+            //Lorsque chaque caractère du mot est récupéré et bien positionné
+
+            //Le nouveau milieur devient celui du début du mot stocké caractère par caractère
+            middle = ftell(fichier);
+
+            //Calcul de la taille du mot
+            listLength = wordLength(*currentMot);
+
+
+            //Création dynamique d'une chaine de caractères
+            //de taille égale à celle du mot stocké dans la liste
+            char motFormed[listLength + 1];
+
+            //Copie de la valeur du mot dans la variable motFormed
+            //après regroupement des caractères de ce dernier avec la fonction motFormation
+            strcpy(motFormed, motFormation(*currentMot, listLength + 1));
+
+            //Si le mot stocké est égale au mot de l'utilisateur on retourne la taille du mot de l'utilisateur
+            if(strcmp(mot, motFormed) == 0){
+                //On désalloue l'espace en mémoire pour la liste de caractères et le mot formé
+                free(currentMot);
+                free(motFormed);
+
+                //On ferme le fichier
+                fclose(fichier);
+
+                return motLength(mot);
+
+                //sinon si le mot formé est plus grand que le mot de l'utilisateur
+                //on ignore tous les mots qui viennent après le mot formé
+                //la nouvelle fin commence à partir du mot formé
+            }else{
+                if(strcmp(mot, motFormed) < 0){
+                    end = middle;
+
+                //si le mot formé est plus petit que le mot de l'utilisateur
+                //on ignore tous les mots qui viennent avant le mot formé 
+                //le nouveau début commence à partir du mot formé
+                }else if(strcmp(mot, motFormed) > 0){
+                    start = middle;
+                }
             }
-        }else{
-            return 0;
-        }
 
-        fclose(dico);
+            free(motFormed);
+
+        //et on reprend le processus jusqu'à ce qu'on ne trouve le mot de l'utilisateur dans le dictionnaire
+        //ou jusqu'à ce que le début et la fin ne soit confondu
+        }while(start < end);
+        
+        free(currentMot);
+        //Fermuture du fichier
+        fclose(fichier);
+
+        //La fonction renvoie la valeur 0 si le mot de l'utilisateur n'est pas dans le disctionnaire
+        return 0;
     }
+
+
+
 }
