@@ -18,13 +18,14 @@ extern char choixConsonneVoyelle;   // Stocke le choix du joueur ('C' pour conso
 extern int scoreJoueur1;            // Score actuel du premier joueur
 extern int scoreJoueur2;            // Score actuel du deuxième joueur
 extern int toursJoues;              // Nombre de tours déjà joués
-extern char grille[];               // Tableau représentant les lettres dans la grille de jeu
+extern char grille[9];             // Tableau représentant les lettres dans la grille de jeu
 
 // Déclaration des fonctions
 
 /**
  * Sauvegarde l'état actuel de la partie dans un fichier texte (sauvegarde.txt).
- * Utilise les variables globales pour les informations de la partie.
+ * Utilise les variables globales pour les informations de la partie (noms, scores, tours).
+ * La grille n'est pas sauvegardée car elle sera régénérée à la reprise de la partie.
  * Inclut l'historique des mots joués et leurs scores pour chaque joueur.
  *
  * @param motsJoueur1   Tableau des mots joués par le joueur 1
@@ -37,6 +38,7 @@ void sauvegarderPartie(const char motsJoueur1[][20], const char motsJoueur2[][20
 /**
  * Charge une partie précédemment sauvegardée à partir du fichier sauvegarde.txt.
  * Les données sont chargées directement dans les variables globales définies.
+ * La grille n'est pas chargée car elle sera régénérée à la reprise de la partie.
  * 
  * @return 1 si le chargement a réussi, 0 en cas d'échec
  */
@@ -44,7 +46,9 @@ int chargerPartie(void);
 
 /**
  * Affiche un résumé détaillé de la partie sauvegardée.
- * Montre les informations de base de la partie et l'historique des coups joués tour par tour.
+ * Montre les informations de base de la partie (noms, scores, progression) 
+ * et l'historique des coups joués tour par tour.
+ * La grille n'est pas affichée car elle n'est pas sauvegardée.
  */
 void reviewPartie();
 
