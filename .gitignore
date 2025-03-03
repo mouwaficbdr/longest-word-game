@@ -53,3 +53,6 @@ dkms.conf
 
 # Fichiers de sauvegarde du jeu
 sauvegarde.txt
+
+#JSON
+*.json
