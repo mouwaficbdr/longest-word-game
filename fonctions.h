@@ -15,9 +15,8 @@ extern int nbreTours;
 extern char choixConsonneVoyelle;
 
 // Déclaration des fonctions
-//Fonction pour generer les variables aleatoire
-void genererVariablesAleatoires();
-//Fonction demande a l'utilisateur d'entrer une lettre entre consonne et voyelle
-void entrerlettre();
-
+//Fonction pour generer les caracteres aleatoire et donc le mot a 9 lettres
+void genererCaracteresAleatoires();
+//Fonction pour afficher le menu du jeux 
+void afficherMenu();
 #endif

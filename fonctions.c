@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <ctype.h>
 #include "fonctions.h"
 
 // Définition des constantes
@@ -20,32 +21,53 @@ int index_consonne;
 int index_voyelle;
 char choixConsonneVoyelle;
 char lettresGenerees[9]; 
+char choixmenu;
 
-//Fonction pour generer les caracteres aleatoires et donc le mot de la grille 
-void genererCaractereAleatoires(int nbreTotalLettresGrille) {
-     taille_consonne = sizeof(consonnes) / sizeof(consonnes[0]);//taille de la consonne
-     taille_voyelle = sizeof(voyelles) / sizeof(voyelles[0]);//taille de la voyelle
+//Fonction pour afficher le menu 
+void chargerPartie() {
+    printf("Chargement de la partie...\n");
+    // Ajoute ici le code pour charger une partie
+}
 
-    for (int i = 0; i < nbreTotalLettresGrille; i++ ) {
-        // Demander à l'utilisateur de choisir une consonne ou une voyelle
-        do {
-            printf("Tour %d - Choisissez une lettre ('c' pour consonne, 'v' pour voyelle) : ", i + 1);
-            scanf(" %c", &choixConsonneVoyelle);
-            choixConsonneVoyelle = tolower(choixConsonneVoyelle); // Convertir en minuscule pour éviter les erreurs de casse
-        } while (choixConsonneVoyelle != 'c' && choixConsonneVoyelle != 'v');
+void nouvellePartie() {
+    printf("Nouvelle partie en cours...\n");
+    // Ajoute ici le code pour démarrer une nouvelle partie
+}
 
-        // Générer une lettre en fonction du choix
-        if (choixConsonneVoyelle == 'c') {
-            lettresGenerees[i] = consonnes[rand() % taille_consonne];
-        } else {
-            lettresGenerees[i] = voyelles[rand() % taille_voyelle];
+void afficherMenu() {
+    char choixmenu;
+
+    while (1) {
+        system("clear || cls");  // Efface l'écran (compatible Linux/Windows)
+
+        // Affichage du menu dans un rectangle
+        printf("\n");
+        printf("*            MENU                *\n");
+        printf("\n");
+        printf("* X - Charger Partie             *\n");
+        printf("* Y - Nouvelle Partie            *\n");
+        printf("* Q - Quitter                    *\n");
+        printf("\n");
+        printf("  Votre choix : ");
+
+        choixmenu = getchar(); // Récupère l'entrée utilisateur
+        while (getchar() != '\n'); // Vide le buffer pour éviter les erreurs
+
+        choixmenu = tolower(choixmenu); // Convertit en minuscule
+
+        switch (choixmenu) {
+            case 'x':
+                chargerPartie();
+                break;
+            case 'y':
+                nouvellePartie();
+                break;
+            case 'q':
+                printf("Fermeture du programme...\n");
+                exit(0);
+            default:
+                // L'entrée invalide est ignorée, pas d'affichage d'erreur
+                break;
         }
     }
-
-    // Affichage des lettres générées
-    printf("\nLettres générées : ");
-    for (int i = 0; i < nbreTotalLettresGrille; i++) {
-        printf("%c ", lettresGenerees[i]);
-    }
-    printf("\n");
 }
