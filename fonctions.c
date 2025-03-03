@@ -4,14 +4,14 @@
 #include <ctype.h>
 #include "fonctions.h"
 
-// D�finition des constantes
+// Définition des constantes
 const int nbreJoueur = 2;
 const int nbreTotalLettresGrille = 9;
 const char voyelles[6] = {'A', 'E', 'I', 'O', 'U', 'Y'};
 const char consonnes[20] = {'B', 'C', 'D', 'F', 'G', 'H', 'J', 'K', 'L', 'M', 'N', 'P', 'Q', 'R', 'S', 'T', 'V', 'W', 'X', 'Z'};
 
 
-//D�finition des variables
+//Définition des variables
 char nomJoueur1[10];
 char nomJoueur2[10];
 int numJoueurCommencerPartie;
@@ -24,6 +24,12 @@ int scoreJoueur2 = 0;           // Score du joueur 2, initialisé à 0
 int toursJoues = 0;             // Nombre de tours joués, initialisé à 0
 char grille[9] = {0};          // Grille de jeu avec taille exacte pour stocker nbreTotalLettresGrille caractères
 
+// Définition des tableaux pour l'historique des mots et scores
+char motsJoueur1[MAX_TOURS][20] = {{0}};  // Initialisé avec des chaînes vides
+char motsJoueur2[MAX_TOURS][20] = {{0}};  // Initialisé avec des chaînes vides
+int scoresJoueur1[MAX_TOURS] = {0};       // Initialisé avec des zéros
+int scoresJoueur2[MAX_TOURS] = {0};       // Initialisé avec des zéros
+
 // Définition des fonctions
 
 /**
@@ -31,7 +37,7 @@ char grille[9] = {0};          // Grille de jeu avec taille exacte pour stocker 
  * Utilise les variables globales pour les informations de la partie.
  * Inclut l'historique des mots joués et leurs scores pour chaque joueur.
  */
-void sauvegarderPartie(const char motsJoueur1[][20], const char motsJoueur2[][20], const int scoresJoueur1[], const int scoresJoueur2[]) {
+void sauvegarderPartie() {
     FILE *fichier = fopen("sauvegarde.txt", "w");
     if (fichier == NULL) {
         printf("Erreur lors de l'ouverture du fichier de sauvegarde.\n");
@@ -56,13 +62,55 @@ void sauvegarderPartie(const char motsJoueur1[][20], const char motsJoueur2[][20
     printf("Partie sauvegardée avec succès.\n");
 }
 
+
+/**
+ * Enregistre les mots et scores d'un tour dans l'historique.
+ * Met à jour les tableaux globaux et les scores totaux.
+ * 
+ * @return 1 si l'enregistrement a réussi, 0 si le nombre maximum de tours est atteint
+ */
+int enregistrerTour(const char motJoueur1[], const char motJoueur2[], int scoreMotJoueur1, int scoreMotJoueur2) {
+    // Vérifier si le nombre maximum de tours n'est pas dépassé
+    if (toursJoues >= MAX_TOURS) {
+        printf("Erreur : Nombre maximum de tours atteint.\n");
+        return 0;
+    }
+    
+    // Vérifier que les tours joués ne dépassent pas le nombre de tours total défini pour la partie
+    if (toursJoues >= nbreTours) {
+        printf("Erreur : Tous les tours de la partie ont déjà été joués.\n");
+        return 0;
+    }
+
+    // Enregistrer les mots (avec vérification de longueur pour éviter les débordements)
+    strncpy(motsJoueur1[toursJoues], motJoueur1, 19);
+    motsJoueur1[toursJoues][19] = '\0'; // Assurer la terminaison de la chaîne
+    
+    strncpy(motsJoueur2[toursJoues], motJoueur2, 19);
+    motsJoueur2[toursJoues][19] = '\0'; // Assurer la terminaison de la chaîne
+    
+    // Enregistrer les scores du tour
+    scoresJoueur1[toursJoues] = scoreMotJoueur1;
+    scoresJoueur2[toursJoues] = scoreMotJoueur2;
+    
+    // Mettre à jour les scores totaux
+    scoreJoueur1 += scoreMotJoueur1;
+    scoreJoueur2 += scoreMotJoueur2;
+    
+    // Incrémenter le compteur de tours joués
+    toursJoues++;
+    
+    return 1;
+}
+
+
 /**
  * Charge une partie précédemment sauvegardée à partir du fichier sauvegarde.txt.
- * Les données sont chargées directement dans les variables globales définies dans le module.
+ * Les données sont chargées directement dans les variables globales définies.
  * 
  * @return 1 si le chargement a réussi, 0 en cas d'échec
  */
-int chargerPartie(void) {
+int chargerPartie() {
     FILE *fichier = fopen("sauvegarde.txt", "r");
     if (fichier == NULL) {
         printf("Erreur lors de l'ouverture du fichier de sauvegarde.\n");
@@ -81,52 +129,59 @@ int chargerPartie(void) {
     fscanf(fichier, "Tours joués: %d\n", &toursJoues);
     fscanf(fichier, "Tours totaux: %d\n", &nbreTours);
 
+    // Réinitialiser les tableaux d'historique
+    for (int i = 0; i < MAX_TOURS; i++) {
+        motsJoueur1[i][0] = '\0';
+        motsJoueur2[i][0] = '\0';
+        scoresJoueur1[i] = 0;
+        scoresJoueur2[i] = 0;
+    }
+
+    // Ignorer la ligne "Review de la partie:"
+    char buffer[100];
+    fgets(buffer, sizeof(buffer), fichier);
+
+    // Lecture des historiques de mots et scores tour par tour
+    for (int i = 0; i < toursJoues; i++) {
+        // Lire la ligne "Tour X:"
+        fgets(buffer, sizeof(buffer), fichier);
+        
+        // Lire les données du joueur 1
+        fscanf(fichier, "%*[^:]: Mot: %19[^,], Score: %d\n", motsJoueur1[i], &scoresJoueur1[i]);
+        
+        // Lire les données du joueur 2
+        fscanf(fichier, "%*[^:]: Mot: %19[^,], Score: %d\n", motsJoueur2[i], &scoresJoueur2[i]);
+    }
+
     fclose(fichier);
-    printf("Partie chargée avec succès.\n");
+    printf("Partie chargée avec succès, incluant l'historique des mots et scores.\n");
     return 1;
 }
 
 /**
  * Affiche un résumé détaillé de la partie sauvegardée.
- * Montre les informations de base de la partie et l'historique des coups joués tour par tour.
+ * Utilise les variables globales pour afficher les informations de la partie.
  */
 void reviewPartie() {
-    FILE *fichier = fopen("sauvegarde.txt", "r");
-    if (fichier == NULL) {
-        printf("Erreur lors de l'ouverture du fichier de sauvegarde.\n");
+    // Vérifier si une partie a été chargée ou si on est en cours de partie
+    if (toursJoues == 0) {
+        printf("Aucune partie en cours ou chargée. Rien à afficher.\n");
         return;
     }
 
-    char nomJoueurSauvegarde1[10], nomJoueurSauvegarde2[10];
-    int scoreJoueurSauvegarde1, scoreJoueurSauvegarde2, toursJouesSauvegarde;
-    char ligne[100];
-    int toursTotauxTemp; // Variable temporaire pour lire la valeur
-
-    // Lecture des informations de base
-    fscanf(fichier, "Nom Joueur 1: %s\n", nomJoueurSauvegarde1);
-    fscanf(fichier, "Nom Joueur 2: %s\n", nomJoueurSauvegarde2);
-    fscanf(fichier, "Score Joueur 1: %d\n", &scoreJoueurSauvegarde1);
-    fscanf(fichier, "Score Joueur 2: %d\n", &scoreJoueurSauvegarde2);
-    fscanf(fichier, "Tours joués: %d\n", &toursJouesSauvegarde);
-    fscanf(fichier, "Tours totaux: %d\n", &toursTotauxTemp);
-    
-
     // Affichage des informations générales
     printf("Informations de la partie:\n");
-    printf("Joueur 1: %s (Score: %d)\n", nomJoueurSauvegarde1, scoreJoueurSauvegarde1);
-    printf("Joueur 2: %s (Score: %d)\n", nomJoueurSauvegarde2, scoreJoueurSauvegarde2);
-    printf("Progression: %d tours joués sur %d\n", toursJouesSauvegarde, toursTotauxTemp);
+    printf("Joueur 1: %s (Score: %d)\n", nomJoueur1, scoreJoueur1);
+    printf("Joueur 2: %s (Score: %d)\n", nomJoueur2, scoreJoueur2);
+    printf("Progression: %d tours joués sur %d\n", toursJoues, nbreTours);
     
-    // Lecture de la ligne "Review de la partie:"
-    fgets(ligne, sizeof(ligne), fichier);
-
-    // Lecture de la review de la partie
+    // Affichage de l'historique des tours
     printf("Historique des tours:\n");
-    while (fgets(ligne, sizeof(ligne), fichier) != NULL) {
-        printf("%s", ligne);
+    for (int i = 0; i < toursJoues; i++) {
+        printf("Tour %d:\n", i + 1);
+        printf("%s - Mot: %s, Score: %d\n", nomJoueur1, motsJoueur1[i], scoresJoueur1[i]);
+        printf("%s - Mot: %s, Score: %d\n", nomJoueur2, motsJoueur2[i], scoresJoueur2[i]);
     }
-
-    fclose(fichier);
 }
 
 /**
@@ -184,9 +239,9 @@ int effacerSauvegarde(void) {
     }
 }
 
-// D�finition des fonctions
+// Définition des fonctions
 
-//Fonction pour compter le nombre de caract�res dans un mot
+//Fonction pour compter le nombre de caractères dans un mot
 
 int motLength(char mot[]){
     int i = 0;
@@ -197,7 +252,7 @@ int motLength(char mot[]){
 }
 
 
-//Fonction de v�rification des caract�res
+//Fonction de vérification des caractères
 int validationChar(char mot[], char grilleCaractere[]){
     char validChar[10];
     int isequal, i=0;
@@ -206,15 +261,15 @@ int validationChar(char mot[], char grilleCaractere[]){
     //On parcourt le tableau contenant le mot de l'utilisateur
     while(mot[i] != '\0'){
 
-        //On initialise � 0 pour dire que le caract�re � l'indice i n'est �gale � aucun parmi ceux de la grille
+        //On initialise à 0 pour dire que le caractère à l'indice i n'est égale à aucun parmi ceux de la grille
         isequal = 0;
 
-        //On parcourt la grille de caract�res
+        //On parcourt la grille de caractères
         for(int j = 0; j < nbreTotalLettresGrille; j++){
 
-            //Si le caract�re � l'indice i correspond � un caract�re parmi ceux de la grille, isequal passe � 1 pour dire vrai
-            //on vide la case contenant le caract�re dans la grille
-            //on passe au caract�re suivant
+            //Si le caractère à l'indice i correspond à un caractère parmi ceux de la grille, isequal passe à 1 pour dire vrai
+            //on vide la case contenant le caractère dans la grille
+            //on passe au caractère suivant
             if(mot[i] == validChar[j]){
                 isequal = 1;
                 validChar[j] = '\0';
@@ -222,16 +277,16 @@ int validationChar(char mot[], char grilleCaractere[]){
             }
         }
 
-        //Si la variable isequal est toujours � 0, alors le caract�re dans le mot de l'utilisateur n'a pas de correspondant dans la grille
+        //Si la variable isequal est toujours à 0, alors le caractère dans le mot de l'utilisateur n'a pas de correspondant dans la grille
         //On retourne la valeur NULL pour stopper la validation
-        //Le mot ne respecte pas les caract�res de la grille 
+        //Le mot ne respecte pas les caractères de la grille 
         if(isequal == 0){
             return NULL;
         }
         i++;
     }
 
-    //si tout s'est bien pass�, on renvoie le mot valide qui respecte les caract�res de la grille
+    //si tout s'est bien passé, on renvoie le mot valide qui respecte les caractères de la grille
     return mot;
 }
 void RangerDico(){
