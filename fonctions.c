@@ -75,7 +75,9 @@ char * motFormation(LCaractere liste, int tailleMot){
     while(p != NULL){
         motFormed[i] = p->caractere;
         i++;
+        p = p->suiv;
     }
+    motFormed[i] = '\0';
 
     return motFormed;
 }
