@@ -110,4 +110,11 @@ int verifSauvegarde();
  */
 void effacerSauvegarde();
 
+
+/**
+ * @brief 
+ * Efface une ligne en cas de saisie erronée
+ */
+void clearLine();
+
 #endif

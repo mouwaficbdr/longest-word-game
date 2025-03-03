@@ -125,9 +125,6 @@ void EcritureDynamique(char texte[], int x, int y,int vitesse){
     
 }
 
-void validationSaisie(){
-    
-}
 
 void clearLine() {
     HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
