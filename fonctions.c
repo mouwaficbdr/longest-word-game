@@ -22,7 +22,6 @@ char choixConsonneVoyelle;
 char lettresGenerees[9]; 
 
 
-//Fonction pour generer les lettres aleatoire
 void genererCaractereAleatoires(int nbreTotalLettresGrille) {
      taille_consonne = sizeof(consonnes) / sizeof(consonnes[0]);
      taille_voyelle = sizeof(voyelles) / sizeof(voyelles[0]);
