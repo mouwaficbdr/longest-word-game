@@ -44,8 +44,6 @@ void sauvegarderPartie(const char motsJoueur1[][20], const char motsJoueur2[][20
     fprintf(fichier, "Tours joués: %d\n", toursJoues);
     fprintf(fichier, "Tours totaux: %d\n", nbreTours);
     
-    // La grille n'est plus sauvegardée car elle sera régénérée à la reprise
-
     fprintf(fichier, "Review de la partie:\n");
     for (int i = 0; i < toursJoues; i++) {
         fprintf(fichier, "Tour %d:\n", i + 1);
