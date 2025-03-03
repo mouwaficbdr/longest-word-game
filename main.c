@@ -1,9 +1,8 @@
-#include <stdio.h>
 #include "fonctions.h"
 
+int main() {
+   
+   NouvellePartie();
 
-
-int main()
-{
-
+    return 0;
 }
