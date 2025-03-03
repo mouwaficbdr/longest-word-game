@@ -21,10 +21,10 @@ int index_voyelle;
 char choixConsonneVoyelle;
 char lettresGenerees[9]; 
 
-
+//Fonction pour generer les caracteres aleatoires et donc le mot de la grille 
 void genererCaractereAleatoires(int nbreTotalLettresGrille) {
-     taille_consonne = sizeof(consonnes) / sizeof(consonnes[0]);
-     taille_voyelle = sizeof(voyelles) / sizeof(voyelles[0]);
+     taille_consonne = sizeof(consonnes) / sizeof(consonnes[0]);//taille de la consonne
+     taille_voyelle = sizeof(voyelles) / sizeof(voyelles[0]);//taille de la voyelle
 
     for (int i = 0; i < nbreTotalLettresGrille; i++ ) {
         // Demander à l'utilisateur de choisir une consonne ou une voyelle
