@@ -5,10 +5,14 @@
   "C_Cpp_Runner.cStandard": "",
   "C_Cpp_Runner.cppStandard": "",
 <<<<<<< HEAD
+<<<<<<< HEAD
   "C_Cpp_Runner.msvcBatchPath": "C:/Program Files/Microsoft Visual Studio/VR_NR/Community/VC/Auxiliary/Build/vcvarsall.bat",
 =======
   "C_Cpp_Runner.msvcBatchPath": "",
 >>>>>>> validationMotV2
+=======
+  "C_Cpp_Runner.msvcBatchPath": "C:/Program Files/Microsoft Visual Studio/VR_NR/Community/VC/Auxiliary/Build/vcvarsall.bat",
+>>>>>>> LongestWord
   "C_Cpp_Runner.useMsvc": false,
   "C_Cpp_Runner.warnings": [
     "-Wall",

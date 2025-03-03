@@ -28,12 +28,51 @@ extern char grille[9];             // Tableau représentant les lettres dans la 
 int motLength(char mot[]);
 
 /**
+ * @param mot 
+ * @param grilleCaractere 
  * Vérifie si le mot de l'utilisateur respecte les caractères de la grille
  * Si oui, elle renvoit la valeur 1 
  * Sinon, elle renvoit la valeur 0
  */
 int validationChar(char mot[], char grilleCaractere[]);
 
+/**
+ * @brief 
+ * Ranger le dictionnaire suivant les lettres de l'alphabet 
+ */
+void RangerDico();
+
+
+  /**
+ * @brief 
+ * Supprimer toutes les occurences d'un caractère dans une chaine
+ * @param chaine *chaine
+ * @param c le caractère
+ */
+void removeSameChar(char *chaine, char c);
+
+
+/**
+ * @brief 
+ * Verifier si un caractère a deja été utilisé lors de la recherche dans le dictionnaire
+ * pour éviter les doubles parcours pour un même caractère
+ * @param tab chaine des caractères restants
+ * @param c le caractère 
+ * @return 1 si le caractère est dans la chaine (soit il est non utilisé) et 0 sinon
+ */
+int notUsed(char tab[], char c);
+
+
+
+
+
+/**
+ * @brief 
+ * Recherche le mot le plus long dans une grille
+ * @param grille 
+ * @return char* le plus long mot
+ */
+ char *LongestWord(char grille[]);
 
 //La fonction validationMots v�rifie si un mot se retrouve dans le dictionnaire. Si oui, il renvoie la taille du mot (correspondant au score du joueur) si non il renvoie 0 pour indiquer que le mot n'existe pas dans le dictionnaire
 int validationMots(char mot[]);
