@@ -50,3 +50,9 @@ modules.order
 Module.symvers
 Mkfile.old
 dkms.conf
+
+# Fichiers de sauvegarde du jeu
+sauvegarde.txt
+
+#JSON
+*.json

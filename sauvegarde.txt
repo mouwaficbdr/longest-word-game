@@ -1,0 +1,16 @@
+Nom Joueur 1: Mouwafic
+Nom Joueur 2: Musashi
+Score Joueur 1: 10
+Score Joueur 2: 15
+Tours joués: 3
+Tours totaux: 5
+Review de la partie:
+Tour 1:
+Mouwafic - Mot: MOT1, Score: 3
+Musashi - Mot: MOT4, Score: 2
+Tour 2:
+Mouwafic - Mot: MOT2, Score: 4
+Musashi - Mot: MOT5, Score: 3
+Tour 3:
+Mouwafic - Mot: MOT3, Score: 5
+Musashi - Mot: MOT6, Score: 4
