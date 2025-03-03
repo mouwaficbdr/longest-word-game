@@ -281,13 +281,13 @@ int validationChar(char mot[], char grilleCaractere[]){
         //On retourne la valeur NULL pour stopper la validation
         //Le mot ne respecte pas les caractères de la grille 
         if(isequal == 0){
-            return NULL;
+            return 0;
         }
         i++;
     }
 
     //si tout s'est bien passé, on renvoie le mot valide qui respecte les caractères de la grille
-    return mot;
+    return 1;
 }
 void RangerDico(){
     char grille[]="abcdefghijklmnopqrstuvwxyz";
