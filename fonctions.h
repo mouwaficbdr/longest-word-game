@@ -49,7 +49,7 @@ char * motFormation(LCaractere liste, int tailleMot);
 int motLength(char mot[]);
 
 //La fonction validationMots v�rifie si un mot se retrouve dans le dictionnaire. Si oui, il renvoie la taille du mot (correspondant au score du joueur) si non il renvoie 0 pour indiquer que le mot n'existe pas dans le dictionnaire
-int validationMots(char mot[]);
+void validationMots(char mot[]);
 
 
 #endif
