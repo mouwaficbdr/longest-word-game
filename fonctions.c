@@ -127,57 +127,6 @@ int frameX,frameY,frameLong,frameHeight;
                 gambaseX = gameEntryFieldX + ((gameEntryFieldLong-9) / 2);
                 gamebaseY = gameEntryFieldY + (gameEntryFieldHeight / 2);
 
-
-                // Initialisation des dimensions et positions
-                // scorefieldX1 = 12;
-                // scorefieldY1 = 5;
-                // scorefieldLong = 12;
-                // scorefieldHeight = 4;
-            
-                // scorefieldCursorX1 = scorefieldX1 + (scorefieldLong / 2);
-                // scorefieldCursorY1 = scorefieldY1 + (scorefieldHeight / 2);
-            
-                // mainframeX = scorefieldX1 + scorefieldLong + 3;
-                // mainframeY = scorefieldY1 - 3;
-                // mainframeLong = scorefieldLong * 5;
-                // mainframeHeight = scorefieldHeight * 6;
-            
-                // scorefieldX2 = mainframeX + mainframeLong + 3;
-                // scorefieldY2 = scorefieldY1;
-            
-                // gameEntryFieldX = mainframeX + (mainframeLong / 8);
-                // gameEntryFieldY = scorefieldY1;
-                // gameEntryFieldHeight = scorefieldHeight;
-                // gameEntryFieldLong = (3 * mainframeLong) / 4;
-            
-                // EntryFieldX1 = gameEntryFieldX;
-                // EntryFieldY1 = mainframeY + (mainframeHeight / 2);
-                // EntryFieldLong = gameEntryFieldLong;
-                // EntryFieldHeight = gameEntryFieldHeight / 2;
-            
-                // EntryFieldX2 = EntryFieldX1;
-                // EntryFieldY2 = EntryFieldY1 + 3;
-            
-                // AIX = EntryFieldX1;
-                // AIY = EntryFieldY2 + 3;
-            
-                // play1CursorX = EntryFieldX1 + (EntryFieldLong / 3);
-                // play1CursorY = EntryFieldY1 + (EntryFieldHeight / 2);
-            
-                // play2CursorX = EntryFieldX2 + (EntryFieldLong / 3);
-                // play2CursorY = EntryFieldY2 + (EntryFieldHeight / 2);
-            
-                // AImoveX = AIX + (EntryFieldLong / 3);
-                // AImoveY = AIY + (EntryFieldHeight / 2);
-            
-                // score1moveX = scorefieldX1 + (scorefieldLong / 2);
-                // score1moveY = scorefieldY1 + (scorefieldHeight / 2);
-            
-                // score2moveX = scorefieldX2 + (scorefieldLong / 2);
-                // score2moveY = scorefieldY2 + (scorefieldHeight / 2);
-            
-                // gambaseX = gameEntryFieldX + (gameEntryFieldLong / 3);
-                // gamebaseY = gameEntryFieldY + (gameEntryFieldHeight / 2);
                 
             }
             
@@ -245,7 +194,7 @@ int frameX,frameY,frameLong,frameHeight;
         }
 
     }
-
+// Centrage du mot du joueur 1
     void centerword1(char *word){
         int i=0;
         initialiserVariables();
@@ -258,7 +207,7 @@ int frameX,frameY,frameLong,frameHeight;
           player1();
           printf("%s",word);
     }
-
+// Centrage du mot du joueur 2
     void centerword2(char *word){
         int i=0;
         initialiserVariables();
@@ -271,7 +220,15 @@ int frameX,frameY,frameLong,frameHeight;
           player2();
           printf("%s",word);
     }
-
+// centrage du mot trouvé par l'IA
+    void centerwordAI(char *word){
+        int i=0;
+        initialiserVariables();
+          AIX=EntryFieldX1 + ((EntryFieldLong-strlen(word)) / 2);
+          AImove();
+          printf("%s",word);
+    }
+    //  hashe et centre le mot saisit du joueur 1  
     void centeredhash1(char *word, int size){
         int i=0;
           player1();
@@ -289,7 +246,7 @@ int frameX,frameY,frameLong,frameHeight;
 
     }
 
-
+    //  hashe et centre le mot saisit du joueur 2
     void centeredhash2(char *word, int size){
         int i=0;
           player2();
@@ -307,28 +264,35 @@ int frameX,frameY,frameLong,frameHeight;
 
     }
 
-
+    //  redirige champ d'entrée joueur 1
     void player1(){
         gotoxy(play1CursorX,play1CursorY);
     }
+    //  redirige champ d'entrée joueur 2
     void player2(){
         gotoxy(play2CursorX,play2CursorY);
     }
+    //  redirige champ IA
     void AImove(){
         gotoxy(AImoveX,AImoveY);
     }
+    //  redirige champ score joueur 1
     void player1Score(){
         gotoxy(score1moveX,score1moveY);
     }
+    //  redirige champ score joueur 2
     void player2Score(){
         gotoxy(score2moveX,score2moveY);
     }
+    //  redirige champ d'entrée de jeu voyelle consonne
     void EntryField(){
         gotoxy(gambaseX,gamebaseY);
     }
+    // redirige nom joueur 1
     void namePlay1(){
         gotoxy(score1moveX-3,score1moveY-(score1moveY/3));
     }
+    // redirige nom joueur 2
     void namePlay2(){
         gotoxy(score2moveX-3,score2moveY-(score2moveY/3));
     }
