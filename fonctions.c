@@ -199,10 +199,11 @@ int motLength(char mot[]){
 
 
 //Fonction de v�rification des caract�res
-char * validationChar(char mot[], char grilleCaractere[]){
-    char validCarac[10];
+int validationChar(char mot[], char grilleCaractere[]){
+    char validChar[10];
     int isequal, i=0;
 
+    strcpy(validChar, grilleCaractere);
     //On parcourt le tableau contenant le mot de l'utilisateur
     while(mot[i] != '\0'){
 
@@ -215,9 +216,9 @@ char * validationChar(char mot[], char grilleCaractere[]){
             //Si le caract�re � l'indice i correspond � un caract�re parmi ceux de la grille, isequal passe � 1 pour dire vrai
             //on vide la case contenant le caract�re dans la grille
             //on passe au caract�re suivant
-            if(mot[i] == grilleCaractere[j]){
+            if(mot[i] == validChar[j]){
                 isequal = 1;
-                grilleCaractere[j] = '\0';
+                validChar[j] = '\0';
                 break;
             }
         }
