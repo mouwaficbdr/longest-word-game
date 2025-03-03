@@ -27,6 +27,8 @@ extern int AImoveX, AImoveY;
 extern int score1moveX, score1moveY;
 extern int score2moveX, score2moveY;
 extern int gambaseX, gamebaseY;
+extern int height,width;
+extern int frameX, frameY, frameLong, frameHeight;
 
 // Déclaration des fonctions
 extern void hashWord(char*word, int size);
@@ -40,6 +42,12 @@ extern void AImove();
 extern void player1Score();
 extern void player2Score();
 extern void EntryField();
-
-
+extern  void centeredhash1(char *word, int size);
+extern  void centeredhash2(char *word, int size);
+extern void centerword1(char *word);
+extern void centerword2(char *word);
+extern  void getConsoleSize(int *width, int *height);
+extern void setConsoleSize(int width, int height);
+extern void namePlay1();
+extern void namePlay2();
 #endif

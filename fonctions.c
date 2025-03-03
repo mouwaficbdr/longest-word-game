@@ -30,6 +30,8 @@ int AImoveX, AImoveY;
 int score1moveX, score1moveY;
 int score2moveX, score2moveY;
 int gambaseX, gamebaseY;
+int height,width;
+int frameX,frameY,frameLong,frameHeight;
 // Définition des fonctions
 
      //-----hashage-----
@@ -73,20 +75,21 @@ int gambaseX, gamebaseY;
             } 
 
             void initialiserVariables() {
-                // Initialisation des dimensions et positions
-                scorefieldX1 = 12;
-                scorefieldY1 = 5;
-                scorefieldLong = 12;
-                scorefieldHeight = 4;
-            
-                scorefieldCursorX1 = scorefieldX1 + (scorefieldLong / 2);
-                scorefieldCursorY1 = scorefieldY1 + (scorefieldHeight / 2);
-            
-                mainframeX = scorefieldX1 + scorefieldLong + 3;
-                mainframeY = scorefieldY1 - 3;
-                mainframeLong = scorefieldLong * 5;
-                mainframeHeight = scorefieldHeight * 6;
-            
+                getConsoleSize(&width,&height);
+                frameX=(width-(7*width/9))/2;
+                frameY=(height-(7*height/9))/2;
+                frameLong=7*width/9;
+                frameHeight=7*height/9;
+                scorefieldX1=frameX+3;
+                scorefieldY1=frameY+3;
+                scorefieldX2= mainframeLong+5;
+                scorefieldY2= scorefieldY1;
+                scorefieldLong=frameLong*0.2;
+                scorefieldHeight=frameHeight*0.15;
+                mainframeLong=frameLong*0.5;
+                mainframeX=frameX+(frameLong-mainframeLong)/2;
+                mainframeY=frameY;
+                mainframeHeight=frameHeight;
                 scorefieldX2 = mainframeX + mainframeLong + 3;
                 scorefieldY2 = scorefieldY1;
             
@@ -101,11 +104,11 @@ int gambaseX, gamebaseY;
                 EntryFieldHeight = gameEntryFieldHeight / 2;
             
                 EntryFieldX2 = EntryFieldX1;
-                EntryFieldY2 = EntryFieldY1 + 3;
+                EntryFieldY2 = EntryFieldY1 + 5;
             
                 AIX = EntryFieldX1;
-                AIY = EntryFieldY2 + 3;
-            
+                AIY = EntryFieldY2 + 5;
+
                 play1CursorX = EntryFieldX1 + (EntryFieldLong / 3);
                 play1CursorY = EntryFieldY1 + (EntryFieldHeight / 2);
             
@@ -121,8 +124,61 @@ int gambaseX, gamebaseY;
                 score2moveX = scorefieldX2 + (scorefieldLong / 2);
                 score2moveY = scorefieldY2 + (scorefieldHeight / 2);
             
-                gambaseX = gameEntryFieldX + (gameEntryFieldLong / 3);
+                gambaseX = gameEntryFieldX + ((gameEntryFieldLong-9) / 2);
                 gamebaseY = gameEntryFieldY + (gameEntryFieldHeight / 2);
+
+
+                // Initialisation des dimensions et positions
+                // scorefieldX1 = 12;
+                // scorefieldY1 = 5;
+                // scorefieldLong = 12;
+                // scorefieldHeight = 4;
+            
+                // scorefieldCursorX1 = scorefieldX1 + (scorefieldLong / 2);
+                // scorefieldCursorY1 = scorefieldY1 + (scorefieldHeight / 2);
+            
+                // mainframeX = scorefieldX1 + scorefieldLong + 3;
+                // mainframeY = scorefieldY1 - 3;
+                // mainframeLong = scorefieldLong * 5;
+                // mainframeHeight = scorefieldHeight * 6;
+            
+                // scorefieldX2 = mainframeX + mainframeLong + 3;
+                // scorefieldY2 = scorefieldY1;
+            
+                // gameEntryFieldX = mainframeX + (mainframeLong / 8);
+                // gameEntryFieldY = scorefieldY1;
+                // gameEntryFieldHeight = scorefieldHeight;
+                // gameEntryFieldLong = (3 * mainframeLong) / 4;
+            
+                // EntryFieldX1 = gameEntryFieldX;
+                // EntryFieldY1 = mainframeY + (mainframeHeight / 2);
+                // EntryFieldLong = gameEntryFieldLong;
+                // EntryFieldHeight = gameEntryFieldHeight / 2;
+            
+                // EntryFieldX2 = EntryFieldX1;
+                // EntryFieldY2 = EntryFieldY1 + 3;
+            
+                // AIX = EntryFieldX1;
+                // AIY = EntryFieldY2 + 3;
+            
+                // play1CursorX = EntryFieldX1 + (EntryFieldLong / 3);
+                // play1CursorY = EntryFieldY1 + (EntryFieldHeight / 2);
+            
+                // play2CursorX = EntryFieldX2 + (EntryFieldLong / 3);
+                // play2CursorY = EntryFieldY2 + (EntryFieldHeight / 2);
+            
+                // AImoveX = AIX + (EntryFieldLong / 3);
+                // AImoveY = AIY + (EntryFieldHeight / 2);
+            
+                // score1moveX = scorefieldX1 + (scorefieldLong / 2);
+                // score1moveY = scorefieldY1 + (scorefieldHeight / 2);
+            
+                // score2moveX = scorefieldX2 + (scorefieldLong / 2);
+                // score2moveY = scorefieldY2 + (scorefieldHeight / 2);
+            
+                // gambaseX = gameEntryFieldX + (gameEntryFieldLong / 3);
+                // gamebaseY = gameEntryFieldY + (gameEntryFieldHeight / 2);
+                
             }
             
     //-----rectangle------        
@@ -144,7 +200,30 @@ int gambaseX, gamebaseY;
             gotoxy(x+lon,y+i); printf("%c",179);
         }
     }
-       
+    void setConsoleSize(int width, int height) {
+        HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
+    
+        // 1. Définir la taille du buffer
+        COORD bufferSize = {width, height};
+        SetConsoleScreenBufferSize(hConsole, bufferSize);
+    
+        // 2. Définir la taille de la fenêtre (rectangulaire)
+        SMALL_RECT windowSize = {0, 0, width - 1, height - 1};
+        SetConsoleWindowInfo(hConsole, TRUE, &windowSize);
+    }
+    //----tailleEcran------
+    void getConsoleSize(int *width, int *height) {
+        CONSOLE_SCREEN_BUFFER_INFO csbi;
+        if (GetConsoleScreenBufferInfo(GetStdHandle(STD_OUTPUT_HANDLE), &csbi)) {
+            *width = csbi.srWindow.Right - csbi.srWindow.Left + 1;
+            *height = csbi.srWindow.Bottom - csbi.srWindow.Top + 1;
+        } else {
+            *width = 0;
+            *height = 0;
+        }
+    }
+
+
 
     //-----Interfaces-----
     void afficherInterface(){
@@ -167,6 +246,68 @@ int gambaseX, gamebaseY;
 
     }
 
+    void centerword1(char *word){
+        int i=0;
+        initialiserVariables();
+         player1();
+          for(i=0;i<strlen(word);i++){
+             printf(" ");
+          }
+          initialiserVariables();
+          play1CursorX=EntryFieldX1 + ((EntryFieldLong-strlen(word)) / 2);
+          player1();
+          printf("%s",word);
+    }
+
+    void centerword2(char *word){
+        int i=0;
+        initialiserVariables();
+         player2();
+          for(i=0;i<strlen(word);i++){
+             printf(" ");
+          }
+          initialiserVariables();
+          play2CursorX=EntryFieldX2 + ((EntryFieldLong-strlen(word)) / 2);
+          player2();
+          printf("%s",word);
+    }
+
+    void centeredhash1(char *word, int size){
+        int i=0;
+          player1();
+          hashWord(word,size);
+          player1();
+          for(i=0;i<strlen(word);i++){
+             printf(" ");
+          }
+          initialiserVariables();
+          play1CursorX=EntryFieldX1 + ((EntryFieldLong-strlen(word)) / 2);
+          player1();
+          for(i=0;i<strlen(word);i++){
+            printf("*");
+         }
+
+    }
+
+
+    void centeredhash2(char *word, int size){
+        int i=0;
+          player2();
+          hashWord(word,size);
+          player2();
+          for(i=0;i<strlen(word);i++){
+             printf(" ");
+          }
+          initialiserVariables();
+          play2CursorX=EntryFieldX2 + ((EntryFieldLong-strlen(word)) / 2);
+          player2();
+          for(i=0;i<strlen(word);i++){
+            printf("*");
+         }
+
+    }
+
+
     void player1(){
         gotoxy(play1CursorX,play1CursorY);
     }
@@ -184,5 +325,11 @@ int gambaseX, gamebaseY;
     }
     void EntryField(){
         gotoxy(gambaseX,gamebaseY);
+    }
+    void namePlay1(){
+        gotoxy(score1moveX-3,score1moveY-(score1moveY/3));
+    }
+    void namePlay2(){
+        gotoxy(score2moveX-3,score2moveY-(score2moveY/3));
     }
     // Jouer
