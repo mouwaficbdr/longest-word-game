@@ -29,12 +29,9 @@ extern char motsJoueur2[MAX_TOURS][20];  // Historique des mots joués par le jo
 extern int scoresJoueur1[MAX_TOURS];     // Historique des scores du joueur 1
 extern int scoresJoueur2[MAX_TOURS];     // Historique des scores du joueur 2
 
-//Dclaration des structures
+//Déclaration des structures
 
 // Dclaration des fonctions
-
-//Fonction pour déterminer la taille de mot
-int motLength(char mot[]);
 
 /**
  * @param mot 
@@ -59,6 +56,7 @@ void RangerDico();
  * @param c le caractère
  */
 void removeSameChar(char *chaine, char c);
+void gotoxy(int x, int y);
 
 
 /**
@@ -72,7 +70,12 @@ void removeSameChar(char *chaine, char c);
 int notUsed(char tab[], char c);
 
 
-
+/**
+ * Définit les dimensions du terminal 
+ * @param largeur 
+ * @param hauteur 
+ */
+void tailleTerminal(int *largeur, int *hauteur);
 
 
 /**
@@ -140,5 +143,77 @@ int effacerSauvegarde(void);
  */
 int enregistrerTour(const char *motJoueur1, const char *motJoueur2, int scoreMotJoueur1, int scoreMotJoueur2);
 
-#endif
+/**
+ * Récupère les variables nécessaire et démarre une nouvelle partie ou charge une partie sauvegardée
+ * @param Joueur1 
+ * @param Joueur2 
+ * @param tourActuel 
+ * @param totalTours 
+ * @param numCommencer 
+ */
+void DemarrerJeu(char Joueur1[], char Joueur2[], int tourActuel, int totalTours, int numCommencer);
 
+
+/**
+ * @brief 
+ * Efface le terminal au maximum et definit un alias pour raccouris les chemins de repertoires dérangeant
+ */
+void Effacer();
+
+
+/**
+ * @brief 
+ * Verifie qu'un nombre initialement recupéré sous forme de chaine et bel et bien un nombre
+ * @param string la chaine (nombre)
+ * @return int 1 si la chaine est un nombre ou 0 sinon
+ */
+int isNumber(char *string);
+
+
+/**
+ * @brief 
+ * Initialise les variables pour démarrer un jeu 
+ * Affiche une message d'alerte s'il y'a une sauvegarde en cours qui sera écrasée si les joueurs lancent confirmeleur choix
+ * Sinon on retourne au menu
+ */
+void NouvellePartie();
+
+
+/**
+ * @brief 
+ * Affiche le menu pour choisir une option nouvelle partie ou charger une partie ou encore quitter le jeu
+ */
+void menu();
+
+/**
+ * @brief 
+ * Ecrire progressivement un texte à une position et une vitesse(appartition des caractères par au nombre de ms définit) donné
+ * @param texte 
+ * @param x 
+ * @param y 
+ * @param vitesse 
+ */
+void EcritureDynamique(char texte[], int x, int y,int vitesse);
+
+
+/**
+ * @brief 
+ * Affiche un message à la fin d'une partie pour vérifier si les joueurs decident de continuer à jouer ou non 
+ */
+int JouerEncore();
+
+
+/**
+ * @brief 
+ * Fonction principale qui lance le jeu
+ */
+void lancerJeu();
+
+
+/**
+ * @brief 
+ * Efface une ligne en cas de saisie erronée
+ */
+void clearLine();
+
+#endif
