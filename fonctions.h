@@ -1,7 +1,7 @@
 #ifndef FONCTIONS_H
 #define FONCTIONS_H
 
-// Déclaration des constantes
+// D�claration des constantes
 extern const int nbreJoueur;        // Nombre de joueurs dans la partie (fixé à 2)
 extern const int nbreTotalLettresGrille;  // Nombre total de lettres dans la grille de jeu (9 lettres)
 extern const char voyelles[6];      // Tableau contenant toutes les voyelles disponibles pour le jeu
@@ -20,7 +20,42 @@ extern int scoreJoueur2;            // Score actuel du deuxième joueur
 extern int toursJoues;              // Nombre de tours déjà joués
 extern char grille[9];             // Tableau représentant les lettres dans la grille de jeu
 
-// Déclaration des fonctions
+//D�claration des structures
+
+typedef struct Caractere Caractere;
+typedef struct LCaractere LCaractere;
+
+struct Caractere{
+    char caractere;
+    Caractere * suiv;
+};
+
+struct LCaractere{
+    Caractere *head;
+};
+
+// D�claration des fonctions
+
+//La fonction validationChar v�rifie si un mot respecte les crit�res de la grille (si tous ses caract�res sont conformes � ceux donn�s par la grille)
+char * validationChar(char mot[], char grilleCaractere[]);
+
+//Fonction d'insertion d'un caract�re en t�te dans la liste de caract�res
+void insertCharUp(char data, LCaractere * liste);
+
+//Fonction d'insertion d'un caract�re en queue dans la liste de caract�res
+void insertCharEnd(char data, LCaractere * liste);
+
+//Fonction pour d�terminer la taille du mot form� � partir de la liste de caract�res ordonn�s
+int wordLength(LCaractere liste);
+
+//Fonction pour former un mot � partir des caract�res de la liste de caract�res ordonn�s
+char * motFormation(LCaractere liste, int tailleMot);
+
+//Fonction pour d�terminer la taille de mot
+int motLength(char mot[]);
+
+//La fonction validationMots v�rifie si un mot se retrouve dans le dictionnaire. Si oui, il renvoie la taille du mot (correspondant au score du joueur) si non il renvoie 0 pour indiquer que le mot n'existe pas dans le dictionnaire
+int validationMots(char mot[]);
 
 /**
  * Sauvegarde l'état actuel de la partie dans un fichier texte (sauvegarde.txt).
@@ -69,3 +104,4 @@ int verifSauvegarde(void);
 int effacerSauvegarde(void);
 
 #endif
+
