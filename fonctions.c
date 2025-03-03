@@ -84,13 +84,7 @@ char * motFormation(LCaractere liste, int tailleMot){
 
 //Fonction pour compter le nombre de caract�res dans un mot
 
-int motLength(char mot[]){
-    int i = 0;
-    while(mot[i] != '\0'){
-        i++;
-    }
-    return i;
-}
+
 
 //Fonction de v�rification des caract�res
 char * validationChar(char mot[], char grilleCaractere[]){
@@ -267,31 +261,3 @@ char * validationChar(char mot[], char grilleCaractere[]){
 
 // }
 
-int validationMots(char mot[]){
-    FILE * fichier;
-
-
-    char /*link[] = "../dico/ .txt",*/ *motDico, *result;
-    // link[8] = mot[0];
-
-    int found;
-
-    fichier = fopen("dico.txt", "r");
-
-    if(fichier != NULL){
-        do{
-            found = 0;
-            result = fgets(motDico, 35 * sizeof(char), fichier);
-            if(strcmp(mot, motDico) == 0){
-                found = 1;
-            }
-        }while(found == 0 || result != NULL);
-        
-        if(found == 1){
-            return motLength(mot);
-        }
-        
-        return 0;
-    }
-
-}
