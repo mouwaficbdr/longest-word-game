@@ -96,11 +96,12 @@ void EcritureDynamique(char texte[], int x, int y,int vitesse){
     char choix='\n';
     char validation='\0';
      int bon=0;
-     int bon2=0;
      while(!bon){
         choix=getche();
-        if(choix=='O' || choix=='N'){
-            while(1){
+        if(choix=='O' || choix=='N')
+        {
+            while(1)
+            {
                 validation=getche();
                 if(validation=='\r'){
                     return 1;
@@ -115,7 +116,8 @@ void EcritureDynamique(char texte[], int x, int y,int vitesse){
                     gotoxy((largeurTermi/2),(hauteurTermi/2)+2);
                 }
             }
-        }else{
+        }else
+        {
             printf("\b \b"); //Effacer les caractères qui ne répondent pas à ceux demandés
             gotoxy((largeurTermi/2),(hauteurTermi/2)+2);
         }
@@ -123,14 +125,41 @@ void EcritureDynamique(char texte[], int x, int y,int vitesse){
     
 }
 
+void validationSaisie(){
+    
+}
+
+void clearLine() {
+    HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
+    CONSOLE_SCREEN_BUFFER_INFO csbi;
+    DWORD written;
+
+    // Obtenir la position actuelle du curseur
+    GetConsoleScreenBufferInfo(hConsole, &csbi);
+    COORD pos = csbi.dwCursorPosition;
+    
+    // Déplacer le curseur au début de la ligne
+    pos.X = 0;
+    SetConsoleCursorPosition(hConsole, pos);
+
+    // Effacer la ligne avec des espaces
+    FillConsoleOutputCharacter(hConsole, ' ', csbi.dwSize.X, pos, &written);
+
+    // Remettre le curseur au début de la ligne
+    SetConsoleCursorPosition(hConsole, pos);
+}
+
 
 void NouvellePartie()
 {
     Effacer();
 char choixNouvellePartie='O';
+char choix='\n';
+char validation='\0';
+int bon=0;
 //Si une sauvegarde existe
     if(!verifSauvegarde()){
-        do{
+        
             char texte[]="Attention: Une partie a ete sauvegardee. En poursuivant vous ecraserez les sauvegardes!\n";
             int largeur=0, hauteur=0;
             tailleTerminal(&largeur,&hauteur);
@@ -145,42 +174,124 @@ char choixNouvellePartie='O';
             EcritureDynamique(texte,largeur,hauteur,0);
             tailleTerminal(&largeur,&hauteur);
             gotoxy((largeur/2),(hauteur/2)+1);
-            scanf("%c", &choixNouvellePartie);
-        
-        }while(choixNouvellePartie!='O' && choixNouvellePartie!='N');  
-        if(choixNouvellePartie=='O'){
+
+     while(!bon)
+     {
+        choixNouvellePartie=getche();
+        if(choixNouvellePartie=='O' || choixNouvellePartie=='N')
+        {
+            while(1){
+                validation=getche();
+                if(validation=='\r')
+                {
+                    bon=1;
+                    break;
+                }else if(validation=='\b')
+                {
+                    gotoxy((largeur/2),(hauteur/2)+1);
+                    gotoxy((largeur/2),(hauteur/2)+1);
+                    choixNouvellePartie='\n';
+                    break;
+                }else
+                {
+                    printf("\b \b");
+                    gotoxy((largeur/2)+1,(hauteur/2)+1);
+                }
+            }
+        }else
+        {
+            printf("\b \b"); //Effacer les caractères qui ne répondent pas à ceux demandés
+            gotoxy((largeur/2),(hauteur/2)+1);
+        }
+     }
+         
+        if(choixNouvellePartie=='O')
+        {
             effacerSauvegarde();
             Effacer();
         }
     }
 
     //Recupérer les informations si une nouvelle partie est lancée
-    if(choixNouvellePartie=='O'){
-        printf("Nom du joueur 1: \n");
-        scanf("%s",nomJoueur1);
+    if(choixNouvellePartie=='O')
+    {   
+        char **lesinfos=malloc(sizeof(char *)*4);
+       
+        for(int i=0; i<5; i++){
+            lesinfos[i]=malloc(sizeof(char)*70);
+        }
+        strcpy(lesinfos[0],"Nom du joueur 1: \n");
+        strcpy(lesinfos[1],"Nom du joueur 2: \n");
+        strcpy(lesinfos[2],"Combien de parties voulez-vous effectuez?\n");
+        strcpy(lesinfos[3],"Qui desire entamer la partie: Joueur 1 [1] ou Joueur 2 [2]\n");
         
-        printf("Nom du Joueur 2: \n");
-        scanf("%s",nomJoueur2);
-        
-        char test[10]="a";
-        do{
-            printf("Combien de parties voulez vous effectuez?\n");
-            scanf("%s",test);    
-        }while(!isNumber(test));    
-        
-        char *converti;
-            nbreTours=strtol(test,&converti,10);
+        int largeurT=0;
+        int hauteurT=0;
+        int x=0, y=0;
+        bon=0;
+        choix='\n';
+        validation='\0';
 
-        strcpy(test,"a");
-        *converti='a';
-        do{
-            printf("Qui desire entamer la partie: Joueur 1 [1] ou Joueur 2 [2]\n");
-            scanf("%s", test);
-            numJoueurCommencerPartie=strtol(test,&converti,10);
-        }while(!isNumber(test) || (numJoueurCommencerPartie!=1 && numJoueurCommencerPartie!=2));
-
-        numJoueurCommencerPartie=strtol(test,&converti,10);
-
+        for(int i=0; i<4; i++)
+        {
+            tailleTerminal(&largeurT,&hauteurT);
+            x=(largeurT-strlen(lesinfos[i]))/2;
+            y=(hauteurT/3)+(2*i);
+            gotoxy(x,y);
+            printf("%s",lesinfos[i]);
+            tailleTerminal(&largeurT,&hauteurT);
+            gotoxy((largeurT/2),y+1);   
+            char test[10]="a";
+            char *converti=NULL;
+            switch(i){
+                case 0:{
+                scanf("%s",nomJoueur1);
+                gotoxy((largeurT/2),y+1);
+                clearLine();
+                EcritureDynamique(nomJoueur1,((largeurT-strlen(nomJoueur1))/2),(y+1),0);
+                break;
+                }
+                case 1:{
+                    scanf("%s",nomJoueur2);
+                    gotoxy((largeurT/2),y+1);
+                    clearLine();
+                    EcritureDynamique(nomJoueur2,((largeurT-strlen(nomJoueur2))/2),(y+1),0);
+                    break;
+                }
+                case 2:{
+                  do{
+                      gotoxy((largeurT/2),y+1);
+                      clearLine();
+                      gotoxy((largeurT/2),y+1);
+                      scanf("%s",test);    
+                  }while(!isNumber(test) || test[0]=='\r');  
+                  nbreTours=strtol(test,&converti,10);
+                  gotoxy((largeurT/2),y+1);
+                  clearLine();
+                  EcritureDynamique(test,((largeurT-strlen(nomJoueur2))/2),(y+1),0);
+                    break;
+                }
+                case 3:{
+                    strcpy(test,"a");
+                    do{
+                        if(strcmp(test, "\r")){
+                            gotoxy((largeurT/2),y+1);
+                        }
+                      gotoxy((largeurT/2),y+1);
+                      clearLine();
+                      gotoxy((largeurT/2),y+1);
+                        scanf("%s", test);
+                        numJoueurCommencerPartie=strtol(test,&converti,10);
+                    }while(!isNumber(test) || (numJoueurCommencerPartie!=1 && numJoueurCommencerPartie!=2));
+                    numJoueurCommencerPartie=strtol(test,&converti,10);
+                    break;
+                }                
+            }    
+        }
+        for(int i=0; i<4; i++){
+            free(lesinfos[i]);
+        }
+        free(lesinfos);
         ScoreJoueur1=0; 
         ScoreJoeur2=0;
 
@@ -191,10 +302,11 @@ char choixNouvellePartie='O';
 }
 
 
-void DemarrerJeu(char Joueur1[], char Joueur2[], int tourActuel, int totalTours, int numCommencer){
+void DemarrerJeu(char Joueur1[], char Joueur2[], int tourActuel, int totalTours, int numCommencer)
+    {
     //On lance les fonctions interfaces et autres 
 
-}
+    }
 
 
 void menu(){
@@ -232,16 +344,14 @@ void lancerJeu(){
 
     menu();
 
-    
        while(toursJoues<nbreTours){
             if(JouerEncore()){
                 do{
                     printf("Qui désire entamer la partie: Joueur 1 [1] ou Joueur 2 [2]\n");
                     scanf("%d",&numJoueurCommencerPartie);
-                    
                 }while(numJoueurCommencerPartie!=1 && numJoueurCommencerPartie!=2); 
 
-                DemarrerJeu(nomJoueur1,  nomJoueur2, toursJoues+1,nbreTours,numJoueurCommencerPartie);
+        DemarrerJeu(nomJoueur1,  nomJoueur2, toursJoues+1,nbreTours,numJoueurCommencerPartie);
             }else{
                 menu();
             }
