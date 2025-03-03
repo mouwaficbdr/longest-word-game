@@ -1,7 +1,10 @@
 #ifndef FONCTIONS_H
 #define FONCTIONS_H
 
-// D�claration des constantes
+// Définition du nombre maximum de tours possibles
+#define MAX_TOURS 50
+
+// Dclaration des constantes
 extern const int nbreJoueur;        // Nombre de joueurs dans la partie (fixé à 2)
 extern const int nbreTotalLettresGrille;  // Nombre total de lettres dans la grille de jeu (9 lettres)
 extern const char voyelles[6];      // Tableau contenant toutes les voyelles disponibles pour le jeu
@@ -20,11 +23,17 @@ extern int scoreJoueur2;            // Score actuel du deuxième joueur
 extern int toursJoues;              // Nombre de tours déjà joués
 extern char grille[9];             // Tableau représentant les lettres dans la grille de jeu
 
-//D�claration des structures
+// Tableaux pour l'historique des mots et scores
+extern char motsJoueur1[MAX_TOURS][20];  // Historique des mots joués par le joueur 1
+extern char motsJoueur2[MAX_TOURS][20];  // Historique des mots joués par le joueur 2
+extern int scoresJoueur1[MAX_TOURS];     // Historique des scores du joueur 1
+extern int scoresJoueur2[MAX_TOURS];     // Historique des scores du joueur 2
 
-// D�claration des fonctions
+//Dclaration des structures
 
-//Fonction pour d�terminer la taille de mot
+// Dclaration des fonctions
+
+//Fonction pour déterminer la taille de mot
 int motLength(char mot[]);
 
 /**
@@ -74,7 +83,7 @@ int notUsed(char tab[], char c);
  */
  char *LongestWord(char grille[]);
 
-//La fonction validationMots v�rifie si un mot se retrouve dans le dictionnaire. Si oui, il renvoie la taille du mot (correspondant au score du joueur) si non il renvoie 0 pour indiquer que le mot n'existe pas dans le dictionnaire
+//La fonction validationMots vérifie si un mot se retrouve dans le dictionnaire. Si oui, il renvoie la taille du mot (correspondant au score du joueur) si non il renvoie 0 pour indiquer que le mot n'existe pas dans le dictionnaire
 int validationMots(char mot[]);
 
 /**
@@ -82,13 +91,8 @@ int validationMots(char mot[]);
  * Utilise les variables globales pour les informations de la partie (noms, scores, tours).
  * La grille n'est pas sauvegardée car elle sera régénérée à la reprise de la partie.
  * Inclut l'historique des mots joués et leurs scores pour chaque joueur.
- *
- * @param motsJoueur1   Tableau des mots joués par le joueur 1
- * @param motsJoueur2   Tableau des mots joués par le joueur 2
- * @param scoresJoueur1 Tableau des scores obtenus par le joueur 1 pour chaque mot
- * @param scoresJoueur2 Tableau des scores obtenus par le joueur 2 pour chaque mot
  */
-void sauvegarderPartie(const char motsJoueur1[][20], const char motsJoueur2[][20], const int scoresJoueur1[], const int scoresJoueur2[]);
+void sauvegarderPartie(void);
 
 /**
  * Charge une partie précédemment sauvegardée à partir du fichier sauvegarde.txt.
@@ -122,6 +126,19 @@ int verifSauvegarde(void);
  * @return 1 si la sauvegarde a été effacée avec succès ou n'existait pas, 0 en cas d'échec
  */
 int effacerSauvegarde(void);
+
+/**
+ * Enregistre les mots et scores d'un tour dans l'historique.
+ * Met à jour les tableaux globaux motsJoueur1, motsJoueur2, scoresJoueur1, scoresJoueur2.
+ * Incrémente également le compteur de tours joués (toursJoues) et met à jour les scores totaux.
+ * 
+ * @param motJoueur1 Le mot proposé par le joueur 1 pour ce tour
+ * @param motJoueur2 Le mot proposé par le joueur 2 pour ce tour
+ * @param scoreMotJoueur1 Le score obtenu par le joueur 1 pour ce mot
+ * @param scoreMotJoueur2 Le score obtenu par le joueur 2 pour ce mot
+ * @return 1 si l'enregistrement a réussi, 0 si le nombre maximum de tours est atteint
+ */
+int enregistrerTour(const char *motJoueur1, const char *motJoueur2, int scoreMotJoueur1, int scoreMotJoueur2);
 
 #endif
 
