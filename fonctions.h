@@ -141,7 +141,7 @@ int effacerSauvegarde(void);
  * @param scoreMotJoueur2 Le score obtenu par le joueur 2 pour ce mot
  * @return 1 si l'enregistrement a réussi, 0 si le nombre maximum de tours est atteint
  */
-int enregistrerTour(const char *motJoueur1, const char *motJoueur2, int scoreMotJoueur1, int scoreMotJoueur2);
+int enregistrerTour(const char motJoueur1[], const char motJoueur2[], int scoreMotJoueur1, int scoreMotJoueur2);
 
 /**
  * Récupère les variables nécessaire et démarre une nouvelle partie ou charge une partie sauvegardée
