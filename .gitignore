@@ -51,5 +51,8 @@ Module.symvers
 Mkfile.old
 dkms.conf
 
-# JSON
+# Fichiers de sauvegarde du jeu
+sauvegarde.txt
+
+#JSON
 *.json
