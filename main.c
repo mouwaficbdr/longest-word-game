@@ -11,35 +11,16 @@ int main()
     char mot_joueur2[10]="";
     
     // Affichage de l'interface initiale avec tous les éléments visibles
-    afficherInterface();
-    
-    // Afficher les scores et noms des joueurs dès le début
-    namePlay1();printf("Joueur 1");
-    namePlay2();printf("Joueur 2");
-    player1Score();printf("0");
-    player2Score();printf("0");
-    EntryField();printf("WASOPEDNLQ"); // Affichage de la grille de lettres
+    initialiserInterface();
     
     // Pause pour permettre au joueur de voir l'interface
     Sleep(1000);
     
-    // Afficher l'instruction pour le joueur 1 au-dessus de sa zone de saisie
-    gotoxy(EntryFieldX1, EntryFieldY1-1);
-    printf("Joueur 1, entrez votre mot:");
+    // Demander le mot au joueur 1
+    demanderMotJoueur1(mot_joueur1);
     
-    // Positionnement du curseur au centre du 2ème rectangle (rectangle du joueur 1)
-    player1();
-    // Saisie du mot du joueur 1 (fonction qui masque l'entrée)
-    centeredhash1(mot_joueur1, 10);
-    
-    // Afficher l'instruction pour le joueur 2 au-dessus de sa zone de saisie
-    gotoxy(EntryFieldX2, EntryFieldY2-1);
-    printf("Joueur 2, entrez votre mot:");
-    
-    // Positionnement du curseur au centre du 3ème rectangle (rectangle du joueur 2)
-    player2();
-    // Saisie du mot du joueur 2 (fonction qui masque l'entrée)
-    centeredhash2(mot_joueur2, 10);
+    // Demander le mot au joueur 2
+    demanderMotJoueur2(mot_joueur2);
     
     // Affichage des mots dans leurs rectangles respectifs après validation
     centerword1(mot_joueur1);
