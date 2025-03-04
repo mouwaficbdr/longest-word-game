@@ -176,7 +176,7 @@ int isNumber(char *string);
  * Affiche une message d'alerte s'il y'a une sauvegarde en cours qui sera écrasée si les joueurs lancent confirmeleur choix
  * Sinon on retourne au menu
  */
-void NouvellePartie();
+void nouvellePartie();
 
 
 /**
