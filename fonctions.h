@@ -151,7 +151,7 @@ int enregistrerTour(const char motJoueur1[], const char motJoueur2[], int scoreM
  * @param totalTours 
  * @param numCommencer 
  */
-void DemarrerJeu(char Joueur1[], char Joueur2[], int tourActuel, int totalTours, int numCommencer);
+void DemarrerPartie(char Joueur1[], char Joueur2[], int tourActuel, int totalTours, int numCommencer);
 
 
 /**

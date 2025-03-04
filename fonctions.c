@@ -629,13 +629,16 @@ void clearLine() {
 
 
 
-void DemarrerJeu(char Joueur1[], char Joueur2[], int tourActuel, int totalTours, int numCommencer)
-    {
+void DemarrerPartie(char Joueur1[], char Joueur2[], int tourActuel, int totalTours, int numCommencer){
+
     //On lance les fonctions interfaces et autres 
+    
+    initialiserVariables();
+    afficherInterface();
+    namePlay1();printf("%s", Joueur1);
+    namePlay2();printf("%s", Joueur2);
 
-
-
-    }
+}
 
 
 
@@ -785,7 +788,7 @@ int bon=0;
         scoreJoueur1=0; 
         scoreJoueur2=0;
 
-        DemarrerJeu(nomJoueur1,nomJoueur2,1,nbreTours,numJoueurCommencerPartie);
+        DemarrerPartie(nomJoueur1,nomJoueur2,1,nbreTours,numJoueurCommencerPartie);
     }else{
         afficherMenu();
     }
@@ -834,7 +837,7 @@ void lancerJeu(){
                     numJoueurCommencerPartie=strtol(texte,&convert,10);
                   free(texte);
                   free(convert);
-            DemarrerJeu(nomJoueur1,  nomJoueur2, toursJoues+1,nbreTours,numJoueurCommencerPartie);
+            DemarrerPartie(nomJoueur1,  nomJoueur2, toursJoues+1,nbreTours,numJoueurCommencerPartie);
                 }
             }else{
                 afficherMenu();
