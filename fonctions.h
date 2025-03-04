@@ -14,6 +14,8 @@ extern int numJoueurCommencerPartie;
 extern int nbreTours;
 extern char choixConsonneVoyelle;
 extern void getConsoleSize(int *width, int *height) ;
+extern void gotoxy(int x, int y) ;
+extern void rectangle();
 // Déclaration des fonctions
 //Fonction pour generer les caracteres aleatoire et donc le mot a 9 lettres
 void genererCaracteresAleatoires();

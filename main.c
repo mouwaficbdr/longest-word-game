@@ -5,5 +5,5 @@
 
 int main()
 {
-  afficherMenu();
+  afficherMenu(); 
 }
