@@ -17,11 +17,8 @@ const char consonnes[20] = {'B', 'C', 'D', 'F', 'G', 'H', 'J', 'K', 'L', 'M', 'N
 char nomJoueur1[10];
 char nomJoueur2[10];
 int numJoueurCommencerPartie;
-int nbreTours;
-int toursJoues;
+int nbreTours=0;
 char choixConsonneVoyelle;
-int ScoreJoueur1;
-int ScoreJoeur2;
 
 // Définition des variables globales supplémentaires
 int scoreJoueur1 = 0;           // Score du joueur 1, initialisé à 0
@@ -580,7 +577,7 @@ void EcritureDynamique(char texte[], int x, int y,int vitesse){
                     break;
                 }else{
                     printf("\b \b");
-                    gotoxy((largeurTermi/2),(hauteurTermi/2)+2);
+                    gotoxy((largeurTermi/2)+1,(hauteurTermi/2)+2);
                 }
             }
         }else
@@ -618,6 +615,8 @@ void clearLine() {
 void DemarrerJeu(char Joueur1[], char Joueur2[], int tourActuel, int totalTours, int numCommencer)
     {
     //On lance les fonctions interfaces et autres 
+
+
 
     }
 
@@ -775,8 +774,8 @@ int bon=0;
             free(lesinfos[i]);
         }
         free(lesinfos);
-        ScoreJoueur1=0; 
-        ScoreJoeur2=0;
+        scoreJoueur1=0; 
+        scoreJoueur2=0;
 
         DemarrerJeu(nomJoueur1,nomJoueur2,1,nbreTours,numJoueurCommencerPartie);
     }else{
@@ -808,22 +807,32 @@ void lancerJeu(){
     Sleep(1000);
     Effacer();
 
-    menu();
-
-       while(toursJoues<nbreTours){
-            if(JouerEncore()){
-                do{
-                    printf("Qui désire entamer la partie: Joueur 1 [1] ou Joueur 2 [2]\n");
-                    scanf("%d",&numJoueurCommencerPartie);
-                }while(numJoueurCommencerPartie!=1 && numJoueurCommencerPartie!=2); 
-
-        DemarrerJeu(nomJoueur1,  nomJoueur2, toursJoues+1,nbreTours,numJoueurCommencerPartie);
+       int one=1;
+       char *convert;
+       char *texte=malloc(sizeof(char)*65);
+       do{
+            if(toursJoues<nbreTours){
+                if(JouerEncore()){
+                    Effacer();
+                    strcpy(texte,"Qui desire entamer la partie: Joueur 1 [1] ou Joueur 2 [2]\n");
+                    EcritureDynamique(texte,(largeurTermi-strlen(texte))/2,(hauteurTermi/2)-1,0);
+                    do{
+                        gotoxy(largeurTermi/2,(hauteurTermi/2));
+                        clearLine();
+                        gotoxy(largeurTermi/2,(hauteurTermi/2));
+                        scanf("%s",texte);
+                        numJoueurCommencerPartie=strtol(texte,&convert,10);
+                    }while((numJoueurCommencerPartie!=1 && numJoueurCommencerPartie!=2) || !isNumber(texte)); 
+                    numJoueurCommencerPartie=strtol(texte,&convert,10);
+                  free(texte);
+                  free(convert);
+            DemarrerJeu(nomJoueur1,  nomJoueur2, toursJoues+1,nbreTours,numJoueurCommencerPartie);
+                }
             }else{
                 menu();
             }
-       }
-
-    Effacer();
+        }while(toursJoues<=nbreTours);
+      
 }
 
 
