@@ -12,7 +12,7 @@ const int nbreTotalLettresGrille = 9;
 const char voyelles[6] = {'a', 'e', 'i', 'o', 'u', 'y'};
 const char consonnes[20] = {'b', 'c', 'd', 'f', 'g', 'h', 'j', 'k', 'l', 'm', 'n', 'p', 'q', 'r', 's', 't', 'v', 'w', 'x', 'z'};
 
-//Définition des variables
+// Définition des variables
 char nomJoueur1[10];
 char nomJoueur2[10];
 int numJoueurCommencerPartie;
@@ -54,6 +54,8 @@ char motsJoueur1[MAX_TOURS][20] = {{0}};  // Initialisé avec des chaînes vides
 char motsJoueur2[MAX_TOURS][20] = {{0}};  // Initialisé avec des chaînes vides
 int scoresJoueur1[MAX_TOURS] = {0};       // Initialisé avec des zéros
 int scoresJoueur2[MAX_TOURS] = {0};       // Initialisé avec des zéros
+
+char lettresGenerees[nbreJoueur][nbreTotalLettresGrille]; 
 
 // Définition des fonctions
 
@@ -1219,3 +1221,41 @@ void demanderMotJoueur2(char *mot) {
     player2();
     centeredhash2(mot, 10);
 }
+
+
+// Fonction pour générer les caractères aléatoires et donc le mot de la grille 
+void genererCaractereAleatoires() {
+    taille_consonne = sizeof(consonnes) / sizeof(consonnes[0]); // Taille de la consonne
+    taille_voyelle = sizeof(voyelles) / sizeof(voyelles[0]); // Taille de la voyelle
+
+    
+    for (int i = 0; i < nbreJoueur; i++) {  // Correction ici
+        printf("\nJoueur %d, choisissez vos lettres :\n", i + 1);
+        
+        for (int j = 0; j < nbreTotalLettresGrille; j++) {
+            // Demander à l'utilisateur de choisir une consonne ou une voyelle
+            do {
+                printf("Tour %d - Choisissez une lettre ('c' pour consonne, 'v' pour voyelle) : ", j + 1);
+                scanf(" %c", &choixConsonneVoyelle);
+                choixConsonneVoyelle = tolower(choixConsonneVoyelle); // Convertir en minuscule pour éviter les erreurs de casse
+            } while (choixConsonneVoyelle != 'c' && choixConsonneVoyelle != 'v');
+
+            // Générer une lettre en fonction du choix
+            if (choixConsonneVoyelle == 'c') {
+                lettresGenerees[i][j] = consonnes[rand() % taille_consonne];
+            } else {
+                lettresGenerees[i][j] = voyelles[rand() % taille_voyelle];
+            }
+        }
+    }
+
+    // Affichage des lettres générées pour chaque joueur
+    for (int i = 0; i < nbreJoueur; i++) {
+        printf("\nLettres générées pour le Joueur %d : ", i + 1);
+        for (int j = 0; j < nbreTotalLettresGrille; j++) {
+            printf("%c ", lettresGenerees[i][j]);
+        }
+        printf("\n");
+    }
+}
+
