@@ -422,12 +422,12 @@ void removeSameChar(char *chaine, char c) {
        {
            //i pacours la grille
           int i=0;
-       // le mot valide le plus long de taille 0 à l'initialisation
+        // le mot valide le plus long de taille 0 à l'initialisation
          char *valideMot=malloc(sizeof(char)+1);
-         valideMot[0]='\0';
-       
+        valideMot[0]='\0';
+        
          char name[15]={'.','.','/','d','i','c','o','/','a','.','t','x','t'};
-       //On initialise des copies de la grille pour l'itération et pour les lettres non utilisés
+        //On initialise des copies de la grille pour l'itération et pour les lettres non utilisés
          char *notUsedchar=malloc(sizeof(char)*(strlen(grille)+1));
          strcpy(notUsedchar,grille);
        
@@ -631,12 +631,56 @@ void clearLine() {
 
 void DemarrerPartie(char Joueur1[], char Joueur2[], int tourActuel, int totalTours, int numCommencer){
 
+    
     //On lance les fonctions interfaces et autres 
     
+    //On initialise les variables de récupération des dimensions de la console
     initialiserVariables();
+
+    //On affiche l'interface et on charge le nom des joueurs
     afficherInterface();
     namePlay1();printf("%s", Joueur1);
     namePlay2();printf("%s", Joueur2);
+
+    //En fonction du joueur qui commence, on appelle la fonction genererCaracteresAleatoires
+    genererCaracteresAleatoires(nbreTotalLettresGrille);
+
+    if(numCommencer == 1){
+        //Le joueur 1 entre son mot (le mot est biensur hashé)
+        centeredhash1(motsJoueur1, 10);
+
+        //Puis le joueur 2 entre son mot
+        centerword2(motsJoueur2, 10);
+
+        //On affiche les mots des deux joueurs après dans leur case respective
+        centeredword1(motsJoueur1);
+        centerword2(motsJoueur2);
+    }else{ //Dans le cas contraire on commence avec le joueur 2
+
+        //Le joueur 2 entre son mot 
+        centeredhash2(motsJoueur1, 10);
+
+        //Le joueur 1 entre son mot ensuite
+        centerword1(motsJoueur2, 10);
+
+        //Puis on affiche les deux mots
+        centeredword2(motsJoueur1);
+        centerword1(motsJoueur2);
+    }
+
+    //Elle stocke les mots de chaque joueur
+    char *tabMotsJoueurs[2] = {motsJoueur1, motsJoueur2}; 
+
+    //Il y aura peut être un texte pour dire qu'on procède mainteanant à la validation des mots
+    
+    int i = 0;
+    for(i = 0; i<2, i++){
+        if(validationChar(tabMotsJoueurs[i], grille)){
+            //On stocke le score du joueur dans la variable globale de score
+        }
+    }
+
+    
 
 }
 
