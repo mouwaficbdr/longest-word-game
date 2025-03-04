@@ -23,11 +23,6 @@ extern int scoreJoueur2;            // Score actuel du deuxième joueur
 extern int toursJoues;              // Nombre de tours déjà joués
 extern char grille[9];             // Tableau représentant les lettres dans la grille de jeu
 
-extern char nomJoueur1[10];
-extern char nomJoueur2[10];
-extern int numJoueurCommencerPartie;
-extern int nbreTours;
-extern char choixConsonneVoyelle;
 extern int scorefieldX1, scorefieldY1, scorefieldLong, scorefieldHeight;
 extern int scorefieldCursorX1, scorefieldCursorY1;
 extern int mainframeX, mainframeY, mainframeLong, mainframeHeight;
