@@ -76,22 +76,25 @@ void rectangle(int x, int y, int lon, int haut)
 }
 void afficherMenu() {
     char choixmenu;
+    getConsoleSize(&width,&height);
     int menuWidth = (int)(width * 0.4);
     int menuHeight = (int)(height * 0.4);
     int menuX = (width - menuWidth) / 2;
     int menuY = (height - menuHeight) / 2;
+    int upper=menuHeight/3;
+    int optionZone=2*menuHeight/3;
     while (1) {
         system("clear || cls");  // Efface l'écran (compatible Linux/Windows)
-        rectangle(menuX,menuY,menuWidth,menuHeight/3);
-        rectangle(menuX,menuY+3,menuWidth,(2*menuHeight)/3);
+        rectangle(menuX,menuY,menuWidth,upper);
+        rectangle(menuX,menuY+upper+1,menuWidth,optionZone);
        
-       gotoxy(menuX+(menuWidth-4)/2,(menuY+menuHeight-9)/2); printf("MENU");
-       int optionZone=2*menuHeight/3;
-       gotoxy(menuX+3,(menuHeight/3)+3);printf("X - Charger Partie");
-       gotoxy(menuX+3,(menuHeight/3)+6);printf(" Y - Nouvelle Partie");
-       gotoxy(menuX+3,(menuHeight/3)+9);printf(" Q - Quitter");
-       rectangle(menuX,menuY+menuHeight+4,menuWidth,menuHeight*0.3);
-       gotoxy(menuX+3,menuY+menuHeight+3);printf("Votre choix : ");
+       gotoxy(menuX+(menuWidth-4)/2,menuY+(upper/2)); printf("MENU");
+       
+       gotoxy(menuX+3,menuY+upper+optionZone*0.3);printf("X - Charger Partie");
+       gotoxy(menuX+3,menuY+upper+optionZone*0.5);printf("Y - Nouvelle Partie");
+       gotoxy(menuX+3,menuY+upper+optionZone*0.9);printf("Q - Quitter");
+       rectangle(menuX,menuY+menuHeight+1,menuWidth,menuHeight*0.3);
+       gotoxy(menuX+3,menuY+menuHeight+(upper)/2);printf("Votre choix : ");
 
 
         choixmenu = getchar(); // Récupère l'entrée utilisateur
