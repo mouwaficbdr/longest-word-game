@@ -22,6 +22,7 @@ int index_voyelle;
 char choixConsonneVoyelle;
 char lettresGenerees[9]; 
 char choixmenu;
+int width,height;
 
 //Fonction pour afficher le menu 
 void chargerPartie() {
@@ -33,22 +34,34 @@ void nouvellePartie() {
     printf("Nouvelle partie en cours...\n");
     // Ajoute ici le code pour démarrer une nouvelle partie
 }
-
+void getConsoleSize(int *width, int *height) {
+    CONSOLE_SCREEN_BUFFER_INFO csbi;
+    if (GetConsoleScreenBufferInfo(GetStdHandle(STD_OUTPUT_HANDLE), &csbi)) {
+        *width = csbi.srWindow.Right - csbi.srWindow.Left + 1;
+        *height = csbi.srWindow.Bottom - csbi.srWindow.Top + 1;
+    } else {
+        *width = 0;
+        *height = 0;
+    }
+}
 void afficherMenu() {
     char choixmenu;
-
+    getConsoleSize(&width,&height);
+    int menuWidth=width*0.4,menuHeight=height*0.4;
+    int menuX=(width-menuWidth)/2 ,menuY=(height-menuHeight)/2 ;
+    
     while (1) {
         system("clear || cls");  // Efface l'écran (compatible Linux/Windows)
+        rectangle(menuX,menuY,menuWidth,menuHeight);
+       rectangle(menuX,menuY,menuWidth,menuHeight/3);
+       gotoxy(menuX+(menuWidth-4)/2);printf("MENU");
+       int optionZone=2*menuHeitht/3;
+       gotoxy(menuX+3,(menuHeight/3)+3);printf("X - Charger Partie");
+       gotoxy(menuX+3,(menuHeight/3)+6);printf(" Y - Nouvelle Partie");
+       gotoxy(menuX+3,(menuHeight/3)+9);printf(" Q - Quitter");
+       rectangle(menuX,menuY+menuHeight+4,menuWidth,menuHeight*0.2);
+       gotoxy(menuX+3,menuY+menuHeight+3);printf("Votre choix : ");
 
-        // Affichage du menu dans un rectangle
-        printf("\n");
-        printf("*            MENU                *\n");
-        printf("\n");
-        printf("* X - Charger Partie             *\n");
-        printf("* Y - Nouvelle Partie            *\n");
-        printf("* Q - Quitter                    *\n");
-        printf("\n");
-        printf("  Votre choix : ");
 
         choixmenu = getchar(); // Récupère l'entrée utilisateur
         while (getchar() != '\n'); // Vide le buffer pour éviter les erreurs

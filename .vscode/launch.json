@@ -8,8 +8,8 @@
       "args": [],
       "stopAtEntry": false,
       "externalConsole": true,
-      "cwd": "f:/C/longest-word-game",
-      "program": "f:/C/longest-word-game/build/Debug/outDebug",
+      "cwd": "c:/Users/DELL/Desktop/TP C/longest-word-game",
+      "program": "c:/Users/DELL/Desktop/TP C/longest-word-game/build/Debug/outDebug",
       "MIMode": "gdb",
       "miDebuggerPath": "gdb",
       "setupCommands": [

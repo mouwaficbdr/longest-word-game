@@ -13,7 +13,7 @@ extern char nomJoueur2[10];
 extern int numJoueurCommencerPartie;
 extern int nbreTours;
 extern char choixConsonneVoyelle;
-
+extern void getConsoleSize(int *width, int *height) ;
 // Déclaration des fonctions
 //Fonction pour generer les caracteres aleatoire et donc le mot a 9 lettres
 void genererCaracteresAleatoires();
