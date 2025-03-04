@@ -76,10 +76,10 @@ int frameX,frameY,frameLong,frameHeight;
 
             void initialiserVariables() {
                 getConsoleSize(&width,&height);
-                frameX=(width-(7*width/9))/2;
-                frameY=(height-(7*height/9))/2;
-                frameLong=7*width/9;
-                frameHeight=7*height/9;
+                frameX=(width-(8*width/9))/2;
+                frameY=(height-(8*height/9))/2;
+                frameLong=8*width/9;
+                frameHeight=8*height/9;
                 scorefieldX1=frameX+3;
                 scorefieldY1=frameY+3;
                 scorefieldX2= mainframeLong+5;

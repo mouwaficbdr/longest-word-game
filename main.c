@@ -14,12 +14,12 @@ int main()
    AImove();printf("My option is best");
    player1Score();printf("%d",3);
    player2Score();printf("%d",6);
-   centerword1(word);
-   centerword2(mot);
+//    centerword1(word);
+//    centerword2(mot);
    namePlay1();printf("kokou");
    namePlay2();printf("Robert");
-//    player1();printf("gogo");
-//    player2();printf("boobs");
+   player1();printf("gogo");
+   player2();printf("boobs");
    EntryField();printf("WASOPEDNLQ"); // Appel indispensable pour initialiser les positions
    
 //    rectangle((width-(7*width/9))/2,(height-(7*height/9))/2,7*width/9,7*height/9);
