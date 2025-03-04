@@ -826,3 +826,9 @@ void lancerJeu(){
     Effacer();
 }
 
+
+void DemarrerJeu(){
+    lancerJeu();
+
+    
+}
