@@ -657,7 +657,7 @@ void DemarrerJeu(char Joueur1[], char Joueur2[], int tourActuel, int totalTours,
 
 
 
-void NouvellePartie()
+void nouvellePartie()
 {
     Effacer();
 char choixNouvellePartie='O';
