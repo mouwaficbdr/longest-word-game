@@ -50,4 +50,9 @@ extern void getConsoleSize(int *width, int *height);
 extern void setConsoleSize(int width, int height);
 extern void namePlay1();
 extern void namePlay2();
+
+// Nouvelles fonctions pour améliorer la structure du code
+extern void initialiserInterface();
+extern void demanderMotJoueur1(char *mot);
+extern void demanderMotJoueur2(char *mot);
 #endif
