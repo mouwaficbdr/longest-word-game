@@ -297,3 +297,31 @@ int frameX,frameY,frameLong,frameHeight;
         gotoxy(score2moveX-3,score2moveY-(score2moveY/3));
     }
     // Jouer
+
+// Nouvelles fonctions pour améliorer la structure du code
+
+// Initialise et affiche l'interface complète avec les scores, noms et grille
+void initialiserInterface() {
+    afficherInterface();
+    namePlay1();printf("Joueur 1");
+    namePlay2();printf("Joueur 2");
+    player1Score();printf("0");
+    player2Score();printf("0");
+    EntryField();printf("WASOPEDNLQ");
+}
+
+// Demande et traite la saisie du mot pour le joueur 1
+void demanderMotJoueur1(char *mot) {
+    gotoxy(EntryFieldX1, EntryFieldY1-1);
+    printf("Joueur 1, entrez votre mot:");
+    player1();
+    centeredhash1(mot, 10);
+}
+
+// Demande et traite la saisie du mot pour le joueur 2
+void demanderMotJoueur2(char *mot) {
+    gotoxy(EntryFieldX2, EntryFieldY2-1);
+    printf("Joueur 2, entrez votre mot:");
+    player2();
+    centeredhash2(mot, 10);
+}
