@@ -183,7 +183,7 @@ void NouvellePartie();
  * @brief 
  * Affiche le menu pour choisir une option nouvelle partie ou charger une partie ou encore quitter le jeu
  */
-void menu();
+void afficherMenu();
 
 /**
  * @brief 
@@ -216,4 +216,18 @@ void lancerJeu();
  */
 void clearLine();
 
+extern void getConsoleSize(int *width, int *height) ;
+
+extern void gotoxy(int x, int y) ;
+
+extern void rectangle(int x, int y, int lon, int haut);
+
+//Fonction pour generer les caracteres aleatoire et donc le mot a 9 lettres
+void genererCaracteresAleatoires();
+
+//Fonction pour afficher le menu du jeux 
+void afficherMenu();
+
 #endif
+
+
