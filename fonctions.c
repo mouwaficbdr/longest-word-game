@@ -1186,30 +1186,22 @@ void demanderMotJoueur2(char *mot) {
 
 
 // Fonction pour demander quel joueur commence
-int demanderJoueurCommence() {
-    int numJoueur;
-    do {
-        printf("Quel joueur commence la partie ? (1 ou 2) : ");
-        scanf("%d", &numJoueur);
-    } while (numJoueur != 1 && numJoueur != 2);
-    return numJoueur;
-}
 
 void genererCaractereAleatoires() {
     taille_consonne = sizeof(consonnes) / sizeof(consonnes[0]);
     taille_voyelle = sizeof(voyelles) / sizeof(voyelles[0]);
 
-    int joueurActuel = demanderJoueurCommence(); // On appelle la fonction ici
-
-    printf("\nDébut de la génération des lettres...\n");
+    // int joueurActuel = demanderJoueurCommence(); // On appelle la fonction ici
 
     for (int i = 0; i < nbreTotalLettresGrille; i++) {
-        char choixConsonneVoyelle;
-        
-        printf("\nJoueur %d, choisissez une lettre ('c' pour consonne, 'v' pour voyelle) : ", joueurActuel);
+        prompt();
+        clearLine();
+        prompt();i%2==0?printf("Joueur 1, choisissez une lettre ('c' pour consonne, 'v' pour voyelle) : ") : printf("Joueur 2, choisissez une lettre ('c' pour consonne, 'v' pour voyelle) : ");
         
         do {
-            scanf(" %c", &choixConsonneVoyelle);
+            choixConsonneVoyelle=getche();Sleep(500);
+            clearLine();
+            prompt();i%2==0?printf("Joueur 1, choisissez une lettre ('c' pour consonne, 'v' pour voyelle) : ") : printf("Joueur 2, choisissez une lettre ('c' pour consonne, 'v' pour voyelle) : ");
             choixConsonneVoyelle = tolower(choixConsonneVoyelle);
         } while (choixConsonneVoyelle != 'c' && choixConsonneVoyelle != 'v');
 
@@ -1218,20 +1210,11 @@ void genererCaractereAleatoires() {
         } else {
             lettresGenerees[i] = voyelles[rand() % taille_voyelle];
         }
-
-        printf("Lettre générée : %c\n", lettresGenerees[i]);
-
+        
+        EntryField();printf("%c",lettresGenerees[i]);
+        gambaseX++;
         // Changer de joueur sans ternaire
-        if (joueurActuel == 1) {
-            joueurActuel = 2;
-        } else {
-            joueurActuel = 1;
-        }
+       
     }
 
-    printf("\nLettres générées : ");
-    for (int i = 0; i < nbreTotalLettresGrille; i++) {
-        printf("%c ", lettresGenerees[i]);
-    }
-    printf("\n");
 }
