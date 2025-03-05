@@ -653,13 +653,7 @@ void DemarrerPartie(char Joueur1[], char Joueur2[], int tourActuel, int totalTou
     
     //On lance les fonctions interfaces et autres 
     
-    //On initialise les variables de récupération des dimensions de la console
-    initialiserVariables();
 
-    //On affiche l'interface et on charge le nom des joueurs
-    afficherInterface();
-    namePlay1();printf("%s", Joueur1);
-    namePlay2();printf("%s", Joueur2);
 
     //En fonction du joueur qui commence, on appelle la fonction genererCaracteresAleatoires
     genererCaracteresAleatoires(nbreTotalLettresGrille);
@@ -1093,44 +1087,6 @@ void afficherMenu() {
         }
     }
 
-    // Fonction pour générer les caractères aléatoires et donc le mot de la grille 
-void genererCaractereAleatoires() {
-    taille_consonne = sizeof(consonnes) / sizeof(consonnes[0]); // Taille de la consonne
-    taille_voyelle = sizeof(voyelles) / sizeof(voyelles[0]); // Taille de la voyelle
-
-    char temp[10];
-    for (int i = 0; i < nbreJoueur; i++) {  // Correction ici
-        printf("\nJoueur %d, choisissez vos lettres :\n", i + 1);
-        
-        for (int j = 0; j < nbreTotalLettresGrille; j++) {
-            // Demander à l'utilisateur de choisir une consonne ou une voyelle
-            do {
-                printf("Tour %d - Choisissez une lettre ('c' pour consonne, 'v' pour voyelle) : ", j + 1);
-                scanf(" %c", &choixConsonneVoyelle);
-                choixConsonneVoyelle = tolower(choixConsonneVoyelle); // Convertir en minuscule pour éviter les erreurs de casse
-            } while (choixConsonneVoyelle != 'c' && choixConsonneVoyelle != 'v');
-
-            // Générer une lettre en fonction du choix
-            if (choixConsonneVoyelle == 'c') {
-                strcpy(temp, lettresGenerees[i]);
-                temp[j] = consonnes[rand() % taille_consonne];
-            } else {
-                strcpy(temp, lettresGenerees[i]);
-                temp[j] = voyelles[rand() % taille_voyelle];
-            }
-        }
-    }
-
-    // Affichage des lettres générées pour chaque joueur
-    for (int i = 0; i < nbreJoueur; i++) {
-        strcpy(temp, lettresGenerees[i]);
-        printf("\nLettres générées pour le Joueur %d : ", i + 1);
-        for (int j = 0; j < nbreTotalLettresGrille; j++) {
-            printf("%c ", temp[j]);
-        }
-        printf("\n");
-    }
-}
 
 
     void setConsoleSize(int width, int height) {
