@@ -653,7 +653,7 @@ void DemarrerPartie(char Joueur1[], char Joueur2[], int tourActuel, int totalTou
     
     //On lance les fonctions interfaces et autres 
     
-
+    initialiserInterface();
 
     //En fonction du joueur qui commence, on appelle la fonction genererCaracteresAleatoires
     genererCaracteresAleatoires(nbreTotalLettresGrille);
@@ -684,12 +684,43 @@ void DemarrerPartie(char Joueur1[], char Joueur2[], int tourActuel, int totalTou
     //Elle stocke les mots de chaque joueur
     char *tabMotsJoueurs[2] = {motsJoueur1, motsJoueur2}; 
 
+    printf("Veuilez patienter pendant que nous vérifions les mots");
+    for(int i = 0; i<5; i++){
+        printf(".");
+        sleep(1000);
+    }
     //Il y aura peut être un texte pour dire qu'on procède mainteanant à la validation des mots
     
-    int i = 0;
-    for(i = 0; i<2, i++){
-        if(validationChar(tabMotsJoueurs[i], grille)){
+    for(int i = 0; i<2, i++){
+        if(!validationChar(tabMotsJoueurs[i], grille)){
             //On stocke le score du joueur dans la variable globale de score
+            switch(i){
+                case 1:
+                    scoreMotJoueur1 = 0;
+                    scoreJoueur1 += 0;
+                    break:
+                
+                case 2:
+                    scoreMotJoueur2 = 0;
+                    scoreJoueur2 += 0;
+                    break;
+                
+                default:
+            }
+        }else{
+            switch(i){
+                case 1:
+                    scoreMotJoueur1 = validationMots(motsJoueur1);
+                    scoreJoueur1 += scoreMotJoueur1;
+                    break;
+                
+                case 2:
+                    scoreMotJoueur2 = validationMots(motsJoueur2);
+                    scoreJoueur2 += scoreMotJoueur2;
+                    break;
+                
+                default:
+            }
         }
     }
 
