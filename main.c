@@ -7,8 +7,7 @@
 #include <string.h>
 
 int main(){
-   
-    
+   lancerJeu();
   return 0;    
 }
     

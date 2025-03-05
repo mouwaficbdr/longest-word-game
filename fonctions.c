@@ -22,7 +22,7 @@ int taille_voyelle;
 int index_consonne;
 int index_voyelle;
 char choixConsonneVoyelle;
-char lettresGenerees[9]; 
+char lettresGenerees[10]; 
 char choixmenu;
 int width,height;
 
@@ -55,7 +55,6 @@ char motsJoueur2[MAX_TOURS][20] = {{0}};  // Initialisé avec des chaînes vides
 int scoresJoueur1[MAX_TOURS] = {0};       // Initialisé avec des zéros
 int scoresJoueur2[MAX_TOURS] = {0};       // Initialisé avec des zéros
 
-char lettresGenerees[nbreJoueur + 1][nbreTotalLettresGrille + 1]; 
 
 // Définition des fonctions
 
@@ -517,28 +516,6 @@ void tailleTerminal(int *largeur, int *hauteur){
     *hauteur= terminal.srWindow.Bottom - terminal.srWindow.Top +1;
 }
 
-
-void getConsoleSize(int *width, int *height) {
-    CONSOLE_SCREEN_BUFFER_INFO csbi;
-    if (GetConsoleScreenBufferInfo(GetStdHandle(STD_OUTPUT_HANDLE), &csbi)) {
-        *width = csbi.srWindow.Right - csbi.srWindow.Left + 1;
-        *height = csbi.srWindow.Bottom - csbi.srWindow.Top + 1;
-    } else {
-        *width = 0;
-        *height = 0;
-    }
-}
-void gotoxy(int x, int y) 
-{ 
-    HANDLE hConsoleOutput; 
-    COORD dwCursorPosition; 
-    fflush(stdout); 
-    dwCursorPosition.X = x; 
-    dwCursorPosition.Y = y; 
-    hConsoleOutput = GetStdHandle(STD_OUTPUT_HANDLE); 
-    SetConsoleCursorPosition(hConsoleOutput,dwCursorPosition); 
-} 
-
 void Effacer()
 {
     #ifdef WIN32
@@ -863,27 +840,6 @@ void lancerJeu(){
 }
 
 
-
-void rectangle(int x, int y, int lon, int haut)
-{
-    int i;
-    gotoxy(x,y); printf("%c",218);
-    gotoxy(x+lon,y); printf("%c",191);
-    gotoxy(x, y+haut); printf("%c",192);
-    gotoxy(x+lon, y+haut); printf("%c",217);     
-    for (i=1; i<lon;i++)
-    {
-        gotoxy(x+i,y); printf("%c",196); 
-        gotoxy(x+i,y+haut); printf("%c",196);
-    }
-    for (i=1; i<haut;i++)
-    {
-        gotoxy(x,y+i); printf("%c",179); 
-        gotoxy(x+lon,y+i); printf("%c",179);
-    }
-}
-
-
 void afficherMenu() {
     char choixmenu;
     getConsoleSize(&width,&height);
@@ -1045,46 +1001,6 @@ void afficherMenu() {
             gotoxy(x+lon,y+i); printf("%c",179);
         }
     }
-
-    // Fonction pour générer les caractères aléatoires et donc le mot de la grille 
-void genererCaractereAleatoires() {
-    taille_consonne = sizeof(consonnes) / sizeof(consonnes[0]); // Taille de la consonne
-    taille_voyelle = sizeof(voyelles) / sizeof(voyelles[0]); // Taille de la voyelle
-
-    char temp[10];
-    for (int i = 0; i < nbreJoueur; i++) {  // Correction ici
-        printf("\nJoueur %d, choisissez vos lettres :\n", i + 1);
-        
-        for (int j = 0; j < nbreTotalLettresGrille; j++) {
-            // Demander à l'utilisateur de choisir une consonne ou une voyelle
-            do {
-                printf("Tour %d - Choisissez une lettre ('c' pour consonne, 'v' pour voyelle) : ", j + 1);
-                scanf(" %c", &choixConsonneVoyelle);
-                choixConsonneVoyelle = tolower(choixConsonneVoyelle); // Convertir en minuscule pour éviter les erreurs de casse
-            } while (choixConsonneVoyelle != 'c' && choixConsonneVoyelle != 'v');
-
-            // Générer une lettre en fonction du choix
-            if (choixConsonneVoyelle == 'c') {
-                strcpy(temp, lettresGenerees[i]);
-                temp[j] = consonnes[rand() % taille_consonne];
-            } else {
-                strcpy(temp, lettresGenerees[i]);
-                temp[j] = voyelles[rand() % taille_voyelle];
-            }
-        }
-    }
-
-    // Affichage des lettres générées pour chaque joueur
-    for (int i = 0; i < nbreJoueur; i++) {
-        strcpy(temp, lettresGenerees[i]);
-        printf("\nLettres générées pour le Joueur %d : ", i + 1);
-        for (int j = 0; j < nbreTotalLettresGrille; j++) {
-            printf("%c ", temp[j]);
-        }
-        printf("\n");
-    }
-}
-
 
     void setConsoleSize(int width, int height) {
         HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
@@ -1313,12 +1229,4 @@ void genererCaractereAleatoires() {
         printf("%c ", lettresGenerees[i]);
     }
     printf("\n");
-}
-
-int main() {
-    srand(time(NULL));
-
-    genererCaractereAleatoires(); // Appelle directement la fonction
-
-    return 0;
 }

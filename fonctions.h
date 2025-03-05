@@ -235,8 +235,6 @@ void clearLine();
 
 extern void getConsoleSize(int *width, int *height) ;
 
-extern void gotoxy(int x, int y) ;
-
 extern void rectangle(int x, int y, int lon, int haut);
 
 //Fonction pour generer les caracteres aleatoire et donc le mot a 9 lettres
