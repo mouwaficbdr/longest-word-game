@@ -55,7 +55,7 @@ char motsJoueur2[MAX_TOURS][20] = {{0}};  // Initialisé avec des chaînes vides
 int scoresJoueur1[MAX_TOURS] = {0};       // Initialisé avec des zéros
 int scoresJoueur2[MAX_TOURS] = {0};       // Initialisé avec des zéros
 
-char lettresGenerees[nbreJoueur][nbreTotalLettresGrille]; 
+char lettresGenerees[nbreJoueur + 1][nbreTotalLettresGrille + 1]; 
 
 // Définition des fonctions
 
@@ -1045,6 +1045,47 @@ void afficherMenu() {
             gotoxy(x+lon,y+i); printf("%c",179);
         }
     }
+
+    // Fonction pour générer les caractères aléatoires et donc le mot de la grille 
+void genererCaractereAleatoires() {
+    taille_consonne = sizeof(consonnes) / sizeof(consonnes[0]); // Taille de la consonne
+    taille_voyelle = sizeof(voyelles) / sizeof(voyelles[0]); // Taille de la voyelle
+
+    char temp[10];
+    for (int i = 0; i < nbreJoueur; i++) {  // Correction ici
+        printf("\nJoueur %d, choisissez vos lettres :\n", i + 1);
+        
+        for (int j = 0; j < nbreTotalLettresGrille; j++) {
+            // Demander à l'utilisateur de choisir une consonne ou une voyelle
+            do {
+                printf("Tour %d - Choisissez une lettre ('c' pour consonne, 'v' pour voyelle) : ", j + 1);
+                scanf(" %c", &choixConsonneVoyelle);
+                choixConsonneVoyelle = tolower(choixConsonneVoyelle); // Convertir en minuscule pour éviter les erreurs de casse
+            } while (choixConsonneVoyelle != 'c' && choixConsonneVoyelle != 'v');
+
+            // Générer une lettre en fonction du choix
+            if (choixConsonneVoyelle == 'c') {
+                strcpy(temp, lettresGenerees[i]);
+                temp[j] = consonnes[rand() % taille_consonne];
+            } else {
+                strcpy(temp, lettresGenerees[i]);
+                temp[j] = voyelles[rand() % taille_voyelle];
+            }
+        }
+    }
+
+    // Affichage des lettres générées pour chaque joueur
+    for (int i = 0; i < nbreJoueur; i++) {
+        strcpy(temp, lettresGenerees[i]);
+        printf("\nLettres générées pour le Joueur %d : ", i + 1);
+        for (int j = 0; j < nbreTotalLettresGrille; j++) {
+            printf("%c ", temp[j]);
+        }
+        printf("\n");
+    }
+}
+
+
     void setConsoleSize(int width, int height) {
         HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
     
@@ -1223,11 +1264,21 @@ void demanderMotJoueur2(char *mot) {
 }
 
 
-void genererCaractereAleatoires(int numJoueurCommencerPartie) {
+// Fonction pour demander quel joueur commence
+int demanderJoueurCommence() {
+    int numJoueur;
+    do {
+        printf("Quel joueur commence la partie ? (1 ou 2) : ");
+        scanf("%d", &numJoueur);
+    } while (numJoueur != 1 && numJoueur != 2);
+    return numJoueur;
+}
+
+void genererCaractereAleatoires() {
     taille_consonne = sizeof(consonnes) / sizeof(consonnes[0]);
     taille_voyelle = sizeof(voyelles) / sizeof(voyelles[0]);
 
-    int joueurActuel = numJoueurCommencerPartie; // 1 ou 2
+    int joueurActuel = demanderJoueurCommence(); // On appelle la fonction ici
 
     printf("\nDébut de la génération des lettres...\n");
 
@@ -1236,13 +1287,11 @@ void genererCaractereAleatoires(int numJoueurCommencerPartie) {
         
         printf("\nJoueur %d, choisissez une lettre ('c' pour consonne, 'v' pour voyelle) : ", joueurActuel);
         
-        // Demande à l'utilisateur de choisir une consonne ou une voyelle
         do {
             scanf(" %c", &choixConsonneVoyelle);
             choixConsonneVoyelle = tolower(choixConsonneVoyelle);
         } while (choixConsonneVoyelle != 'c' && choixConsonneVoyelle != 'v');
 
-        // Générer une lettre aléatoire en fonction du choix
         if (choixConsonneVoyelle == 'c') {
             lettresGenerees[i] = consonnes[rand() % taille_consonne];
         } else {
@@ -1251,16 +1300,14 @@ void genererCaractereAleatoires(int numJoueurCommencerPartie) {
 
         printf("Lettre générée : %c\n", lettresGenerees[i]);
 
-        // Changer de joueur (1 <-> 2)
+        // Changer de joueur sans ternaire
         if (joueurActuel == 1) {
             joueurActuel = 2;
         } else {
             joueurActuel = 1;
-            }
-
+        }
     }
 
-    // Affichage final des lettres générées.
     printf("\nLettres générées : ");
     for (int i = 0; i < nbreTotalLettresGrille; i++) {
         printf("%c ", lettresGenerees[i]);
@@ -1271,15 +1318,7 @@ void genererCaractereAleatoires(int numJoueurCommencerPartie) {
 int main() {
     srand(time(NULL));
 
-    int numJoueurCommencerPartie;
-    
-    // Demande à l'utilisateur qui commence
-    do {
-        printf("Quel joueur commence la partie ? (1 ou 2) : ");
-        scanf("%d", &numJoueurCommencerPartie);
-    } while (numJoueurCommencerPartie != 1 && numJoueurCommencerPartie != 2);
-
-    genererCaractereAleatoires(numJoueurCommencerPartie);
+    genererCaractereAleatoires(); // Appelle directement la fonction
 
     return 0;
 }

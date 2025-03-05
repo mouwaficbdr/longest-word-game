@@ -74,7 +74,6 @@ void RangerDico();
  * @param c le caractère
  */
 void removeSameChar(char *chaine, char c);
-void gotoxy(int x, int y);
 
 
 /**
@@ -241,7 +240,7 @@ extern void gotoxy(int x, int y) ;
 extern void rectangle(int x, int y, int lon, int haut);
 
 //Fonction pour generer les caracteres aleatoire et donc le mot a 9 lettres
-void genererCaracteresAleatoires();
+void genererCaractereAleatoires();
 
 //Fonction pour afficher le menu du jeux 
 void afficherMenu();
