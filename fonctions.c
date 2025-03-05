@@ -724,6 +724,15 @@ void DemarrerPartie(char Joueur1[], char Joueur2[], int tourActuel, int totalTou
         }
     }
 
+    //On doit afficher le score des joueurs
+
+    //L'ia propose donc son mot le plus long
+
+    char phraseIA[50]= "Vous aurez pu trouver : ";
+    strcat(phraseIA, LongestWord(grille));
+
+    centerwordAI(phraseIA);
+
     
 
 }
