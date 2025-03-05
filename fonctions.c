@@ -1033,6 +1033,7 @@ void afficherMenu() {
         for(i=0;i<15;i++){
             printf("\n\n");
         }
+        initialiserVariables();
         // system("mode con: cols=170 lines=50");
         rectangle(scorefieldX1,scorefieldY1,scorefieldLong,scorefieldHeight);
         rectangle(mainframeX,mainframeY,mainframeLong,mainframeHeight);
@@ -1136,6 +1137,10 @@ void afficherMenu() {
     //  redirige champ score joueur 2
     void player2Score(){
         gotoxy(score2moveX,score2moveY);
+    }
+    //  redirige à la ligne de prompt du joueur qui commence
+    void prompt(){
+        gotoxy((frameX+((frameLong-70)/2)),frameY-2);
     }
     //  redirige champ d'entrée de jeu voyelle consonne
     void EntryField(){

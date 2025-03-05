@@ -42,7 +42,7 @@ extern int frameX, frameY, frameLong, frameHeight;
 
 
 // Tableaux pour l'historique des mots et scores
-extern char motsJoueur1[MAX_TOURS][20];  // Historique des mots joués par le joueur 1
+extern char motsJoueur1[MAX_TOURS][20];  // Historique des mots joués par le joueur 1 
 extern char motsJoueur2[MAX_TOURS][20];  // Historique des mots joués par le joueur 2
 extern int scoresJoueur1[MAX_TOURS];     // Historique des scores du joueur 1
 extern int scoresJoueur2[MAX_TOURS];     // Historique des scores du joueur 2
@@ -262,7 +262,7 @@ extern void getConsoleSize(int *width, int *height);
 extern void setConsoleSize(int width, int height);
 extern void namePlay1();
 extern void namePlay2();
-
+extern void prompt();
 // Nouvelles fonctions pour améliorer la structure du code
 extern void initialiserInterface();
 extern void demanderMotJoueur1(char *mot);

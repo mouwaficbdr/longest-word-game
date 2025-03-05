@@ -7,7 +7,11 @@
 #include <string.h>
 
 int main(){
-   lancerJeu();
+  initialiserVariables();
+   afficherInterface();
+   EntryField();printf("Ceci est un test");
+   initialiserVariables();
+   prompt();printf("Joueur 1, veuillez choisir une lettre ( 'c' pour consonne, 'v' pour voyelle)");
   return 0;    
 }
     
