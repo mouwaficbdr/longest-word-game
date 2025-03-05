@@ -41,6 +41,7 @@
 *.su
 *.idb
 *.pdb
+*.json
 
 # Kernel Module Compile Results
 *.mod*
@@ -50,3 +51,9 @@ modules.order
 Module.symvers
 Mkfile.old
 dkms.conf
+
+# Fichiers de sauvegarde du jeu
+sauvegarde.txt
+
+#JSON
+*.json
