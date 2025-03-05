@@ -15,7 +15,6 @@ extern char nomJoueur1[10];         // Nom du premier joueur (limité à 9 carac
 extern char nomJoueur2[10];         // Nom du deuxième joueur (limité à 9 caractères + terminateur)
 extern int numJoueurCommencerPartie; // Numéro du joueur qui commence la partie (1 ou 2)
 extern int nbreTours;               // Nombre total de tours pour la partie complète
-extern char choixConsonneVoyelle;   // Stocke le choix du joueur ('C' pour consonne, 'V' pour voyelle)
 
 // Variables globales supplémentaires pour l'état du jeu
 extern int scoreJoueur1;            // Score actuel du premier joueur
@@ -23,8 +22,26 @@ extern int scoreJoueur2;            // Score actuel du deuxième joueur
 extern int toursJoues;              // Nombre de tours déjà joués
 extern char grille[9];             // Tableau représentant les lettres dans la grille de jeu
 
+extern int scorefieldX1, scorefieldY1, scorefieldLong, scorefieldHeight;
+extern int scorefieldCursorX1, scorefieldCursorY1;
+extern int mainframeX, mainframeY, mainframeLong, mainframeHeight;
+extern int scorefieldX2, scorefieldY2;
+extern int gameEntryFieldX, gameEntryFieldY, gameEntryFieldHeight, gameEntryFieldLong;
+extern int EntryFieldX1, EntryFieldY1, EntryFieldLong, EntryFieldHeight;
+extern int EntryFieldX2, EntryFieldY2;
+extern int AIX, AIY;
+extern int play1CursorX, play1CursorY;
+extern int play2CursorX, play2CursorY;
+extern int AImoveX, AImoveY;
+extern int score1moveX, score1moveY;
+extern int score2moveX, score2moveY;
+extern int gambaseX, gamebaseY;
+extern int height,width;
+extern int frameX, frameY, frameLong, frameHeight;
+
+
 // Tableaux pour l'historique des mots et scores
-extern char motsJoueur1[MAX_TOURS][20];  // Historique des mots joués par le joueur 1
+extern char motsJoueur1[MAX_TOURS][20];  // Historique des mots joués par le joueur 1 
 extern char motsJoueur2[MAX_TOURS][20];  // Historique des mots joués par le joueur 2
 extern int scoresJoueur1[MAX_TOURS];     // Historique des scores du joueur 1
 extern int scoresJoueur2[MAX_TOURS];     // Historique des scores du joueur 2
@@ -56,7 +73,6 @@ void RangerDico();
  * @param c le caractère
  */
 void removeSameChar(char *chaine, char c);
-void gotoxy(int x, int y);
 
 
 /**
@@ -151,7 +167,7 @@ int enregistrerTour(const char motJoueur1[], const char motJoueur2[], int scoreM
  * @param totalTours 
  * @param numCommencer 
  */
-void DemarrerJeu(char Joueur1[], char Joueur2[], int tourActuel, int totalTours, int numCommencer);
+void DemarrerPartie(char Joueur1[], char Joueur2[], int tourActuel, int totalTours, int numCommencer);
 
 
 /**
@@ -176,14 +192,14 @@ int isNumber(char *string);
  * Affiche une message d'alerte s'il y'a une sauvegarde en cours qui sera écrasée si les joueurs lancent confirmeleur choix
  * Sinon on retourne au menu
  */
-void NouvellePartie();
+void nouvellePartie();
 
 
 /**
  * @brief 
  * Affiche le menu pour choisir une option nouvelle partie ou charger une partie ou encore quitter le jeu
  */
-void menu();
+void afficherMenu();
 
 /**
  * @brief 
@@ -215,5 +231,42 @@ void lancerJeu();
  * Efface une ligne en cas de saisie erronée
  */
 void clearLine();
+
+extern void getConsoleSize(int *width, int *height) ;
+
+extern void rectangle(int x, int y, int lon, int haut);
+
+//Fonction pour generer les caracteres aleatoire et donc le mot a 9 lettres
+extern void genererCaractereAleatoires(int);
+
+//Fonction pour afficher le menu du jeux 
+extern void afficherMenu();
+
+extern void hashWord(char*word, int size);
+extern void gotoxy(int x, int y);
+extern void rectangle(int x, int y, int lon, int haut);
+extern void afficherInterface();
+extern void initialiserVariables();
+extern void player1();
+extern void player2();
+extern void AImove();
+extern void player1Score();
+extern void player2Score();
+extern void EntryField();
+extern void centeredhash1(char *word, int size);
+extern void centeredhash2(char *word, int size);
+extern void centerword1(char *word);
+extern void centerword2(char *word);
+extern void centerwordAI(char *word);
+extern void getConsoleSize(int *width, int *height);
+extern void setConsoleSize(int width, int height);
+extern void namePlay1();
+extern void namePlay2();
+extern void prompt();
+// Nouvelles fonctions pour améliorer la structure du code
+extern void initialiserInterface();
+extern void demanderMotJoueur1(char *mot);
+extern void demanderMotJoueur2(char *mot);
+
 
 #endif

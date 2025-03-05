@@ -4,33 +4,53 @@
 #include <string.h>
 #include <windows.h> 
 #include <ctype.h>
+#include <windows.h>
 #include "fonctions.h"
-
+#include <time.h>
 // Définition des constantes
 const int nbreJoueur = 2;
 const int nbreTotalLettresGrille = 9;
-const char voyelles[6] = {'A', 'E', 'I', 'O', 'U', 'Y'};
-const char consonnes[20] = {'B', 'C', 'D', 'F', 'G', 'H', 'J', 'K', 'L', 'M', 'N', 'P', 'Q', 'R', 'S', 'T', 'V', 'W', 'X', 'Z'};
+const char voyelles[6] = {'a', 'e', 'i', 'o', 'u', 'y'};
+const char consonnes[20] = {'b', 'c', 'd', 'f', 'g', 'h', 'j', 'k', 'l', 'm', 'n', 'p', 'q', 'r', 's', 't', 'v', 'w', 'x', 'z'};
 
-
-//Définition des variables
+// Définition des variables
 char nomJoueur1[10];
 char nomJoueur2[10];
 int numJoueurCommencerPartie;
 int nbreTours=1;
-char choixConsonneVoyelle;
+char lettresGenerees[10]; 
+char choixmenu;
+int width,height;
 
 // Définition des variables globales supplémentaires
-int scoreJoueur1 = 0;           // Score du joueur 1, initialisé à 0
-int scoreJoueur2 = 0;           // Score du joueur 2, initialisé à 0
+int scoreJoueur1 = 1829;           // Score du joueur 1, initialisé à 0
+int scoreJoueur2 = 123;           // Score du joueur 2, initialisé à 0
 int toursJoues = 0;             // Nombre de tours joués, initialisé à 0
 char grille[9] = {0};          // Grille de jeu avec taille exacte pour stocker nbreTotalLettresGrille caractères
+
+int scorefieldX1, scorefieldY1, scorefieldLong, scorefieldHeight;
+int scorefieldCursorX1, scorefieldCursorY1;
+int mainframeX, mainframeY, mainframeLong, mainframeHeight;
+int scorefieldX2, scorefieldY2;
+int gameEntryFieldX, gameEntryFieldY, gameEntryFieldHeight, gameEntryFieldLong;
+int EntryFieldX1, EntryFieldY1, EntryFieldLong, EntryFieldHeight;
+int EntryFieldX2, EntryFieldY2;
+int AIX, AIY;
+int play1CursorX, play1CursorY;
+int play2CursorX, play2CursorY;
+int AImoveX, AImoveY;
+int score1moveX, score1moveY;
+int score2moveX, score2moveY;
+int gambaseX, gamebaseY;
+int height,width;
+int frameX,frameY,frameLong,frameHeight;
 
 // Définition des tableaux pour l'historique des mots et scores
 char motsJoueur1[MAX_TOURS][20] = {{0}};  // Initialisé avec des chaînes vides
 char motsJoueur2[MAX_TOURS][20] = {{0}};  // Initialisé avec des chaînes vides
 int scoresJoueur1[MAX_TOURS] = {0};       // Initialisé avec des zéros
 int scoresJoueur2[MAX_TOURS] = {0};       // Initialisé avec des zéros
+
 
 // Définition des fonctions
 
@@ -245,7 +265,21 @@ int effacerSauvegarde(void) {
 
 //Fonction pour compter le nombre de caractères dans un mot
 
-
+// Fonction qui compte le nombre de chiffres dans un entier
+int Intlen(int n){
+    int count=0;
+    if (n == 0) {
+        count = 1;
+        return count;
+    } else {
+        // Compter les chiffres en divisant par 10
+        while (n != 0) {
+            n /= 10;
+            count++;
+        }
+        return count;
+    }
+} 
 //Fonction de vérification des caractères
 int validationChar(char mot[], char grilleCaractere[]){
     char validChar[10];
@@ -416,12 +450,12 @@ void removeSameChar(char *chaine, char c) {
        {
            //i pacours la grille
           int i=0;
-       // le mot valide le plus long de taille 0 à l'initialisation
+        // le mot valide le plus long de taille 0 à l'initialisation
          char *valideMot=malloc(sizeof(char)+1);
-         valideMot[0]='\0';
-       
+        valideMot[0]='\0';
+        
          char name[15]={'.','.','/','d','i','c','o','/','a','.','t','x','t'};
-       //On initialise des copies de la grille pour l'itération et pour les lettres non utilisés
+        //On initialise des copies de la grille pour l'itération et pour les lettres non utilisés
          char *notUsedchar=malloc(sizeof(char)*(strlen(grille)+1));
          strcpy(notUsedchar,grille);
        
@@ -491,17 +525,6 @@ void tailleTerminal(int *largeur, int *hauteur){
     *largeur= terminal.srWindow.Right - terminal.srWindow.Left +1;
     *hauteur= terminal.srWindow.Bottom - terminal.srWindow.Top +1;
 }
-
-void gotoxy(int x, int y) 
-{ 
-    HANDLE hConsoleOutput; 
-    COORD dwCursorPosition; 
-    fflush(stdout); 
-    dwCursorPosition.X = x; 
-    dwCursorPosition.Y = y; 
-    hConsoleOutput = GetStdHandle(STD_OUTPUT_HANDLE); 
-    SetConsoleCursorPosition(hConsoleOutput,dwCursorPosition); 
-} 
 
 void Effacer()
 {
@@ -612,27 +635,7 @@ void clearLine() {
 
 
 
-void DemarrerJeu(char Joueur1[], char Joueur2[], int tourActuel, int totalTours, int numCommencer)
-    {
-    //On lance les fonctions interfaces et autres 
-
-
-
-    }
-
-
-void menu(){
- 
-        //Eunock
-
-    //Affichage des zones de menu avec le switch sur les touches du clavier pour choisir
-    // NouvellePartie() ou ChargerPartie() et lancer la fonction correspondante 
-    //Option Quitter stopper le programme
-}
-
-
-
-void NouvellePartie()
+void nouvellePartie()
 {
     Effacer();
 char choixNouvellePartie='O';
@@ -686,7 +689,6 @@ int bon=0;
             gotoxy((largeur/2),(hauteur/2)+1);
         }
      }
-         
         if(choixNouvellePartie=='O')
         {
             effacerSauvegarde();
@@ -777,9 +779,9 @@ int bon=0;
         scoreJoueur1=0; 
         scoreJoueur2=0;
 
-        DemarrerJeu(nomJoueur1,nomJoueur2,1,nbreTours,numJoueurCommencerPartie);
+        DemarrerPartie(nomJoueur1,nomJoueur2,1,nbreTours,numJoueurCommencerPartie);
     }else{
-        menu();
+        afficherMenu();
     }
 }
 
@@ -826,13 +828,455 @@ void lancerJeu(){
                     numJoueurCommencerPartie=strtol(texte,&convert,10);
                   free(texte);
                   free(convert);
-            DemarrerJeu(nomJoueur1,  nomJoueur2, toursJoues+1,nbreTours,numJoueurCommencerPartie);
+            DemarrerPartie(nomJoueur1,  nomJoueur2, toursJoues+1,nbreTours,numJoueurCommencerPartie);
                 }
             }else{
                 Effacer();
-                menu();
+                afficherMenu();
             }
         }while(toursJoues<=nbreTours);
       
 }
+
+
+void afficherMenu() {
+    char choixmenu;
+    getConsoleSize(&width,&height);
+    int menuWidth = (int)(width * 0.4);
+    int menuHeight = (int)(height * 0.4);
+    int menuX = (width - menuWidth) / 2;
+    int menuY = (height - menuHeight) / 2;
+    int upper=menuHeight/3;
+    int optionZone=2*menuHeight/3;
+    while (1) {
+        system("clear || cls");  // Efface l'écran (compatible Linux/Windows)
+        rectangle(menuX,menuY,menuWidth,upper);
+        rectangle(menuX,menuY+upper+1,menuWidth,optionZone);
+       
+       gotoxy(menuX+(menuWidth-4)/2,menuY+(upper/2)); printf("MENU");
+       
+       gotoxy(menuX+3,menuY+upper+optionZone*0.3);printf("X - Charger Partie");
+       gotoxy(menuX+3,menuY+upper+optionZone*0.5);printf("Y - Nouvelle Partie");
+       gotoxy(menuX+3,menuY+upper+optionZone*0.9);printf("Q - Quitter");
+       rectangle(menuX,menuY+menuHeight+1,menuWidth,menuHeight*0.3);
+       gotoxy(menuX+3,menuY+menuHeight+(upper)/2);printf("Votre choix : ");
+
+
+        choixmenu = getchar(); // Récupère l'entrée utilisateur
+        while (getchar() != '\n'); // Vide le buffer pour éviter les erreurs
+
+        choixmenu = tolower(choixmenu); // Convertit en minuscule
+
+        switch (choixmenu) {
+            case 'x':
+                chargerPartie();
+                break;
+            case 'y':
+                nouvellePartie();
+                break;
+            case 'q':
+                printf("Fermeture du programme...\n");
+                exit(0);
+            default:
+                // L'entrée invalide est ignorée, pas d'affichage d'erreur
+                break;
+        }
+    }
+
+}
+
+     //-----hashage-----
+    void hashWord( char *word , int size){
+        int i = 0 ;
+        char ch ;
+
+        while(i < size-1){
+            ch = getch() ;
+            // sortie lorsque l'utilisateur appuie la touche entrée
+            if( ch == '\r'){
+            word[i]='\0';
+            break; 
+            }
+
+            // supression d'un indice lorsque l'utilisateur appuie la touche backspace
+            if( ch == '\b' && i > 0){
+                    printf("\b \b") ;
+                    i-- ;
+            }
+            //incrémentation de caractère à la chaîne
+            else{
+                word[i] = ch ;
+                printf("*") ;
+                i++ ;
+            }
+
+        }
+    }
+
+    //-----cursorMove-----
+            void gotoxy(int x, int y) 
+            { 
+                HANDLE hConsoleOutput; 
+                COORD dwCursorPosition; 
+                fflush(stdout); 
+                dwCursorPosition.X = x; 
+                dwCursorPosition.Y = y; 
+                hConsoleOutput = GetStdHandle(STD_OUTPUT_HANDLE); 
+                SetConsoleCursorPosition(hConsoleOutput,dwCursorPosition); 
+            } 
+
+            void initialiserVariables() {
+                getConsoleSize(&width,&height);
+                frameX=(width-(8*width/9))/2;
+                frameY=(height-(8*height/9))/2;
+                frameLong=8*width/9;
+                frameHeight=8*height/9;
+                scorefieldX1=frameX+3;
+                scorefieldY1=frameY+3;
+                scorefieldX2= mainframeLong+5;
+                scorefieldY2= scorefieldY1;
+                scorefieldLong=frameLong*0.2;
+                scorefieldHeight=frameHeight*0.15;
+                mainframeLong=frameLong*0.5;
+                mainframeX=frameX+(frameLong-mainframeLong)/2;
+                mainframeY=frameY;
+                mainframeHeight=frameHeight;
+                scorefieldX2 = mainframeX + mainframeLong + 3;
+                scorefieldY2 = scorefieldY1;
+            
+                gameEntryFieldX = mainframeX + (mainframeLong / 8);
+                gameEntryFieldY = scorefieldY1;
+                gameEntryFieldHeight = scorefieldHeight;
+                gameEntryFieldLong = (3 * mainframeLong) / 4;
+            
+                EntryFieldX1 = gameEntryFieldX;
+                EntryFieldY1 = mainframeY + (mainframeHeight / 2);
+                EntryFieldLong = gameEntryFieldLong;
+                EntryFieldHeight = gameEntryFieldHeight / 2;
+            
+                EntryFieldX2 = EntryFieldX1;
+                EntryFieldY2 = EntryFieldY1 + 5;
+            
+                AIX = EntryFieldX1;
+                AIY = EntryFieldY2 + 5;
+
+                play1CursorX = EntryFieldX1 + (EntryFieldLong / 3);
+                play1CursorY = EntryFieldY1 + (EntryFieldHeight / 2);
+            
+                play2CursorX = EntryFieldX2 + (EntryFieldLong / 3);
+                play2CursorY = EntryFieldY2 + (EntryFieldHeight / 2);
+            
+                AImoveX = AIX + (EntryFieldLong / 3);
+                AImoveY = AIY + (EntryFieldHeight / 2);
+            
+                score1moveX = scorefieldX1 + ((scorefieldLong-Intlen(scoreJoueur1))/2);
+                score1moveY = scorefieldY1 + (scorefieldHeight / 2);
+            
+                score2moveX = scorefieldX2 + ((scorefieldLong-Intlen(scoreJoueur2))/2);
+                score2moveY = scorefieldY2 + (scorefieldHeight / 2);
+            
+                gambaseX = gameEntryFieldX + ((gameEntryFieldLong-9) / 2);
+                gamebaseY = gameEntryFieldY + (gameEntryFieldHeight / 2);
+
+                
+            }
+            
+    //-----rectangle------        
+        void rectangle(int x, int y, int lon, int haut)
+    {
+        int i;
+        gotoxy(x,y); printf("%c",218);
+        gotoxy(x+lon,y); printf("%c",191);
+        gotoxy(x, y+haut); printf("%c",192);
+        gotoxy(x+lon, y+haut); printf("%c",217);     
+        for (i=1; i<lon;i++)
+        {
+            gotoxy(x+i,y); printf("%c",196); 
+            gotoxy(x+i,y+haut); printf("%c",196);
+        }
+        for (i=1; i<haut;i++)
+        {
+            gotoxy(x,y+i); printf("%c",179); 
+            gotoxy(x+lon,y+i); printf("%c",179);
+        }
+    }
+
+    void setConsoleSize(int width, int height) {
+        HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
+    
+        // 1. Définir la taille du buffer
+        COORD bufferSize = {width, height};
+        SetConsoleScreenBufferSize(hConsole, bufferSize);
+    
+        // 2. Définir la taille de la fenêtre (rectangulaire)
+        SMALL_RECT windowSize = {0, 0, width - 1, height - 1};
+        SetConsoleWindowInfo(hConsole, TRUE, &windowSize);
+    }
+    //----tailleEcran------
+    void getConsoleSize(int *width, int *height) {
+        CONSOLE_SCREEN_BUFFER_INFO csbi;
+        if (GetConsoleScreenBufferInfo(GetStdHandle(STD_OUTPUT_HANDLE), &csbi)) {
+            *width = csbi.srWindow.Right - csbi.srWindow.Left + 1;
+            *height = csbi.srWindow.Bottom - csbi.srWindow.Top + 1;
+        } else {
+            *width = 0;
+            *height = 0;
+        }
+    }
+
+
+
+    //-----Interfaces-----
+    void afficherInterface(){
+        int i=0;
+        for(i=0;i<15;i++){
+            printf("\n\n");
+        }
+        initialiserVariables();
+        // system("mode con: cols=170 lines=50");
+        rectangle(scorefieldX1,scorefieldY1,scorefieldLong,scorefieldHeight);
+        rectangle(mainframeX,mainframeY,mainframeLong,mainframeHeight);
+        rectangle(scorefieldX2,scorefieldY2,scorefieldLong,scorefieldHeight);
+        rectangle(gameEntryFieldX,gameEntryFieldY,gameEntryFieldLong,gameEntryFieldHeight);
+        rectangle(EntryFieldX1, EntryFieldY1, EntryFieldLong, EntryFieldHeight);
+        rectangle(EntryFieldX2, EntryFieldY2, EntryFieldLong, EntryFieldHeight);
+        rectangle(AIX,AIY,EntryFieldLong,EntryFieldHeight);
+
+    }
+// Centrage du mot du joueur 1
+    void centerword1(char *word){
+        int i=0;
+        initialiserVariables();
+         player1();
+          for(i=0;i<strlen(word);i++){
+             printf(" ");
+          }
+          initialiserVariables();
+          play1CursorX=EntryFieldX1 + ((EntryFieldLong-strlen(word)) / 2);
+          player1();
+          printf("%s",word);
+    }
+// Centrage du mot du joueur 2
+    void centerword2(char *word){
+        int i=0;
+        initialiserVariables();
+         player2();
+          for(i=0;i<strlen(word);i++){
+             printf(" ");
+          }
+          initialiserVariables();
+          play2CursorX=EntryFieldX2 + ((EntryFieldLong-strlen(word)) / 2);
+          player2();
+          printf("%s",word);
+    }
+// centrage du mot trouvé par l'IA
+    void centerwordAI(char *word){
+        int i=0;
+        initialiserVariables();
+          AIX=((2*EntryFieldX1+EntryFieldLong-strlen(word)) / 2);
+         
+          AImove();
+          printf("%s",word);
+    }
+    //  hashe et centre le mot saisit du joueur 1  
+    void centeredhash1(char *word, int size){
+        int i=0;
+          player1();
+          hashWord(word,size);
+          player1();
+          for(i=0;i<strlen(word);i++){
+             printf(" ");
+          }
+          initialiserVariables();
+          play1CursorX=EntryFieldX1 + ((EntryFieldLong-strlen(word)) / 2);
+          player1();
+          for(i=0;i<strlen(word);i++){
+            printf("*");
+         }
+
+    }
+
+    //  hashe et centre le mot saisit du joueur 2
+    void centeredhash2(char *word, int size){
+        int i=0;
+          player2();
+          hashWord(word,size);
+          player2();
+          for(i=0;i<strlen(word);i++){
+             printf(" ");
+          }
+          initialiserVariables();
+          play2CursorX=EntryFieldX2 + ((EntryFieldLong-strlen(word)) / 2);
+          player2();
+          for(i=0;i<strlen(word);i++){
+            printf("*");
+         }
+
+    }
+
+    //  redirige champ d'entrée joueur 1
+    void player1(){
+        gotoxy(play1CursorX,play1CursorY);
+    }
+    //  redirige champ d'entrée joueur 2
+    void player2(){
+        gotoxy(play2CursorX,play2CursorY);
+    }
+    //  redirige champ IA
+    void AImove(){
+        gotoxy(AIX,AIY+1);
+    }
+    //  redirige champ score joueur 1
+    void player1Score(){
+        gotoxy(score1moveX,score1moveY);
+    }
+    //  redirige champ score joueur 2
+    void player2Score(){
+        gotoxy(score2moveX,score2moveY);
+    }
+    //  redirige à la ligne de prompt du joueur qui commence
+    void prompt(){
+        gotoxy((frameX+((frameLong-70)/2)),frameY-2);
+    }
+    //  redirige champ d'entrée de jeu voyelle consonne
+    void EntryField(){
+        gotoxy(gambaseX,gamebaseY);
+    }
+    // redirige nom joueur 1
+    void namePlay1(){
+        gotoxy(1+(2*scorefieldX1+scorefieldLong-strlen(nomJoueur1))/2,score1moveY-(score1moveY/3)-1);
+    }
+    // redirige nom joueur 2
+    void namePlay2(){
+        gotoxy(1+(2*scorefieldX2+scorefieldLong-strlen(nomJoueur2))/2,score2moveY-(score2moveY/3)-1);
+    }
+    // Jouer
+
+// Nouvelles fonctions pour améliorer la structure du code
+
+// Initialise et affiche l'interface complète avec les scores, noms et grille
+void initialiserInterface() {
+    afficherInterface();
+    namePlay1();printf("Joueur 1");
+    namePlay2();printf("Joueur 2");
+    player1Score();printf("0");
+    player2Score();printf("0");
+    EntryField();printf("WASOPEDNLQ");
+}
+
+// Demande et traite la saisie du mot pour le joueur 1
+void demanderMotJoueur1(char *mot) {
+    gotoxy(EntryFieldX1, EntryFieldY1-1);
+    printf("Joueur 1, entrez votre mot:");
+    player1();
+    centeredhash1(mot, 10);
+}
+
+// Demande et traite la saisie du mot pour le joueur 2
+void demanderMotJoueur2(char *mot) {
+    gotoxy(EntryFieldX2, EntryFieldY2-1);
+    printf("Joueur 2, entrez votre mot:");
+    player2();
+    centeredhash2(mot, 10);
+}
+
+
+// Fonction pour demander quel joueur commence
+
+void genererCaractereAleatoires(int numCommencer) {
+       char *choixConsonneVoyelle=malloc(sizeof(char)*2);
+    // int joueurActuel = demanderJoueurCommence(); // On appelle la fonction ici
+ 
+    for (int i = 0; i < nbreTotalLettresGrille; i++) { 
+        prompt();
+        clearLine();
+        prompt();
+
+        printf("Joueur %d, choisissez une lettre ('c' pour consonne, 'v' pour voyelle) : ",numCommencer); 
+           
+        
+        do {
+            srand(time(NULL));  
+            prompt();
+            clearLine();
+            prompt();
+            printf("Joueur %d, choisissez une lettre ('c' pour consonne, 'v' pour voyelle) : ",numCommencer); 
+            scanf("%s",choixConsonneVoyelle);
+            choixConsonneVoyelle[0]=tolower(choixConsonneVoyelle[0]);
+        } while (strcmp(choixConsonneVoyelle,"c")!=0 && strcmp(choixConsonneVoyelle,"v")!=0);
+
+        if (!strcmp(choixConsonneVoyelle,"c")) {
+            lettresGenerees[i] = consonnes[rand() % 20];
+        } else {
+            lettresGenerees[i] = voyelles[rand() % 6];
+        }
+        if(numCommencer==1) numCommencer=2;
+        else numCommencer=1;
+        
+        EntryField();
+         printf("%c",lettresGenerees[i]);
+        fflush(stdin);
+        gambaseX++;
+        // Changer de joueur sans ternaire
+
+    }
+
+}
+
+
+
+void DemarrerPartie(char Joueur1[], char Joueur2[], int tourActuel, int totalTours, int numCommencer){
+    Effacer();
+    
+    //On lance les fonctions interfaces et autres 
+    
+    //On initialise les variables de récupération des dimensions de la console
+    initialiserVariables();
+
+    //On affiche l'interface et on charge le nom des joueurs
+    afficherInterface();
+    namePlay1();printf("%s", Joueur1);
+    namePlay2();printf("%s", Joueur2);
+
+    //En fonction du joueur qui commence, on appelle la fonction genererCaracteresAleatoires
+    genererCaractereAleatoires(numCommencer);
+
+    if(numCommencer == 1){
+        //Le joueur 1 entre son mot (le mot est biensur hashé)
+        centeredhash1(motsJoueur1[tourActuel], 10);
+
+        //Puis le joueur 2 entre son mot
+        centeredhash2(motsJoueur2[tourActuel], 10);
+
+        //On affiche les mots des deux joueurs après dans leur case respective
+        centerword1(motsJoueur1[tourActuel]);
+        centerword2(motsJoueur2[tourActuel]);
+    }else{ //Dans le cas contraire on commence avec le joueur 2
+
+        //Le joueur 2 entre son mot 
+        centeredhash2(motsJoueur1[tourActuel], 10);
+
+        //Le joueur 1 entre son mot ensuite
+
+        //Puis on affiche les deux mots
+        centerword2(motsJoueur1[tourActuel]);
+        centerword1(motsJoueur2[tourActuel]);
+    }
+
+    //Elle stocke les mots de chaque joueur
+    char *tabMotsJoueurs[2] = {motsJoueur1[tourActuel], motsJoueur2[tourActuel]}; 
+
+    //Il y aura peut être un texte pour dire qu'on procède mainteanant à la validation des mots
+    
+    int i = 0;
+    for(i = 0; i<2; i++){
+        if(validationChar(tabMotsJoueurs[i], grille)){
+            //On stocke le score du joueur dans la variable globale de score
+        }
+    }
+
+    
+
+}
+
 
