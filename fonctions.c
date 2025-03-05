@@ -27,8 +27,8 @@ char choixmenu;
 int width,height;
 
 // Définition des variables globales supplémentaires
-int scoreJoueur1 = 0;           // Score du joueur 1, initialisé à 0
-int scoreJoueur2 = 0;           // Score du joueur 2, initialisé à 0
+int scoreJoueur1 = 1829;           // Score du joueur 1, initialisé à 0
+int scoreJoueur2 = 123;           // Score du joueur 2, initialisé à 0
 int toursJoues = 0;             // Nombre de tours joués, initialisé à 0
 char grille[9] = {0};          // Grille de jeu avec taille exacte pour stocker nbreTotalLettresGrille caractères
 
@@ -269,7 +269,21 @@ int effacerSauvegarde(void) {
 
 //Fonction pour compter le nombre de caractères dans un mot
 
-
+// Fonction qui compte le nombre de chiffres dans un entier
+int Intlen(int n){
+    int count=0;
+    if (n == 0) {
+        count = 1;
+        return count;
+    } else {
+        // Compter les chiffres en divisant par 10
+        while (n != 0) {
+            n /= 10;
+            count++;
+        }
+        return count;
+    }
+} 
 //Fonction de vérification des caractères
 int validationChar(char mot[], char grilleCaractere[]){
     char validChar[10];
@@ -690,7 +704,6 @@ int bon=0;
             gotoxy((largeur/2),(hauteur/2)+1);
         }
      }
-         
         if(choixNouvellePartie=='O')
         {
             effacerSauvegarde();
@@ -970,10 +983,10 @@ void afficherMenu() {
                 AImoveX = AIX + (EntryFieldLong / 3);
                 AImoveY = AIY + (EntryFieldHeight / 2);
             
-                score1moveX = scorefieldX1 + (scorefieldLong / 2);
+                score1moveX = scorefieldX1 + ((scorefieldLong-Intlen(scoreJoueur1))/2);
                 score1moveY = scorefieldY1 + (scorefieldHeight / 2);
             
-                score2moveX = scorefieldX2 + (scorefieldLong / 2);
+                score2moveX = scorefieldX2 + ((scorefieldLong-Intlen(scoreJoueur2))/2);
                 score2moveY = scorefieldY2 + (scorefieldHeight / 2);
             
                 gambaseX = gameEntryFieldX + ((gameEntryFieldLong-9) / 2);
