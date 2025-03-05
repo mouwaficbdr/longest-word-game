@@ -16,7 +16,7 @@ const char consonnes[20] = {'B', 'C', 'D', 'F', 'G', 'H', 'J', 'K', 'L', 'M', 'N
 char nomJoueur1[10];
 char nomJoueur2[10];
 int numJoueurCommencerPartie;
-int nbreTours;
+int nbreTours=1;
 int taille_consonne;
 int taille_voyelle;
 int index_consonne;
@@ -550,31 +550,51 @@ void EcritureDynamique(char texte[], int x, int y,int vitesse){
      }
  }
 
+ void EffacerZone(int x, int y, int lon, int haut){
+    for(int i=0;i<lon; i++){
+        for(int j=0; j<haut;j++){
+            printf(" ");
+        }
+    }
+ }
+
+ 
 
  int JouerEncore(){
-    
+    Effacer();
     char texte[]="On passe a la partie suivante?";
-    char textechoix[]="Oui[O] / Non [N]";
     int largeurTermi=0, hauteurTermi=0;
 
     //recuperer la taille du terminal
     tailleTerminal(&largeurTermi, &hauteurTermi);
-
+    char c='R';
+    while(hauteurTermi<30 || c!='R'){
+        gotoxy(0,1);
+        clearLine();
+        EcritureDynamique("Veuillez agrandir votre terminal et appuyer sur [R]\n",0,0,0);
+        scanf("%c", &c);
+        tailleTerminal(&largeurTermi, &hauteurTermi);
+    }
     //Centrer le 1er texte et l'écrire
-    int x=(largeurTermi-strlen(texte))/2;
-    int y= hauteurTermi/2;
-    EcritureDynamique(texte,x,y,50);
-
-    //Centrer le 2ème texte et lécrire
-    x=(largeurTermi-strlen(textechoix))/2;
-    y= hauteurTermi/2;
-    EcritureDynamique(textechoix,x,y+1,50);
+    int xR=(3*largeurTermi)/4;
+    int yR= (3*hauteurTermi)/4;
+    rectangle(xR,yR,(largeurTermi/4),7);
+    
+    xR=1+((largeurTermi/4)-strlen(texte))/2+(3*largeurTermi)/4;
+    yR= (7*hauteurTermi/8)-1;
+    EcritureDynamique(texte,xR,yR,50);
+     
+    //Centrer le 2ème texte et l'écrire
+    strcpy(texte,"Oui[O] / Non [N]");
+    xR=1+((largeurTermi/4)-strlen(texte))/2+(3*largeurTermi)/4;
+    EcritureDynamique(texte,xR,yR+1,50);
 
     //Recupérer la récuperer la réponse
-    gotoxy((largeurTermi/2),(hauteurTermi/2)+2);
+    gotoxy((7*largeurTermi/8),(7*hauteurTermi/8)+1);
     char choix='\n';
     char validation='\0';
      int bon=0;
+     char *convert;
      while(!bon){
         choix=getche();
         if(choix=='O' || choix=='N')
@@ -583,27 +603,48 @@ void EcritureDynamique(char texte[], int x, int y,int vitesse){
             {
                 validation=getche();
                 if(validation=='\r'){
-                    if(choix=='O')
-                    return 1;
+                    if(choix=='O'){
+                    strcpy(texte,"Qui entamera la partie: ");
+                    gotoxy(1+(3*largeurTermi)/4,(7*hauteurTermi/8)-1);
+                    printf("                                ");
+                    EcritureDynamique(texte,1+((largeurTermi/4)-strlen(texte))/2+(3*largeurTermi)/4,(7*hauteurTermi/8)-1,0);
+                    strcpy(texte," Joueur [1]/[2]?");
+                    EcritureDynamique(texte,1+((largeurTermi/4)-strlen(texte))/2+(3*largeurTermi)/4,(7*hauteurTermi/8),0);
+                    do{
+                        gotoxy(1+(3*largeurTermi)/4,(7*hauteurTermi/8)+1);
+                        printf("                                ");
+                        gotoxy((7*largeurTermi/8),(7*hauteurTermi/8)+1);
+                        scanf("%s",texte);
+                        numJoueurCommencerPartie=strtol(texte,&convert,10);
+                    }while((numJoueurCommencerPartie!=1 && numJoueurCommencerPartie!=2) || !isNumber(texte)); 
+                    numJoueurCommencerPartie=strtol(texte,&convert,10);
+                  
+                  free(convert);
+                        return 1;
+                    }
+                        
                     else return 0;
                 }else if(validation=='\b'){
-                    gotoxy((largeurTermi/2),(hauteurTermi/2)+2);
+                    gotoxy((7*largeurTermi/8),(7*hauteurTermi/8)+1);
                     printf(" "); 
-                    gotoxy((largeurTermi/2),(hauteurTermi/2)+2);
+                    gotoxy((7*largeurTermi/8),(7*hauteurTermi/8)+1);
                     choix='\n';
                     break;
                 }else{
                     printf("\b \b");
-                    gotoxy((largeurTermi/2)+1,(hauteurTermi/2)+2);
+                    gotoxy((7*largeurTermi/8)+1,(7*hauteurTermi/8)+1);
+
                 }
             }
         }else
         {
             printf("\b \b"); //Effacer les caractères qui ne répondent pas à ceux demandés
-            gotoxy((largeurTermi/2),(hauteurTermi/2)+2);
+            gotoxy((7*largeurTermi/8),(7*hauteurTermi/8)+1);
+
         }
      }
-    
+   
+     
 }
 
 
@@ -698,8 +739,8 @@ int bon=0;
         if(choixNouvellePartie=='O')
         {
             effacerSauvegarde();
-            Effacer();
         }
+        Effacer();
     }
 
     //Recupérer les informations si une nouvelle partie est lancée
@@ -713,7 +754,7 @@ int bon=0;
         strcpy(lesinfos[0],"Nom du joueur 1: \n");
         strcpy(lesinfos[1],"Nom du joueur 2: \n");
         strcpy(lesinfos[2],"Combien de parties voulez-vous effectuez?\n");
-        strcpy(lesinfos[3],"Qui desire entamer la partie: Joueur 1 [1] ou Joueur 2 [2]\n");
+        strcpy(lesinfos[3],"Qui desire entamer la partie: Joueur [1] / [2]\n");
         
         int largeurT=0;
         int hauteurT=0;
@@ -774,6 +815,9 @@ int bon=0;
                         numJoueurCommencerPartie=strtol(test,&converti,10);
                     }while(!isNumber(test) || (numJoueurCommencerPartie!=1 && numJoueurCommencerPartie!=2));
                     numJoueurCommencerPartie=strtol(test,&converti,10);
+                    gotoxy((largeurT/2),y+1);
+                    clearLine();
+                    EcritureDynamique(test,((largeurT-strlen(test))/2),(y+1),0);
                     break;
                 }                
             }    
@@ -815,26 +859,30 @@ void lancerJeu(){
     Sleep(1000);
     Effacer();
 
-       int one=1;
        char *convert;
        char *texte=malloc(sizeof(char)*65);
        do{
             if(toursJoues<nbreTours){
-                if(JouerEncore()){
+                if(JouerEncore()){ 
+                 DemarrerJeu(nomJoueur1,  nomJoueur2, toursJoues+1,nbreTours,numJoueurCommencerPartie);
+                }else{
                     Effacer();
-                    strcpy(texte,"Qui desire entamer la partie: Joueur 1 [1] ou Joueur 2 [2]\n");
-                    EcritureDynamique(texte,(largeurTermi-strlen(texte))/2,(hauteurTermi/2)-1,0);
+                    strcpy(texte,"Point de sauvegarde!");
+                    EcritureDynamique(texte,(largeurTermi-strlen(texte))/2,(hauteurTermi/2)-1,0);            
+                    strcpy(texte,"Sauvegardez votre progression (1).Si (0) elle sera perdue.[1/0]");
+                    EcritureDynamique(texte,(largeurTermi-strlen(texte))/2,(hauteurTermi/2),0); 
                     do{
-                        gotoxy(largeurTermi/2,(hauteurTermi/2));
+                        gotoxy(largeurTermi/2,(hauteurTermi/2)+1);
                         clearLine();
-                        gotoxy(largeurTermi/2,(hauteurTermi/2));
+                        gotoxy(largeurTermi/2,(hauteurTermi/2)+1);
                         scanf("%s",texte);
-                        numJoueurCommencerPartie=strtol(texte,&convert,10);
-                    }while((numJoueurCommencerPartie!=1 && numJoueurCommencerPartie!=2) || !isNumber(texte)); 
-                    numJoueurCommencerPartie=strtol(texte,&convert,10);
-                  free(texte);
-                  free(convert);
-            DemarrerJeu(nomJoueur1,  nomJoueur2, toursJoues+1,nbreTours,numJoueurCommencerPartie);
+                        x=strtol(texte,&convert,10);
+                    }while((x!=1 && x!=0) || !isNumber(texte)); 
+                    x=strtol(texte,&convert,10);    
+                    if(x) {
+                        sauvegarderPartie();
+                        Sleep(2000);
+                    }
                 }
             }else{
                 afficherMenu();
@@ -866,6 +914,7 @@ void rectangle(int x, int y, int lon, int haut)
 
 
 void afficherMenu() {
+    Effacer();
     char choixmenu;
     getConsoleSize(&width,&height);
     int menuWidth = (int)(width * 0.4);
@@ -874,38 +923,82 @@ void afficherMenu() {
     int menuY = (height - menuHeight) / 2;
     int upper=menuHeight/3;
     int optionZone=2*menuHeight/3;
-    while (1) {
-        system("clear || cls");  // Efface l'écran (compatible Linux/Windows)
-        rectangle(menuX,menuY,menuWidth,upper);
-        rectangle(menuX,menuY+upper+1,menuWidth,optionZone);
+    
+        rectangle(menuX,menuY-3,menuWidth,upper);
+        rectangle(menuX,menuY+upper-2,menuWidth,optionZone);
        
-       gotoxy(menuX+(menuWidth-4)/2,menuY+(upper/2)); printf("MENU");
+       gotoxy(menuX+(menuWidth-4)/2,menuY+(upper/2)-3); printf("MENU");
        
-       gotoxy(menuX+3,menuY+upper+optionZone*0.3);printf("X - Charger Partie");
-       gotoxy(menuX+3,menuY+upper+optionZone*0.5);printf("Y - Nouvelle Partie");
-       gotoxy(menuX+3,menuY+upper+optionZone*0.9);printf("Q - Quitter");
-       rectangle(menuX,menuY+menuHeight+1,menuWidth,menuHeight*0.3);
-       gotoxy(menuX+3,menuY+menuHeight+(upper)/2);printf("Votre choix : ");
+       gotoxy(menuX+3,menuY+upper+optionZone*0.3-3);printf("[X] - Charger Partie");
+       gotoxy(menuX+3,menuY+upper+optionZone*0.5-3);printf("[Y] - Nouvelle Partie");
+       gotoxy(menuX+3,menuY+upper+optionZone*0.9-3);printf("[Q] - Quitter");
+       rectangle(menuX,menuY+menuHeight-1,menuWidth,menuHeight*0.35);
+
+       gotoxy((2+width-strlen("Choisissez une option valide et confirmez\n"))/2,(menuY+menuHeight+(upper)/2)-1);
+       printf("Choisissez une option valide et confirmez\n");
 
 
-        choixmenu = getchar(); // Récupère l'entrée utilisateur
-        while (getchar() != '\n'); // Vide le buffer pour éviter les erreurs
-
-        choixmenu = tolower(choixmenu); // Convertit en minuscule
-
+     // Convertit en minuscule
+     char validerChoix=0;
+     
+     do{
+        gotoxy(width/2,(menuY+menuHeight+(upper)/2));
+        choixmenu=getch();
         switch (choixmenu) {
-            case 'x':
-                chargerPartie();
+            case 'X':{
+                printf("X");
+                do {
+                    choixmenu=getch();
+                    if(choixmenu=='\r'){
+                        chargerPartie();
+                        break;
+                    }
+                }while(choixmenu!='\b');
+                if(choixmenu=='\b') 
+                {
+                    printf("\b \b");
+                    choixmenu='\n';
+                }
                 break;
-            case 'y':
-                nouvellePartie();
+            }
+            case 'Y':{
+                printf("Y");
+                do {
+                    choixmenu=getch();
+                    if(choixmenu=='\r'){
+                        NouvellePartie();
+                        break;
+                    }
+                }while(choixmenu!='\b');
+                if(choixmenu=='\b') 
+                {
+                    printf("\b \b");
+                    choixmenu='\n';
+                }
                 break;
-            case 'q':
-                printf("Fermeture du programme...\n");
-                exit(0);
-            default:
-                // L'entrée invalide est ignorée, pas d'affichage d'erreur
+            }
+            case 'Q':{
+                printf("Q");
+                do {
+                    choixmenu=getch();
+                    if(choixmenu=='\r'){
+                        exit(0);
+                        break;
+                    }
+                }while(choixmenu!='\b');
+                if(choixmenu=='\b') 
+                {
+                    printf("\b \b");
+                    choixmenu='\n';
+                }
                 break;
+            }
+            default: choixmenu='\n';
+            break;
         }
-    }
+    }while(choixmenu=='\n');
+                
+        
+        
+    
 }
