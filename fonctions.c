@@ -653,17 +653,17 @@ void DemarrerPartie(char Joueur1[], char Joueur2[], int tourActuel, int totalTou
     namePlay2();printf("%s", Joueur2);
 
     //En fonction du joueur qui commence, on appelle la fonction genererCaracteresAleatoires
-    genererCaracteresAleatoires(nbreTotalLettresGrille);
+    genererCaractereAleatoires();
 
     if(numCommencer == 1){
         //Le joueur 1 entre son mot (le mot est biensur hashé)
         centeredhash1(motsJoueur1, 10);
 
         //Puis le joueur 2 entre son mot
-        centerword2(motsJoueur2, 10);
+        centeredhashword2(motsJoueur2, 10);
 
         //On affiche les mots des deux joueurs après dans leur case respective
-        centeredword1(motsJoueur1);
+        centerword1(motsJoueur1);
         centerword2(motsJoueur2);
     }else{ //Dans le cas contraire on commence avec le joueur 2
 
@@ -671,7 +671,6 @@ void DemarrerPartie(char Joueur1[], char Joueur2[], int tourActuel, int totalTou
         centeredhash2(motsJoueur1, 10);
 
         //Le joueur 1 entre son mot ensuite
-        centerword1(motsJoueur2, 10);
 
         //Puis on affiche les deux mots
         centeredword2(motsJoueur1);
@@ -684,7 +683,7 @@ void DemarrerPartie(char Joueur1[], char Joueur2[], int tourActuel, int totalTou
     //Il y aura peut être un texte pour dire qu'on procède mainteanant à la validation des mots
     
     int i = 0;
-    for(i = 0; i<2, i++){
+    for(i = 0; i<2; i++){
         if(validationChar(tabMotsJoueurs[i], grille)){
             //On stocke le score du joueur dans la variable globale de score
         }
@@ -1253,7 +1252,7 @@ void genererCaractereAleatoires() {
 
     // int joueurActuel = demanderJoueurCommence(); // On appelle la fonction ici
 
-    for (int i = 0; i < nbreTotalLettresGrille; i++) {
+    for (int i = 0; i < nbreTotalLettresGrille; i++) { 
         prompt();
         clearLine();
         prompt();i%2==0?printf("Joueur 1, choisissez une lettre ('c' pour consonne, 'v' pour voyelle) : ") : printf("Joueur 2, choisissez une lettre ('c' pour consonne, 'v' pour voyelle) : ");
@@ -1274,7 +1273,7 @@ void genererCaractereAleatoires() {
         EntryField();printf("%c",lettresGenerees[i]);
         gambaseX++;
         // Changer de joueur sans ternaire
-       
+
     }
 
 }
