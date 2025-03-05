@@ -17,7 +17,7 @@ const char consonnes[20] = {'B', 'C', 'D', 'F', 'G', 'H', 'J', 'K', 'L', 'M', 'N
 char nomJoueur1[10];
 char nomJoueur2[10];
 int numJoueurCommencerPartie;
-int nbreTours=0;
+int nbreTours=1;
 char choixConsonneVoyelle;
 
 // Définition des variables globales supplémentaires
@@ -805,12 +805,12 @@ void lancerJeu(){
 
     //Pause et effacer pour lancer le Jeu
     Sleep(1000);
-    Effacer();
 
        int one=1;
        char *convert;
        char *texte=malloc(sizeof(char)*65);
        do{
+        Effacer();
             if(toursJoues<nbreTours){
                 if(JouerEncore()){
                     Effacer();
@@ -829,6 +829,7 @@ void lancerJeu(){
             DemarrerJeu(nomJoueur1,  nomJoueur2, toursJoues+1,nbreTours,numJoueurCommencerPartie);
                 }
             }else{
+                Effacer();
                 menu();
             }
         }while(toursJoues<=nbreTours);
