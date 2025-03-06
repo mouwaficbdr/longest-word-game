@@ -20,7 +20,6 @@ extern int nbreTours;               // Nombre total de tours pour la partie comp
 extern int scoreJoueur1;            // Score actuel du premier joueur
 extern int scoreJoueur2;            // Score actuel du deuxième joueur
 extern int toursJoues;              // Nombre de tours déjà joués
-extern char grille[9];             // Tableau représentant les lettres dans la grille de jeu
 
 extern int scorefieldX1, scorefieldY1, scorefieldLong, scorefieldHeight;
 extern int scorefieldCursorX1, scorefieldCursorY1;
@@ -84,14 +83,6 @@ void removeSameChar(char *chaine, char c);
  * @return 1 si le caractère est dans la chaine (soit il est non utilisé) et 0 sinon
  */
 int notUsed(char tab[], char c);
-
-
-/**
- * Définit les dimensions du terminal 
- * @param largeur 
- * @param hauteur 
- */
-void tailleTerminal(int *largeur, int *hauteur);
 
 
 /**

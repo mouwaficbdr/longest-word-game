@@ -17,17 +17,15 @@ const char consonnes[20] = {'b', 'c', 'd', 'f', 'g', 'h', 'j', 'k', 'l', 'm', 'n
 char nomJoueur1[10];
 char nomJoueur2[10];
 int numJoueurCommencerPartie;
-int nbreTours=1;
+int nbreTours=0;
 char lettresGenerees[10]; 
 char choixmenu;
 int width,height;
 
 // Définition des variables globales supplémentaires
-int scoreJoueur1 = 1829;           // Score du joueur 1, initialisé à 0
-int scoreJoueur2 = 123;           // Score du joueur 2, initialisé à 0
+int scoreJoueur1 = 0;           // Score du joueur 1, initialisé à 0
+int scoreJoueur2 = 0;           // Score du joueur 2, initialisé à 0
 int toursJoues = 0;             // Nombre de tours joués, initialisé à 0
-char grille[9] = {0};          // Grille de jeu avec taille exacte pour stocker nbreTotalLettresGrille caractères
-
 int scorefieldX1, scorefieldY1, scorefieldLong, scorefieldHeight;
 int scorefieldCursorX1, scorefieldCursorY1;
 int mainframeX, mainframeY, mainframeLong, mainframeHeight;
@@ -381,7 +379,7 @@ void RangerDico(){
 
 int validationMots(char mot[]) {
     FILE *fichier;
-    char motDico[35], path[] = "../ .txt";
+    char motDico[35], path[] = "../dico/ .txt";
 
     path[strcspn(path, " ")] = mot[0];
     int found = 0;
@@ -519,12 +517,6 @@ void removeSameChar(char *chaine, char c) {
        
 // Définition des fonctions
 
-void tailleTerminal(int *largeur, int *hauteur){
-    CONSOLE_SCREEN_BUFFER_INFO terminal;
-    GetConsoleScreenBufferInfo(GetStdHandle(STD_OUTPUT_HANDLE), &terminal);
-    *largeur= terminal.srWindow.Right - terminal.srWindow.Left +1;
-    *hauteur= terminal.srWindow.Bottom - terminal.srWindow.Top +1;
-}
 
 void Effacer()
 {
@@ -567,19 +559,18 @@ void EcritureDynamique(char texte[], int x, int y,int vitesse){
  
 
  int JouerEncore(){
-    Effacer();
     char texte[]="On passe a la partie suivante?";
     int largeurTermi=0, hauteurTermi=0;
 
     //recuperer la taille du terminal
-    tailleTerminal(&largeurTermi, &hauteurTermi);
+    getConsoleSize(&largeurTermi, &hauteurTermi);
     char c='R';
     while(hauteurTermi<30 || c!='R'){
         gotoxy(0,1);
         clearLine();
         EcritureDynamique("Veuillez agrandir votre terminal et appuyer sur [R]\n",0,0,0);
         scanf("%c", &c);
-        tailleTerminal(&largeurTermi, &hauteurTermi);
+        getConsoleSize(&largeurTermi, &hauteurTermi);
     }
     //Centrer le 1er texte et l'écrire
     int xR=(3*largeurTermi)/4;
@@ -688,17 +679,17 @@ int bon=0;
         
             char texte[]="Attention: Une partie a ete sauvegardee. En poursuivant vous ecraserez les sauvegardes!\n";
             int largeur=0, hauteur=0;
-            tailleTerminal(&largeur,&hauteur);
+            getConsoleSize(&largeur,&hauteur);
             largeur = (largeur-strlen(texte))/2;
             hauteur /= 2;
             EcritureDynamique(texte,largeur,hauteur-1,0);
             
             strcpy(texte,"Voulez-vous lancer la nouvelle partie? Oui[O] / Non[N]\n");
-            tailleTerminal(&largeur,&hauteur);
+            getConsoleSize(&largeur,&hauteur);
             largeur = (largeur-strlen(texte))/2;
             hauteur /= 2;
             EcritureDynamique(texte,largeur,hauteur,0);
-            tailleTerminal(&largeur,&hauteur);
+            getConsoleSize(&largeur,&hauteur);
             gotoxy((largeur/2),(hauteur/2)+1);
 
      while(!bon)
@@ -742,7 +733,7 @@ int bon=0;
     {   
         char **lesinfos=malloc(sizeof(char *)*4);
        
-        for(int i=0; i<5; i++){
+        for(int i=0; i<4; i++){
             lesinfos[i]=malloc(sizeof(char)*70);
         }
         strcpy(lesinfos[0],"Nom du joueur 1: \n");
@@ -759,12 +750,12 @@ int bon=0;
 
         for(int i=0; i<4; i++)
         {
-            tailleTerminal(&largeurT,&hauteurT);
+            getConsoleSize(&largeurT,&hauteurT);
             x=(largeurT-strlen(lesinfos[i]))/2;
             y=(hauteurT/3)+(2*i);
             gotoxy(x,y);
             printf("%s",lesinfos[i]);
-            tailleTerminal(&largeurT,&hauteurT);
+            getConsoleSize(&largeurT,&hauteurT);
             gotoxy((largeurT/2),y+1);   
             char test[10]="a";
             char *converti=NULL;
@@ -822,7 +813,6 @@ int bon=0;
         free(lesinfos);
         scoreJoueur1=0; 
         scoreJoueur2=0;
-
         DemarrerPartie(nomJoueur1,nomJoueur2,1,nbreTours,numJoueurCommencerPartie);
     }else{
         afficherMenu();
@@ -836,7 +826,7 @@ void lancerJeu(){
     int largeurTermi=0, hauteurTermi=0;
         
     //Definir les dimensions du terminal pour les affichages
-    tailleTerminal(&largeurTermi, &hauteurTermi);
+    getConsoleSize(&largeurTermi, &hauteurTermi);
 
     char TexteDebut[]="QUI AURA LE LONGEST WORD?";
     //Pause
@@ -855,7 +845,6 @@ void lancerJeu(){
        char *convert;
        char *texte=malloc(sizeof(char)*65);
        do{
-        Effacer();
             if(toursJoues<nbreTours){
                 if(JouerEncore()){ 
                  DemarrerPartie(nomJoueur1,  nomJoueur2, toursJoues+1,nbreTours,numJoueurCommencerPartie);
@@ -879,7 +868,6 @@ void lancerJeu(){
                     }
                 }
             }else{
-                Effacer();
                 afficherMenu();
             }
         }while(toursJoues<=nbreTours);
@@ -1319,7 +1307,8 @@ void genererCaractereAleatoires(int numCommencer) {
 
 void DemarrerPartie(char Joueur1[], char Joueur2[], int tourActuel, int totalTours, int numCommencer){
     Effacer();
-    
+    gotoxy(0,4);
+    printf("Partie %d", tourActuel);
     //On lance les fonctions interfaces et autres 
     
     //On initialise les variables de récupération des dimensions de la console
@@ -1343,13 +1332,14 @@ void DemarrerPartie(char Joueur1[], char Joueur2[], int tourActuel, int totalTou
         //On affiche les mots des deux joueurs après dans leur case respective
         centerword1(motsJoueur1[tourActuel]);
         centerword2(motsJoueur2[tourActuel]);
+
     }else{ //Dans le cas contraire on commence avec le joueur 2
 
         //Le joueur 2 entre son mot 
-        centeredhash2(motsJoueur1[tourActuel], 10);
+        centeredhash2(motsJoueur2[tourActuel], 10);
 
         //Le joueur 1 entre son mot ensuite
-
+        centeredhash1(motsJoueur1[tourActuel], 10);
         //Puis on affiche les deux mots
         centerword2(motsJoueur1[tourActuel]);
         centerword1(motsJoueur2[tourActuel]);
@@ -1359,16 +1349,22 @@ void DemarrerPartie(char Joueur1[], char Joueur2[], int tourActuel, int totalTou
     char *tabMotsJoueurs[2] = {motsJoueur1[tourActuel], motsJoueur2[tourActuel]}; 
 
     //Il y aura peut être un texte pour dire qu'on procède mainteanant à la validation des mots
-    
+    Sleep(2000);
     int i = 0;
     for(i = 0; i<2; i++){
-        if(validationChar(tabMotsJoueurs[i], grille)){
+        if(validationChar(tabMotsJoueurs[i], lettresGenerees)){
             //On stocke le score du joueur dans la variable globale de score
+            scoreJoueur1+=validationMots(tabMotsJoueurs[i]);
+            
         }
     }
+// Incrementation des scores
+    scoreJoueur1+=validationChar(motsJoueur1[tourActuel],lettresGenerees)?validationMots(motsJoueur1[tourActuel]):0;
 
+    scoreJoueur2+=validationChar(motsJoueur2[tourActuel],lettresGenerees)?validationMots(motsJoueur2[tourActuel]):0;
+
+    toursJoues=tourActuel;
     
-
 }
 
 

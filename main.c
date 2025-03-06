@@ -12,12 +12,7 @@ int main(){
   // player2Score();printf("%d",scoreJoueur2);
   // genererCaractereAleatoires();
   
-    strcpy(nomJoueur1,"Wesley");
-    strcpy(nomJoueur2,"kami");
-
-  int tour=2,totalTour=4,numCommencer=1;  
-  DemarrerPartie(nomJoueur1, nomJoueur2, tour, totalTour, numCommencer);
-  
+  lancerJeu();  
   return 0;    
 }
     
