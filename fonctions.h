@@ -258,6 +258,8 @@ extern void prompt();
 extern void initialiserInterface();
 extern void demanderMotJoueur1(char *mot);
 extern void demanderMotJoueur2(char *mot);
+extern void genererCaractereAleatoires(int numCommencer);
+extern void mettreAJourAffichageScores();
 
 
 #endif
