@@ -559,7 +559,7 @@ void EcritureDynamique(char texte[], int x, int y,int vitesse){
  
 
  int JouerEncore(){
-    char texte[]="On passe a la partie suivante?";
+    char texte[65]="On passe au tour suivant?";
     int largeurTermi=0, hauteurTermi=0;
 
     //recuperer la taille du terminal
@@ -572,76 +572,133 @@ void EcritureDynamique(char texte[], int x, int y,int vitesse){
         scanf("%c", &c);
         getConsoleSize(&largeurTermi, &hauteurTermi);
     }
-    //Centrer le 1er texte et l'écrire
-    int xR=(3*largeurTermi)/4;
-    int yR= (3*hauteurTermi)/4;
-    rectangle(xR,yR,(largeurTermi/4),7);
     
-    xR=1+((largeurTermi/4)-strlen(texte))/2+(3*largeurTermi)/4;
-    yR= (7*hauteurTermi/8)-1;
-    EcritureDynamique(texte,xR,yR,50);
+    // Définir le rectangle
+    int rectX = (3*largeurTermi)/4;
+    int rectY = (3*hauteurTermi)/4;
+    int rectLargeur = largeurTermi/4;
+    int rectHauteur = 7;
+    
+    // Dessiner le rectangle
+    rectangle(rectX, rectY, rectLargeur, rectHauteur);
+    
+    // Centre parfaitement le 1er texte dans le rectangle
+    strcpy(texte, "On passe au tour suivant?");
+    int textX = rectX + (rectLargeur - strlen(texte)) / 2;
+    int textY = rectY + 2; // Positionner à environ 1/3 de la hauteur du rectangle
+    gotoxy(textX, textY);
+    printf("%s", texte);
      
-    //Centrer le 2ème texte et l'écrire
-    strcpy(texte,"Oui[O] / Non [N]");
-    xR=1+((largeurTermi/4)-strlen(texte))/2+(3*largeurTermi)/4;
-    EcritureDynamique(texte,xR,yR+1,50);
+    // Centre parfaitement le 2ème texte dans le rectangle
+    strcpy(texte, "Oui[O] / Non [N]");
+    textX = rectX + (rectLargeur - strlen(texte)) / 2;
+    textY = rectY + 4; // Positionner à environ 2/3 de la hauteur du rectangle
+    gotoxy(textX, textY);
+    printf("%s", texte);
 
-    //Recupérer la récuperer la réponse
-    gotoxy((7*largeurTermi/8),(7*hauteurTermi/8)+1);
+    // Positionner le curseur pour la saisie
+    textX = rectX + rectLargeur / 2; // Centre horizontalement
+    textY = rectY + 5; // Juste en dessous du texte de choix
+    gotoxy(textX, textY);
+    
     char choix='\n';
     char validation='\0';
      int bon=0;
-     char *convert;
+    
+    // Vider le buffer d'entrée
+    fflush(stdin);
+    
      while(!bon){
+        // Positionner le curseur pour la saisie du premier choix
+        gotoxy(textX, textY);
+        
         choix=getche();
+        choix = toupper(choix); // Convertir en majuscule pour accepter 'o' ou 'O', 'n' ou 'N'
+        
         if(choix=='O' || choix=='N')
         {
-            while(1)
-            {
+            // Afficher immédiatement le choix de l'utilisateur
+            gotoxy(textX, textY);
+            printf("%c", choix);
+            
+            // Attendre la validation par Entrée
                 validation=getche();
                 if(validation=='\r'){
                     if(choix=='O'){
-                    strcpy(texte,"Qui entamera la partie: ");
-                    gotoxy(1+(3*largeurTermi)/4,(7*hauteurTermi/8)-1);
-                    printf("                                ");
-                    EcritureDynamique(texte,1+((largeurTermi/4)-strlen(texte))/2+(3*largeurTermi)/4,(7*hauteurTermi/8)-1,0);
-                    strcpy(texte," Joueur [1]/[2]?");
-                    EcritureDynamique(texte,1+((largeurTermi/4)-strlen(texte))/2+(3*largeurTermi)/4,(7*hauteurTermi/8),0);
+                    // Effacer les deux lignes de texte
+                    gotoxy(rectX + 1, rectY + 2);
+                    for(int i = 0; i < rectLargeur - 1; i++) printf(" ");
+                    gotoxy(rectX + 1, rectY + 4);
+                    for(int i = 0; i < rectLargeur - 1; i++) printf(" ");
+                    
+                    // Centrer parfaitement le texte de la question
+                    strcpy(texte, "Qui commencera le tour suivant:");
+                    textX = rectX + (rectLargeur - strlen(texte)) / 2;
+                    textY = rectY + 2;
+                    gotoxy(textX, textY);
+                    printf("%s", texte);
+                    
+                    // Centrer parfaitement le texte du choix
+                    strcpy(texte, "Joueur [1]/[2]?");
+                    textX = rectX + (rectLargeur - strlen(texte)) / 2;
+                    textY = rectY + 4;
+                    gotoxy(textX, textY);
+                    printf("%s", texte);
+                    
+                    // Vider le buffer d'entrée avant de demander un nouveau choix
+                    fflush(stdin);
+                    
+                    // Variable pour stocker le résultat de la conversion
+                    char choixJoueur[3] = {0};
+                    
+                    // Positionner le curseur pour la saisie
+                    textX = rectX + rectLargeur / 2;
+                    textY = rectY + 5;
+                    
                     do{
-                        gotoxy(1+(3*largeurTermi)/4,(7*hauteurTermi/8)+1);
-                        printf("                                ");
-                        gotoxy((7*largeurTermi/8),(7*hauteurTermi/8)+1);
-                        scanf("%s",texte);
-                        numJoueurCommencerPartie=strtol(texte,&convert,10);
-                    }while((numJoueurCommencerPartie!=1 && numJoueurCommencerPartie!=2) || !isNumber(texte)); 
-                    numJoueurCommencerPartie=strtol(texte,&convert,10);
-                  
-                  free(convert);
-                        return 1;
-                    }
+                        // Effacer la ligne de saisie
+                        gotoxy(rectX + 1, rectY + 5);
+                        for(int i = 0; i < rectLargeur - 1; i++) printf(" ");
                         
+                        // Positionner le curseur
+                        gotoxy(textX, textY);
+                        scanf("%2s", choixJoueur);  // Limiter à 2 caractères pour éviter les débordements
+                        
+                        // Vérifier si le choix est un nombre et s'il est 1 ou 2
+                        if(isNumber(choixJoueur)) {
+                            numJoueurCommencerPartie = atoi(choixJoueur);
+                        } else {
+                            numJoueurCommencerPartie = 0; // Valeur invalide pour continuer la boucle
+                        }
+                        
+                        // Vider le buffer d'entrée
+                        fflush(stdin);
+                        
+                    }while(numJoueurCommencerPartie != 1 && numJoueurCommencerPartie != 2);
+                    
+                    return 1;
+                }
                     else return 0;
                 }else if(validation=='\b'){
-                    gotoxy((7*largeurTermi/8),(7*hauteurTermi/8)+1);
+                // Gérer la touche Retour arrière - effacer le caractère
+                gotoxy(textX, textY);
                     printf(" "); 
-                    gotoxy((7*largeurTermi/8),(7*hauteurTermi/8)+1);
+                gotoxy(textX, textY);
                     choix='\n';
-                    break;
                 }else{
-                    printf("\b \b");
-                    gotoxy((7*largeurTermi/8)+1,(7*hauteurTermi/8)+1);
-
-                }
+                // Ignorer les autres touches
+                gotoxy(textX, textY);
+                printf("%c", choix);
             }
-        }else
-        {
-            printf("\b \b"); //Effacer les caractères qui ne répondent pas à ceux demandés
-            gotoxy((7*largeurTermi/8),(7*hauteurTermi/8)+1);
-
+        }else{
+            // Effacer le caractère invalide
+            gotoxy(textX, textY);
+            printf(" ");
+            gotoxy(textX, textY);
         }
-     }
-   
-     
+    }
+    
+    return 0; // Par défaut, retourner 0 si on sort de la boucle sans décision
 }
 
 
@@ -739,7 +796,7 @@ int bon=0;
         strcpy(lesinfos[0],"Nom du joueur 1: \n");
         strcpy(lesinfos[1],"Nom du joueur 2: \n");
         strcpy(lesinfos[2],"Combien de tours voulez-vous effectuer?\n");
-        strcpy(lesinfos[3],"Qui va entamer la partie: Joueur [1] / [2]\n");
+        strcpy(lesinfos[3],"Quel joueur commence le premier tour: Joueur [1] / [2]\n");
         
         int largeurT=0;
         int hauteurT=0;
@@ -1237,11 +1294,13 @@ void afficherMenu() {
 // Initialise et affiche l'interface complète avec les scores, noms et grille
 void initialiserInterface() {
     afficherInterface();
-    namePlay1();printf("Joueur 1");
-    namePlay2();printf("Joueur 2");
-    player1Score();printf("0");
-    player2Score();printf("0");
-    EntryField();printf("WASOPEDNLQ");
+    namePlay1();printf("%s", nomJoueur1);
+    namePlay2();printf("%s", nomJoueur2);
+    
+    // Mise à jour de l'affichage des scores
+    mettreAJourAffichageScores();
+    
+    EntryField();printf("          "); // Préparation pour les lettres
 }
 
 // Demande et traite la saisie du mot pour le joueur 1
@@ -1308,7 +1367,7 @@ void genererCaractereAleatoires(int numCommencer) {
 void DemarrerPartie(char Joueur1[], char Joueur2[], int tourActuel, int totalTours, int numCommencer){
     Effacer();
     gotoxy(0,4);
-    printf("Partie %d", tourActuel);
+    printf("Tour %d", tourActuel);
     //On lance les fonctions interfaces et autres 
     
     //On initialise les variables de récupération des dimensions de la console
@@ -1318,31 +1377,66 @@ void DemarrerPartie(char Joueur1[], char Joueur2[], int tourActuel, int totalTou
     afficherInterface();
     namePlay1();printf("%s", Joueur1);
     namePlay2();printf("%s", Joueur2);
+    
+    // Afficher les scores existants au début du tour
+    mettreAJourAffichageScores();
 
     //En fonction du joueur qui commence, on appelle la fonction genererCaracteresAleatoires
     genererCaractereAleatoires(numCommencer);
 
+    // Effacer le texte de prompt après le remplissage de la grille
+    prompt();
+    clearLine();
+
     if(numCommencer == 1){
+        // Afficher le texte pour le joueur 1
+        gotoxy(EntryFieldX1, EntryFieldY1-1);
+        printf("Joueur 1 entrez votre mot:");
+        
         //Le joueur 1 entre son mot (le mot est biensur hashé)
         centeredhash1(motsJoueur1[tourActuel], 10);
 
+        // Effacer le texte du joueur 1 et afficher celui du joueur 2
+        gotoxy(EntryFieldX1, EntryFieldY1-1);
+        clearLine();
+        gotoxy(EntryFieldX2, EntryFieldY2-1);
+        printf("Joueur 2 entrez votre mot:");
+
         //Puis le joueur 2 entre son mot
         centeredhash2(motsJoueur2[tourActuel], 10);
+
+        // Effacer le texte du joueur 2
+        gotoxy(EntryFieldX2, EntryFieldY2-1);
+        clearLine();
 
         //On affiche les mots des deux joueurs après dans leur case respective
         centerword1(motsJoueur1[tourActuel]);
         centerword2(motsJoueur2[tourActuel]);
 
     }else{ //Dans le cas contraire on commence avec le joueur 2
+        // Afficher le texte pour le joueur 2
+        gotoxy(EntryFieldX2, EntryFieldY2-1);
+        printf("Joueur 2 entrez votre mot:");
 
         //Le joueur 2 entre son mot 
         centeredhash2(motsJoueur2[tourActuel], 10);
 
+        // Effacer le texte du joueur 2 et afficher celui du joueur 1
+        gotoxy(EntryFieldX2, EntryFieldY2-1);
+        clearLine();
+        gotoxy(EntryFieldX1, EntryFieldY1-1);
+        printf("Joueur 1 entrez votre mot:");
+
         //Le joueur 1 entre son mot ensuite
         centeredhash1(motsJoueur1[tourActuel], 10);
+
+        // Effacer le texte du joueur 1
+        gotoxy(EntryFieldX1, EntryFieldY1-1);
+        clearLine();
+
         //Puis on affiche les deux mots
-        centerword2(motsJoueur1[tourActuel]);
-        centerword1(motsJoueur2[tourActuel]);
+        centerword2(motsJoueur2[tourActuel]);
+        centerword1(motsJoueur1[tourActuel]);
     }
 
     //Elle stocke les mots de chaque joueur
@@ -1350,28 +1444,61 @@ void DemarrerPartie(char Joueur1[], char Joueur2[], int tourActuel, int totalTou
 
     //Il y aura peut être un texte pour dire qu'on procède mainteanant à la validation des mots
     Sleep(2000);
-    int i = 0;
-    for(i = 0; i<2; i++){
-        if(validationChar(tabMotsJoueurs[i], lettresGenerees)){
-            //On stocke le score du joueur dans la variable globale de score
-
-            scoreJoueur1+=validationMots(tabMotsJoueurs[i]);
-        }
+    
+    // Réinitialisation des incrémentations du tour en cours
+    int scoreIncrementJ1 = 0;
+    int scoreIncrementJ2 = 0;
+    
+    // Validation et calcul du score pour chaque joueur
+    if(validationChar(motsJoueur1[tourActuel], lettresGenerees)) {
+        int scoreMotJ1 = validationMots(motsJoueur1[tourActuel]);
+        scoreJoueur1 += scoreMotJ1;
     }
-// Incrementation des scores
-    scoreJoueur1+=validationChar(motsJoueur1[tourActuel],lettresGenerees)?validationMots(motsJoueur1[tourActuel]):0;
+    
+    if(validationChar(motsJoueur2[tourActuel], lettresGenerees)) {
+        int scoreMotJ2 = validationMots(motsJoueur2[tourActuel]);
+        scoreJoueur2 += scoreMotJ2;
+    }
 
-    scoreJoueur2+=validationChar(motsJoueur2[tourActuel],lettresGenerees)?validationMots(motsJoueur2[tourActuel]):0;
+    toursJoues = tourActuel;
 
-    toursJoues=tourActuel;
+    // Afficher "Vous auriez pu trouver:" au-dessus du rectangle de l'IA, centré
+    char* messageTrouver = "Vous auriez pu trouver:";
+    int messageX = AIX + ((EntryFieldLong - strlen(messageTrouver)) / 2);
+    gotoxy(messageX, AIY-1);
+    printf("%s", messageTrouver);
 
     centerwordAI(LongestWord(lettresGenerees));
 
+    // Mise à jour de l'affichage des scores
+    mettreAJourAffichageScores();
+    
+    JouerEncore();
+}
+
+// Fonction pour mettre à jour l'affichage des scores
+void mettreAJourAffichageScores() {
+    // Mise à jour des positions des scores en fonction de leurs valeurs actuelles
+    score1moveX = scorefieldX1 + ((scorefieldLong-Intlen(scoreJoueur1))/2);
+    score2moveX = scorefieldX2 + ((scorefieldLong-Intlen(scoreJoueur2))/2);
+    
+    // Effacement des anciens scores
+    int j;
+    player1Score();
+    for(j = 0; j < 10; j++) { // 10 espaces devraient suffire pour effacer n'importe quel score
+        printf(" ");
+    }
+    
+    player2Score();
+    for(j = 0; j < 10; j++) {
+        printf(" ");
+    }
+    
+    // Affichage des nouveaux scores
     player1Score();
     printf("%d", scoreJoueur1);
     player2Score();
     printf("%d", scoreJoueur2);
-    JouerEncore();
 }
 
 
