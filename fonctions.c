@@ -559,7 +559,7 @@ void EcritureDynamique(char texte[], int x, int y,int vitesse){
  
 
  int JouerEncore(){
-    char texte[65]="On passe au tour suivant?";
+    char texte[35]="On passe a la partie suivante?";
     int largeurTermi=0, hauteurTermi=0;
 
     //recuperer la taille du terminal
@@ -583,7 +583,7 @@ void EcritureDynamique(char texte[], int x, int y,int vitesse){
     rectangle(rectX, rectY, rectLargeur, rectHauteur);
     
     // Centre parfaitement le 1er texte dans le rectangle
-    strcpy(texte, "On passe au tour suivant?");
+    strcpy(texte, "On passe a la partie suivante?");
     int textX = rectX + (rectLargeur - strlen(texte)) / 2;
     int textY = rectY + 2; // Positionner à environ 1/3 de la hauteur du rectangle
     gotoxy(textX, textY);
@@ -632,7 +632,7 @@ void EcritureDynamique(char texte[], int x, int y,int vitesse){
                     for(int i = 0; i < rectLargeur - 1; i++) printf(" ");
                     
                     // Centrer parfaitement le texte de la question
-                    strcpy(texte, "Qui commencera le tour suivant:");
+                    strcpy(texte, "Qui commencera la partie suivante:");
                     textX = rectX + (rectLargeur - strlen(texte)) / 2;
                     textY = rectY + 2;
                     gotoxy(textX, textY);
@@ -923,6 +923,10 @@ void lancerJeu(){
                         sauvegarderPartie();
                         Sleep(2000);
                     }
+                    // Libérer la mémoire allouée
+                    free(texte);
+                    // Quitter le programme
+                    exit(0);
                 }
             }else{
                 afficherMenu();
@@ -1367,7 +1371,7 @@ void genererCaractereAleatoires(int numCommencer) {
 void DemarrerPartie(char Joueur1[], char Joueur2[], int tourActuel, int totalTours, int numCommencer){
     Effacer();
     gotoxy(0,4);
-    printf("Tour %d", tourActuel);
+    printf("Partie %d", tourActuel);
     //On lance les fonctions interfaces et autres 
     
     //On initialise les variables de récupération des dimensions de la console
