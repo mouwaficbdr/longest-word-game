@@ -379,7 +379,7 @@ void RangerDico(){
 
 int validationMots(char mot[]) {
     FILE *fichier;
-    char motDico[35], path[] = "../dico/ .txt";
+    char motDico[35], path[] = "./dico/ .txt";
 
     path[strcspn(path, " ")] = mot[0];
     int found = 0;
@@ -452,7 +452,7 @@ void removeSameChar(char *chaine, char c) {
          char *valideMot=malloc(sizeof(char)+1);
         valideMot[0]='\0';
         
-         char name[15]={'.','.','/','d','i','c','o','/','a','.','t','x','t'};
+         char name[14]={'.','/','d','i','c','o','/','a','.','t','x','t'};
         //On initialise des copies de la grille pour l'itération et pour les lettres non utilisés
          char *notUsedchar=malloc(sizeof(char)*(strlen(grille)+1));
          strcpy(notUsedchar,grille);
@@ -463,13 +463,13 @@ void removeSameChar(char *chaine, char c) {
        {
           if(notUsed(notUsedchar,grille[i]))
             {
-             name[8]=grille[i];
+             name[7]=grille[i];
              FILE *fichier=NULL;
              fichier=fopen(name,"r");
        
              if(fichier==NULL)
              {
-                perror("Erreur d'ouverture de fichier");
+                 perror("Erreur d'ouverture de fichier");
              }else
              {
           //Si le fichier est bien ouvert on récupère le mot de chaque ligne en remplacant le contenu de la case de \n par \0
@@ -738,8 +738,8 @@ int bon=0;
         }
         strcpy(lesinfos[0],"Nom du joueur 1: \n");
         strcpy(lesinfos[1],"Nom du joueur 2: \n");
-        strcpy(lesinfos[2],"Combien de parties voulez-vous effectuez?\n");
-        strcpy(lesinfos[3],"Qui desire entamer la partie: Joueur [1] / [2]\n");
+        strcpy(lesinfos[2],"Combien de tours voulez-vous effectuer?\n");
+        strcpy(lesinfos[3],"Qui va entamer la partie: Joueur [1] / [2]\n");
         
         int largeurT=0;
         int hauteurT=0;
@@ -828,7 +828,7 @@ void lancerJeu(){
     //Definir les dimensions du terminal pour les affichages
     getConsoleSize(&largeurTermi, &hauteurTermi);
 
-    char TexteDebut[]="QUI AURA LE LONGEST WORD?";
+    char TexteDebut[]="QUI AURA LE MOT LE PLUS LONG?";
     //Pause
     Sleep(1000);
 
@@ -1354,8 +1354,8 @@ void DemarrerPartie(char Joueur1[], char Joueur2[], int tourActuel, int totalTou
     for(i = 0; i<2; i++){
         if(validationChar(tabMotsJoueurs[i], lettresGenerees)){
             //On stocke le score du joueur dans la variable globale de score
+
             scoreJoueur1+=validationMots(tabMotsJoueurs[i]);
-            
         }
     }
 // Incrementation des scores
@@ -1364,7 +1364,14 @@ void DemarrerPartie(char Joueur1[], char Joueur2[], int tourActuel, int totalTou
     scoreJoueur2+=validationChar(motsJoueur2[tourActuel],lettresGenerees)?validationMots(motsJoueur2[tourActuel]):0;
 
     toursJoues=tourActuel;
-    
+
+    centerwordAI(LongestWord(lettresGenerees));
+
+    player1Score();
+    printf("%d", scoreJoueur1);
+    player2Score();
+    printf("%d", scoreJoueur2);
+    JouerEncore();
 }
 
 
