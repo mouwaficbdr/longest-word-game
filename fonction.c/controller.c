@@ -372,7 +372,6 @@ while(grille[i]!='\0')
           }
             if(validationChar(mot,grille))
               {
-                printf("%s -->%d\n",mot,validationChar(mot,grille));
            //On alloue et on récupère le mot valide seulement s'il est plus long que le précedent
               if(strlen(mot)>strlen(valideMot))
                   {
@@ -407,7 +406,7 @@ while(grille[i]!='\0')
 
 
 int JouerEncore(){
-    char texte[]="On passe a la partie suivante?";
+    char texte[]="On passe au tour suivant?";
     int largeurTermi=0, hauteurTermi=0;
 
     //recuperer la taille du terminal
@@ -449,7 +448,7 @@ int JouerEncore(){
                 validation=getche();
                 if(validation=='\r'){
                     if(choix=='O'){
-                    strcpy(texte,"Qui entamera la partie: ");
+                    strcpy(texte,"Qui entamera le tour: ");
                     gotoxy(1+(3*largeurTermi)/4,(7*hauteurTermi/8)-1);
                     printf("                                ");
                     EcritureDynamique(texte,1+((largeurTermi/4)-strlen(texte))/2+(3*largeurTermi)/4,(7*hauteurTermi/8)-1,0);
@@ -613,7 +612,7 @@ int bon=0;
                   Partie.nbreTours=strtol(test,&converti,10);
                   gotoxy((largeurT/2),y+1);
                   clearLine();
-                  EcritureDynamique(test,((largeurT-strlen(Joueur2.nom))/2),(y+1),0);
+                  EcritureDynamique(test,((largeurT-strlen(test))/2),(y+1),0);
                     break;
                 }
                 case 3:{
@@ -744,56 +743,120 @@ void genererCaractereAleatoires(int numCommencer) {
 }
 
 
+ void mettreAJourAffichageScores() {
+    // Mise à jour des positions des scores en fonction de leurs valeurs actuelles
+    score1moveX = scorefieldX1 + ((scorefieldLong-Intlen(Joueur1.scoreTotal))/2);
+    score2moveX = scorefieldX2 + ((scorefieldLong-Intlen(Joueur2.scoreTotal))/2);
+    
+    // Effacement des anciens scores et affichage des nouveaux scores
+    player1Score();
+    printf("     ");
+    player1Score();
+    printf("%d", Joueur1.scoreTotal);
 
-void DemarrerPartie(char joueur1Name[], char joueur2Name[], int tourActuel, int totalTours, int numCommencer){
- Effacer();
- gotoxy(0,4);
- printf("Partie %d", tourActuel);
- //On lance les fonctions interfaces et autres 
- 
- //On initialise les variables de récupération des dimensions de la console
- initialiserVariables();
-
- //On affiche l'interface et on charge le nom des joueurs
- afficherInterface();
- namePlay1();printf("%s", joueur1Name);
- namePlay2();printf("%s", joueur2Name);
-
- //En fonction du joueur qui commence, on appelle la fonction genererCaracteresAleatoires
- genererCaractereAleatoires(numCommencer);
-
- if(numCommencer == 1){
-     //Le joueur 1 entre son mot (le mot est biensur hashé)
-     centeredhash1(Joueur1.mot[tourActuel], 10);
-
-     //Puis le joueur 2 entre son mot
-     centeredhash2(Joueur2.mot[tourActuel], 10);
-
-     //On affiche les mots des deux joueurs après dans leur case respective
-     centerword1(Joueur1.mot[tourActuel]);
-     centerword2(Joueur2.mot[tourActuel]);
-
- }else{ //Dans le cas contraire on commence avec le joueur 2
-
-     //Le joueur 2 entre son mot 
-     centeredhash2(Joueur2.mot[tourActuel], 10);
-
-     //Le joueur 1 entre son mot ensuite
-     centeredhash1(Joueur1.mot[tourActuel], 10);
-     //Puis on affiche les deux mots
-     centerword2(Joueur1.mot[tourActuel]);
-     centerword1(Joueur2.mot[tourActuel]);
- }
-
-
- //Il y aura peut être un texte pour dire qu'on procède mainteanant à la validation des mots
- Sleep(2000);
- 
-// Incrementation des scores
- Joueur1.score[tourActuel]+=validationChar(Joueur1.mot[tourActuel],Partie.lettreGenerees)?validationMots(Joueur1.mot[tourActuel]):0;
-
- Joueur2.score[tourActuel] +=validationChar(Joueur2.mot[tourActuel],Partie.lettreGenerees)?validationMots(Joueur2.mot[tourActuel]):0;
-
- Partie.tourJoues=tourActuel;
+    player2Score();
+    printf("     ");
+    player2Score();
+    printf("%d", Joueur2.scoreTotal);
 
 }
+
+
+
+
+void DemarrerPartie(char Joueur1name[], char Joueur2name[], int tourActuel, int totalTours, int numCommencer){
+    Effacer();
+    gotoxy(0,4);
+    printf(" Tour %d", tourActuel);
+    //On lance les fonctions interfaces et autres 
+    
+    //On initialise les variables de récupération des dimensions de la console
+    initialiserVariables();
+
+    //On affiche l'interface et on charge le nom des joueurs
+    afficherInterface();
+    namePlay1();printf("%s", Joueur1name);
+    namePlay2();printf("%s", Joueur2name);
+    
+    // Afficher les scores existants au début du tour
+    mettreAJourAffichageScores();
+
+    //En fonction du joueur qui commence, on appelle la fonction genererCaracteresAleatoires
+    genererCaractereAleatoires(numCommencer);
+
+    // Effacer le texte de prompt après le remplissage de la grille
+    prompt();
+    clearLine();
+
+    if(numCommencer == 1){
+        // Afficher le texte pour le joueur 1
+        gotoxy(EntryFieldX1, EntryFieldY1-1);
+        printf("Joueur 1 entrez votre mot:");
+        
+        //Le joueur 1 entre son mot (le mot est biensur hashé)
+        centeredhash1(Joueur1.mot[tourActuel], 10);
+
+        // Effacer le texte du joueur 1 et afficher celui du joueur 2
+        EffacerZone(EntryFieldX1,EntryFieldY1-1,strlen("Joueur 1 entrez votre mot:"),1);
+        gotoxy(EntryFieldX2, EntryFieldY2-1);
+        printf("Joueur 2 entrez votre mot:");
+
+        //Puis le joueur 2 entre son mot
+        centeredhash2(Joueur2.mot[tourActuel], 10);
+
+        // Effacer le texte du joueur 2
+        EffacerZone(EntryFieldX2,EntryFieldY2-1,strlen("Joueur 1 entrez votre mot:"),1);
+
+        //On affiche les mots des deux joueurs après dans leur case respective
+        centerword1(Joueur1.mot[tourActuel]);
+        centerword2(Joueur2.mot[tourActuel]);
+
+    }else{ //Dans le cas contraire on commence avec le joueur 2
+        // Afficher le texte pour le joueur 2
+        gotoxy(EntryFieldX2, EntryFieldY2-1);
+        printf("Joueur 2 entrez votre mot:");
+
+        //Le joueur 2 entre son mot 
+        centeredhash2(Joueur2.mot[tourActuel], 10);
+
+        // Effacer le texte du joueur 2 et afficher celui du joueur 1
+        EffacerZone(EntryFieldX2,EntryFieldY2-1,strlen("Joueur 1 entrez votre mot:"),1);
+        gotoxy(EntryFieldX1, EntryFieldY1-1);
+        printf("Joueur 1 entrez votre mot:");
+
+        //Le joueur 1 entre son mot ensuite
+        centeredhash1(Joueur1.mot[tourActuel], 10);
+
+        // Effacer le texte du joueur 1
+        EffacerZone(EntryFieldX1,EntryFieldY1-1,strlen("Joueur 1 entrez votre mot:"),1);
+
+        //Puis on affiche les deux mots
+        centerword2(Joueur2.mot[tourActuel]);
+        centerword1(Joueur1.mot[tourActuel]);
+    }
+
+
+    //Il y aura peut être un texte pour dire qu'on procède mainteanant à la validation des mots
+    Sleep(2000);
+        
+    Joueur1.score[tourActuel]=validationChar(Joueur1.mot[tourActuel],Partie.lettreGenerees)?validationMots(Joueur1.mot[tourActuel]):0;
+    Joueur1.scoreTotal+= Joueur1.score[tourActuel];
+
+    Joueur2.score[tourActuel]=validationChar(Joueur2.mot[tourActuel],Partie.lettreGenerees)?validationMots(Joueur2.mot[tourActuel]):0;
+    Joueur2.scoreTotal+= Joueur2.score[tourActuel];
+
+    Partie.tourJoues=tourActuel;
+
+    // Afficher "Vous auriez pu trouver:" au-dessus du rectangle de l'IA, centré
+    char* messageTrouver = "Vous auriez pu trouver:";
+    int messageX = AIX + ((EntryFieldLong - strlen(messageTrouver)) / 2);
+    gotoxy(messageX, AIY-1);
+    printf("%s", messageTrouver);
+
+    centerwordAI(LongestWord(Partie.lettreGenerees));
+
+    // Mise à jour de l'affichage des scores
+    mettreAJourAffichageScores();
+    Sleep(5000);
+}
+

@@ -151,6 +151,7 @@ void EcritureDynamique(char texte[], int x, int y,int vitesse){
  }
 
  void EffacerZone(int x, int y, int lon, int haut){
+    gotoxy(x,y);
     for(int i=0;i<lon; i++){
         for(int j=0; j<haut;j++){
             printf(" ");

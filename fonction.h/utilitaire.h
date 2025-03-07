@@ -52,4 +52,13 @@ int isNumber(char *string);
  */
 int Intlen(int n);
 
+/**
+ * @brief 
+ * Efface une zone à partir de coordonnées passés 
+ * @param x 
+ * @param y 
+ * @param lon 
+ * @param haut 
+ */
+void EffacerZone(int x, int y, int lon, int haut);
 #endif /* DE8B904D_F3C7_463B_993A_017D0850612E */

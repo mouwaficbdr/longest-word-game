@@ -1,5 +1,4 @@
 #include "../fonction.h/controller.h"
-#include<stdio.h>
 
 int main(){
 // int a=0;
@@ -11,7 +10,7 @@ int main(){
 //   if(*LongestWord(grille)=='\0'){
 //     printf("b2");
 //   }
-   lancerJeu();  
+   JouerEncore();  
   return 0;    
 }
     
