@@ -74,7 +74,7 @@ void sauvegarderPartie() {
     }
 
     fclose(fichier);
-    printf("Partie sauvegardée avec succès.\n");
+    printf("Partie sauvegardee avec succes.\n");
 }
 
 
@@ -87,7 +87,7 @@ int enregistrerTour(const char motJoueur1[], const char motJoueur2[], int scoreM
     
     // Vérifier que les tours joués ne dépassent pas le nombre de tours total défini pour la partie
     if (Partie.tourJoues >= Partie.nbreTours) {
-        printf("Erreur : Tous les tours de la partie ont déjà été joués.\n");
+        printf("Erreur : Tous les tours de la partie ont deja ete joues.\n");
         return 0;
     }
 
@@ -163,7 +163,7 @@ int chargerPartie() {
     }
 
     fclose(fichier);
-    printf("Partie chargée avec succès, incluant l'historique des mots et scores.\n");
+    printf("Partie chargee avec succes, incluant l'historique des mots et scores.\n");
     return 1;
 }
 
@@ -174,7 +174,7 @@ int chargerPartie() {
 void reviewPartie() {
     // Vérifier si une partie a été chargée ou si on est en cours de partie
     if (Partie.tourJoues == 0) {
-        printf("Aucune partie en cours ou chargée. Rien à afficher.\n");
+        printf("Aucune partie en cours ou chargee. Rien a afficher.\n");
         return;
     }
 
@@ -235,7 +235,7 @@ int effacerSauvegarde(void) {
         int resultat = remove("sauvegarde.txt");
         
         if (resultat == 0) {
-            printf("Sauvegarde précédente effacée avec succès.\n");
+            printf("Sauvegarde precedente effacee avec succes.\n");
             return 1;
         } else {
             printf("Erreur lors de la suppression de la sauvegarde.\n");
@@ -243,7 +243,7 @@ int effacerSauvegarde(void) {
         }
     } else {
         // Le fichier n'existe pas ou n'est pas valide, rien à faire
-        printf("Aucune sauvegarde à effacer.\n");
+        printf("Aucune sauvegarde a effacer.\n");
         return 1;  // On considère que c'est un succès puisqu'il n'y a rien à effacer
     }
 }
@@ -501,7 +501,7 @@ char choix='\n';
 char validation='\0';
 int bon=0;
 //Si une sauvegarde existe
-    if(!verifSauvegarde()){
+    if(verifSauvegarde()){
         
             char texte[]="Attention: Une partie a ete sauvegardee. En poursuivant vous ecraserez les sauvegardes!\n";
             int largeur=0, hauteur=0;
@@ -794,7 +794,7 @@ void DemarrerPartie(char Joueur1name[], char Joueur2name[], int tourActuel, int 
         printf("Joueur 1 entrez votre mot:");
         
         //Le joueur 1 entre son mot (le mot est biensur hashé)
-        centeredhash1(Joueur1.mot[tourActuel], 10);
+        centeredhash1(Joueur1.mot[tourActuel-1], 10);
 
         // Effacer le texte du joueur 1 et afficher celui du joueur 2
         EffacerZone(EntryFieldX1,EntryFieldY1-1,strlen("Joueur 1 entrez votre mot:"),1);
@@ -802,14 +802,14 @@ void DemarrerPartie(char Joueur1name[], char Joueur2name[], int tourActuel, int 
         printf("Joueur 2 entrez votre mot:");
 
         //Puis le joueur 2 entre son mot
-        centeredhash2(Joueur2.mot[tourActuel], 10);
-
+        centeredhash2(Joueur2.mot[tourActuel-1], 10);
+        
         // Effacer le texte du joueur 2
         EffacerZone(EntryFieldX2,EntryFieldY2-1,strlen("Joueur 1 entrez votre mot:"),1);
 
         //On affiche les mots des deux joueurs après dans leur case respective
-        centerword1(Joueur1.mot[tourActuel]);
-        centerword2(Joueur2.mot[tourActuel]);
+        centerword1(Joueur1.mot[tourActuel-1]);
+        centerword2(Joueur2.mot[tourActuel-1]);
 
     }else{ //Dans le cas contraire on commence avec le joueur 2
         // Afficher le texte pour le joueur 2
@@ -817,7 +817,7 @@ void DemarrerPartie(char Joueur1name[], char Joueur2name[], int tourActuel, int 
         printf("Joueur 2 entrez votre mot:");
 
         //Le joueur 2 entre son mot 
-        centeredhash2(Joueur2.mot[tourActuel], 10);
+        centeredhash2(Joueur2.mot[tourActuel-1], 10);
 
         // Effacer le texte du joueur 2 et afficher celui du joueur 1
         EffacerZone(EntryFieldX2,EntryFieldY2-1,strlen("Joueur 1 entrez votre mot:"),1);
@@ -825,25 +825,25 @@ void DemarrerPartie(char Joueur1name[], char Joueur2name[], int tourActuel, int 
         printf("Joueur 1 entrez votre mot:");
 
         //Le joueur 1 entre son mot ensuite
-        centeredhash1(Joueur1.mot[tourActuel], 10);
+        centeredhash1(Joueur1.mot[tourActuel-1], 10);
 
         // Effacer le texte du joueur 1
         EffacerZone(EntryFieldX1,EntryFieldY1-1,strlen("Joueur 1 entrez votre mot:"),1);
 
         //Puis on affiche les deux mots
-        centerword2(Joueur2.mot[tourActuel]);
-        centerword1(Joueur1.mot[tourActuel]);
+        centerword2(Joueur2.mot[tourActuel-1]);
+        centerword1(Joueur1.mot[tourActuel-1]);
     }
 
 
     //Il y aura peut être un texte pour dire qu'on procède mainteanant à la validation des mots
     Sleep(2000);
         
-    Joueur1.score[tourActuel]=validationChar(Joueur1.mot[tourActuel],Partie.lettreGenerees)?validationMots(Joueur1.mot[tourActuel]):0;
-    Joueur1.scoreTotal+= Joueur1.score[tourActuel];
+    Joueur1.score[tourActuel-1]=validationChar(Joueur1.mot[tourActuel-1],Partie.lettreGenerees)?validationMots(Joueur1.mot[tourActuel-1]):0;
+    Joueur1.scoreTotal+= Joueur1.score[tourActuel-1];
 
-    Joueur2.score[tourActuel]=validationChar(Joueur2.mot[tourActuel],Partie.lettreGenerees)?validationMots(Joueur2.mot[tourActuel]):0;
-    Joueur2.scoreTotal+= Joueur2.score[tourActuel];
+    Joueur2.score[tourActuel-1]=validationChar(Joueur2.mot[tourActuel-1],Partie.lettreGenerees)?validationMots(Joueur2.mot[tourActuel-1]):0;
+    Joueur2.scoreTotal+= Joueur2.score[tourActuel-1];
 
     Partie.tourJoues=tourActuel;
 
