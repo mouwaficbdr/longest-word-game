@@ -132,9 +132,15 @@ void afficherMenu() {
             }
 
             // supression d'un indice lorsque l'utilisateur appuie la touche backspace
-            if( ch == '\b' && i > 0){
+            if( ch == '\b' ){
+                if(i==0){
+                   printf("");
+                }
+                else{
                     printf("\b \b") ;
                     i-- ;
+                }
+                    
             }
             //incrémentation de caractère à la chaîne
             else{

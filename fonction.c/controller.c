@@ -420,7 +420,7 @@ int JouerEncore(){
         getConsoleSize(&largeurTermi, &hauteurTermi);
     }
     //Centrer le 1er texte et l'écrire
-    int xR=(3*largeurTermi)/4;
+    int xR=(3*largeurTermi-4)/4;
     int yR= (3*hauteurTermi)/4;
     rectangle(xR,yR,(largeurTermi/4),7);
     
@@ -455,7 +455,7 @@ int JouerEncore(){
                     strcpy(texte," Joueur [1]/[2]?");
                     EcritureDynamique(texte,1+((largeurTermi/4)-strlen(texte))/2+(3*largeurTermi)/4,(7*hauteurTermi/8),0);
                     do{
-                        gotoxy(1+(3*largeurTermi)/4,(7*hauteurTermi/8)+1);
+                        gotoxy(1+(3*largeurTermi)/4,(7*hauteurTermi/8)+2);
                         printf("                                ");
                         gotoxy((7*largeurTermi/8),(7*hauteurTermi/8)+1);
                         scanf("%s",texte);
