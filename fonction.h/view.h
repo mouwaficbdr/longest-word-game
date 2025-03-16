@@ -51,6 +51,12 @@ extern void rectangle(int x, int y, int lon, int haut);
  */
 extern void afficherMenu();
 
+/**
+ * @brief 
+ * Affiche la revue détaillée d'une partie en cours ou chargée
+ */
+extern void afficherReviewPartie(void);
+
 
 
 extern void hashWord(char*word, int size);
