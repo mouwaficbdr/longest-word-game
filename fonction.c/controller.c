@@ -23,7 +23,6 @@ Joueur Joueur1;
 Joueur Joueur2;
 PartieJ Partie;
 
-
 void InitialiserJoueur(){
     strcpy(Joueur1.nom,"\0");
     strcpy(Joueur2.nom,"\0");
@@ -332,6 +331,7 @@ int validationMots(char mot[]) {
 }
 
 
+
 char *LongestWord(char grille[])
 {
     //i pacours la grille
@@ -381,23 +381,16 @@ while(grille[i]!='\0')
            //Si le mot récupéré est aussi long que la grille des lettres il est le plus long
                   if(strlen(valideMot)==nbreTotalLettresGrille)
                       {return valideMot;}
-                  }else
-                  {
-                  fgets(mot,30,fichier);
-                  mot[strlen(mot)-1]='\0';
                   }
-
-              }else
-                  {
-                  fgets(mot,30,fichier);
-                  mot[strlen(mot)-1]='\0';
-                  }
+              }
+            fgets(mot,30,fichier);
+            mot[strlen(mot)-1]='\0';
           }
       }
       fclose(fichier);
+      strcpy(notUsedchar, removeSameChar(notUsedchar,grille[i]));
   }
   //le caractère courant est supprimé des caractères non utilisés
-  removeSameChar(notUsedchar,grille[i]);
        i++;
   }
   free(notUsedchar);
@@ -760,8 +753,6 @@ void genererCaractereAleatoires(int numCommencer) {
     printf("%d", Joueur2.scoreTotal);
 
 }
-
-
 
 
 void DemarrerPartie(char Joueur1name[], char Joueur2name[], int tourActuel, int totalTours, int numCommencer){

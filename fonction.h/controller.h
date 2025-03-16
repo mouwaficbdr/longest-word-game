@@ -161,5 +161,4 @@ void lancerJeu();
  * @param tour 
  */
 void mettreAJourAffichageScores();
-
 #endif /* AD958C8B_DA37_4398_8D2B_15FDCBF9A9D1 */

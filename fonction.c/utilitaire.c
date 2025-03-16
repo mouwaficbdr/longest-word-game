@@ -95,7 +95,7 @@ void RangerDico(){
 
 
     
-void removeSameChar(char *chaine, char c) {
+char *removeSameChar(char *chaine, char c) {
     int i=0;
     int j=0;
     //On compte le nombre d'occurence de la lettre dans le mot et on alloue de la memoire pour une chaine en conséquence
@@ -117,6 +117,7 @@ void removeSameChar(char *chaine, char c) {
         i++;
     }
     str[j]='\0';
+    return str;
 }
 
 

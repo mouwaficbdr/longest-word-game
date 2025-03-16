@@ -31,8 +31,9 @@ void RangerDico();
  * Supprimer toutes les occurences d'un caractère dans une chaine
  * @param chaine *chaine
  * @param c le caractère
+ * @return la chaine contenant ne contenant pas le caractère
  */
-void removeSameChar(char *chaine, char c);
+char* removeSameChar(char *chaine, char c);
 
 
 /**

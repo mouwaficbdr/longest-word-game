@@ -70,7 +70,6 @@ extern void centerword1(char *word);
 extern void centerword2(char *word);
 extern void centerwordAI(char *word);
 extern void getConsoleSize(int *width, int *height);
-extern void setConsoleSize(int width, int height);
 extern void namePlay1();
 extern void namePlay2();
 extern void prompt();
