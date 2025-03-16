@@ -4,10 +4,11 @@
 #include <string.h>
 #include <windows.h> 
 #include <ctype.h>
+#include <math.h>    // Pour fabs()
+#include <time.h>    // Pour time() et rand()
 #include "../fonction.h/controller.h"
 #include "../fonction.h/utilitaire.h"
 #include "../fonction.h/view.h"
-#include <time.h>
 
 #define MAX_TOURS 50
 
@@ -22,6 +23,7 @@ const char consonnes[20] = {'b', 'c', 'd', 'f', 'g', 'h', 'j', 'k', 'l', 'm', 'n
 Joueur Joueur1;
 Joueur Joueur2;
 PartieJ Partie;
+ConfigIA ConfigurationIA; // Configuration du mode IA
 
 
 void InitialiserJoueur(){
@@ -183,12 +185,9 @@ int chargerPartie() {
         return 0;
     }
     
-    // Afficher un message indiquant que la partie a été chargée
-    printf("Partie chargee avec succes, incluant l'historique des mots et scores.\n");
-    
-    // Afficher la revue détaillée de la partie chargée
-    Effacer();
-    afficherReviewPartie();
+    // Afficher un message de succès
+    printf("Partie chargee avec succes!\n");
+    Sleep(1000);
     
     // Déterminer qui a le droit de commencer le tour actuel
     // Alternance entre les joueurs - Si le dernier joueur à commencer était le joueur 1, alors c'est au tour du joueur 2
@@ -198,10 +197,7 @@ int chargerPartie() {
         Partie.numJoueurCommencer = 2; // Joueur 2 commence
     }
     
-    // Lancer la partie avec les données chargées
-    DemarrerPartie(Joueur1.nom, Joueur2.nom, Partie.tourJoues + 1, Partie.nbreTours, Partie.numJoueurCommencer);
-    
-    return 1;
+    return 1; // Retourner simplement 1 pour indiquer le succès du chargement
 }
 
 /**
@@ -706,52 +702,209 @@ void lancerJeu(){
 
     //Pause et effacer pour lancer le Jeu
     Sleep(1000);
-
-       char *convert;
-       char *texte=malloc(sizeof(char)*65);
-       do{
-            if(Partie.tourJoues<Partie.nbreTours){
-                if(JouerEncore()){ 
-                 DemarrerPartie(Joueur1.nom,  Joueur2.nom, Partie.tourJoues+1,Partie.nbreTours,Partie.numJoueurCommencer);
-                }else{
-                    Effacer();
-                    strcpy(texte,"Point de sauvegarde!");
-                    EcritureDynamique(texte,(largeurTermi-strlen(texte))/2,(hauteurTermi/2)-1,0);            
-                    strcpy(texte,"Sauvegardez votre progression (1).Si (0) elle sera perdue.[1/0]");
-                    EcritureDynamique(texte,(largeurTermi-strlen(texte))/2,(hauteurTermi/2),0); 
-                    do{
-                        gotoxy(largeurTermi/2,(hauteurTermi/2)+1);
-                        clearLine();
-                        gotoxy(largeurTermi/2,(hauteurTermi/2)+1);
-                        scanf("%s",texte);
-                        x=strtol(texte,&convert,10);
-                    }while((x!=1 && x!=0) || !isNumber(texte)); 
-                    x=strtol(texte,&convert,10);    
-                    if(x) {
-                        sauvegarderPartie();
-                        Sleep(2000);
+    
+    // Menu principal avec rectangles pour chaque option
+    Effacer();
+    char titre[] = "MENU PRINCIPAL";
+    int titreX = (largeurTermi - strlen(titre)) / 2;
+    EcritureDynamique(titre, titreX, hauteurTermi/4, 50);
+    
+    // Options du menu
+    char option1[] = "NOUVELLE PARTIE (2 JOUEURS)";
+    char option2[] = "MODE SOLO VS IA";
+    char option3[] = "CHARGER PARTIE";
+    char option4[] = "QUITTER";
+    
+    // Dimensions des rectangles
+    int rectLargeur = largeurTermi / 2;
+    int rectHauteur = 3;
+    int rectX = largeurTermi / 4;
+    
+    // Position y des options
+    int optionY1 = hauteurTermi/2 - 8;
+    int optionY2 = hauteurTermi/2 - 3;
+    int optionY3 = hauteurTermi/2 + 2;
+    int optionY4 = hauteurTermi/2 + 7;
+    
+    // Dessiner les rectangles et afficher les options
+    rectangle(rectX, optionY1, rectLargeur, rectHauteur);
+    gotoxy(rectX + (rectLargeur - strlen(option1)) / 2, optionY1 + 1);
+    printf("%s", option1);
+    
+    rectangle(rectX, optionY2, rectLargeur, rectHauteur);
+    gotoxy(rectX + (rectLargeur - strlen(option2)) / 2, optionY2 + 1);
+    printf("%s", option2);
+    
+    rectangle(rectX, optionY3, rectLargeur, rectHauteur);
+    gotoxy(rectX + (rectLargeur - strlen(option3)) / 2, optionY3 + 1);
+    printf("%s", option3);
+    
+    rectangle(rectX, optionY4, rectLargeur, rectHauteur);
+    gotoxy(rectX + (rectLargeur - strlen(option4)) / 2, optionY4 + 1);
+    printf("%s", option4);
+    
+    // Instructions pour la sélection
+    char instructions[] = "Utilisez les touches 1-4 pour selectionner une option: ";
+    int instrX = (largeurTermi - strlen(instructions)) / 2;
+    gotoxy(instrX, hauteurTermi/2 + 12);
+    printf("%s", instructions);
+    
+    int choixMenu = 0;
+    char input[10];
+    scanf("%s", input);
+    
+    if (isNumber(input)) {
+        choixMenu = atoi(input);
+    }
+    
+    switch(choixMenu) {
+        case 1:
+            // Mode 2 joueurs existant
+            initialiserModeIA(0, 1); // Désactiver le mode IA
+            nouvellePartie();
+            break;
+        case 2:
+            // Mode solo contre l'IA
+            {
+                Effacer();
+                
+                // Demander les informations de la partie
+                char nomJoueur[15];
+                int nbreTours;
+                
+                gotoxy((largeurTermi - strlen("Entrez votre nom (max 14 caracteres): ")) / 2, hauteurTermi/3);
+                printf("Entrez votre nom (max 14 caracteres): ");
+                scanf("%14s", nomJoueur);
+                
+                gotoxy((largeurTermi - strlen("Entrez le nombre de tours (max 50): ")) / 2, hauteurTermi/3 + 2);
+                printf("Entrez le nombre de tours (max %d): ", MAX_TOURS);
+                
+                char tourInput[10];
+                do {
+                    scanf("%9s", tourInput);
+                    if (isNumber(tourInput)) {
+                        nbreTours = atoi(tourInput);
+                    } else {
+                        nbreTours = 0;
                     }
-                }
-            }else{
-                // Suppression automatique de la sauvegarde à la fin d'une partie complète
-                // (quand tous les tours ont été joués)
-                if(Partie.tourJoues >= Partie.nbreTours && Partie.nbreTours > 0 && verifSauvegarde()) {
-                    effacerSauvegarde(); // Suppression silencieuse, sans message
-                }
-                // Restauration de l'affichage du menu ici pour maintenir le flux correct du jeu
-                afficherMenu();
+                    
+                    if (nbreTours <= 0 || nbreTours > MAX_TOURS) {
+                        gotoxy((largeurTermi - strlen("Nombre invalide. Entrez une valeur entre 1 et 50: ")) / 2, hauteurTermi/3 + 3);
+                        printf("Nombre invalide. Entrez une valeur entre 1 et %d: ", MAX_TOURS);
+                    }
+                } while (nbreTours <= 0 || nbreTours > MAX_TOURS);
+                
+                // Sélectionner la difficulté
+                int difficulte = selectionnerDifficulteIA();
+                
+                // Lancer la partie solo
+                demarrerPartieSolo(nomJoueur, nbreTours, difficulte);
             }
-        }while(Partie.tourJoues < Partie.nbreTours);
-        
-        // Vérification supplémentaire après la boucle
-        // Si on sort de la boucle et qu'une partie complète a été jouée
-        if(Partie.tourJoues >= Partie.nbreTours && Partie.nbreTours > 0 && verifSauvegarde()) {
-            effacerSauvegarde(); // S'assurer que la sauvegarde est supprimée
-        }
-        // Assurons-nous que le menu est affiché si on sort de la boucle pour une raison quelconque
-        afficherMenu();
-        
-        free(texte);
+            break;
+        case 3:
+            // Charger partie (code existant)
+            if(verifSauvegarde()) {
+                if(chargerPartie()) {
+                    gotoxy(10, 20);
+                    printf("Partie chargée avec succès!");
+                    Sleep(1000);
+                    // Démarrer la partie correctement en commençant par le prochain tour à jouer
+                    DemarrerPartie(Joueur1.nom, Joueur2.nom, Partie.tourJoues + 1, Partie.nbreTours, Partie.numJoueurCommencer);
+                }
+            } else {
+                Effacer();
+                char message[] = "Aucune sauvegarde disponible.";
+                gotoxy((largeurTermi - strlen(message)) / 2, hauteurTermi/2);
+                printf("%s", message);
+                Sleep(2000);
+                lancerJeu(); // Retour au menu
+            }
+            break;
+        case 4:
+            // Quitter
+            Effacer();
+            exit(0);
+            break;
+        default:
+            // Option invalide
+            Effacer();
+            char message[] = "Option invalide. Veuillez réessayer.";
+            gotoxy((largeurTermi - strlen(message)) / 2, hauteurTermi/2);
+            printf("%s", message);
+            Sleep(2000);
+            lancerJeu(); // Retour au menu
+            break;
+    }
+
+    char *convert;
+    char *texte=malloc(sizeof(char)*65);
+    do{
+          if(Partie.tourJoues<Partie.nbreTours){
+              if(JouerEncore()){ 
+                  DemarrerPartie(Joueur1.nom, Joueur2.nom, Partie.tourJoues+1, Partie.nbreTours, Partie.numJoueurCommencer);
+              }else{
+                  Effacer();
+                  strcpy(texte,"Point de sauvegarde!");
+                  EcritureDynamique(texte,(largeurTermi-strlen(texte))/2,(hauteurTermi/2)-1,0);            
+                  strcpy(texte,"Sauvegardez votre progression (1). Si (0) elle sera perdue.[1/0]");
+                  EcritureDynamique(texte,(largeurTermi-strlen(texte))/2,(hauteurTermi/2),0); 
+                  do{
+                      gotoxy(largeurTermi/2,(hauteurTermi/2)+1);
+                      clearLine();
+                      gotoxy(largeurTermi/2,(hauteurTermi/2)+1);
+                      scanf("%s",texte);
+                      x=strtol(texte,&convert,10);
+                  }while((x!=1 && x!=0) || !isNumber(texte)); 
+                  x=strtol(texte,&convert,10);    
+                  if(x) {
+                      sauvegarderPartie();
+                      Sleep(2000);
+                  }
+                  
+                  // Désactiver le mode IA après la sauvegarde
+                  initialiserModeIA(0, 1);
+                  
+                  // Retour au menu principal
+                  lancerJeu();
+                  return;
+              }
+          }else{
+              // Suppression automatique de la sauvegarde à la fin d'une partie complète
+              // (quand tous les tours ont été joués)
+              if(Partie.tourJoues >= Partie.nbreTours && Partie.nbreTours > 0 && verifSauvegarde()) {
+                  effacerSauvegarde(); // Suppression silencieuse, sans message
+              }
+              
+              // Désactiver le mode IA
+              initialiserModeIA(0, 1);
+              
+              // Afficher le résultat final
+              Effacer();
+              char resultat[100];
+              
+              if (Joueur1.scoreTotal > Joueur2.scoreTotal) {
+                  sprintf(resultat, "FIN DE LA PARTIE! %s gagne avec %d points contre %d points!", 
+                          Joueur1.nom, Joueur1.scoreTotal, Joueur2.scoreTotal);
+              } else if (Joueur2.scoreTotal > Joueur1.scoreTotal) {
+                  sprintf(resultat, "FIN DE LA PARTIE! %s gagne avec %d points contre %d points!", 
+                          Joueur2.nom, Joueur2.scoreTotal, Joueur1.scoreTotal);
+              } else {
+                  sprintf(resultat, "FIN DE LA PARTIE! Match nul avec %d points partout!", 
+                          Joueur1.scoreTotal);
+              }
+              
+              EcritureDynamique(resultat, (largeurTermi-strlen(resultat))/2, hauteurTermi/2, 30);
+              
+              // Attendre quelques secondes pour que le joueur puisse voir le résultat
+              Sleep(3000);
+              
+              // Restauration de l'affichage du menu
+              lancerJeu();
+              return;
+          }
+      }while(Partie.tourJoues < Partie.nbreTours);
+      
+      free(texte);
 }
 
 
@@ -849,8 +1002,27 @@ void DemarrerPartie(char Joueur1name[], char Joueur2name[], int tourActuel, int 
         //Le joueur 1 entre son mot (le mot est biensur hashé)
         centeredhash1(Joueur1.mot[tourActuel-1], 10);
 
-        // Effacer le texte du joueur 1 et afficher celui du joueur 2
+        // Effacer le texte du joueur 1
         EffacerZone(EntryFieldX1,EntryFieldY1-1,strlen("Joueur 1 entrez votre mot:"),1);
+        
+        // Vérifier si on est en mode solo (IA)
+        if (ConfigurationIA.estActif && strcmp(Joueur2.nom, "Ordinateur") == 0) {
+            // Tour de l'IA
+            char* motIA = jouerTourIA(Partie.lettreGenerees);
+            
+            if (motIA != NULL) {
+                // Copier le mot de l'IA dans l'historique
+                strncpy(Joueur2.mot[tourActuel-1], motIA, 9);
+                Joueur2.mot[tourActuel-1][9] = '\0'; // Garantir la terminaison
+                
+                // Afficher le mot trouvé par l'IA
+                centerword2(Joueur2.mot[tourActuel-1]);
+                
+                // Libérer la mémoire allouée
+                free(motIA);
+            }
+        } else {
+            // Tour normal du joueur 2
         gotoxy(EntryFieldX2, EntryFieldY2-1);
         printf("Joueur 2 entrez votre mot:");
 
@@ -858,22 +1030,47 @@ void DemarrerPartie(char Joueur1name[], char Joueur2name[], int tourActuel, int 
         centeredhash2(Joueur2.mot[tourActuel-1], 10);
         
         // Effacer le texte du joueur 2
-        EffacerZone(EntryFieldX2,EntryFieldY2-1,strlen("Joueur 1 entrez votre mot:"),1);
+            EffacerZone(EntryFieldX2,EntryFieldY2-1,strlen("Joueur 2 entrez votre mot:"),1);
+        }
 
-        //On affiche les mots des deux joueurs après dans leur case respective
+        //On affiche le mot du joueur 1 s'il n'est pas déjà affiché
         centerword1(Joueur1.mot[tourActuel-1]);
+        
+        // Si on n'est pas en mode IA ou si le mot du joueur 2 n'est pas déjà affiché
+        if (!ConfigurationIA.estActif || strcmp(Joueur2.nom, "Ordinateur") != 0) {
         centerword2(Joueur2.mot[tourActuel-1]);
+        }
 
-    }else{ //Dans le cas contraire on commence avec le joueur 2
-        // Afficher le texte pour le joueur 2
+    } else { //Dans le cas contraire on commence avec le joueur 2
+        // Vérifier si on est en mode solo (IA)
+        if (ConfigurationIA.estActif && strcmp(Joueur2.nom, "Ordinateur") == 0) {
+            // Tour de l'IA en premier
+            char* motIA = jouerTourIA(Partie.lettreGenerees);
+            
+            if (motIA != NULL) {
+                // Copier le mot de l'IA dans l'historique
+                strncpy(Joueur2.mot[tourActuel-1], motIA, 9);
+                Joueur2.mot[tourActuel-1][9] = '\0'; // Garantir la terminaison
+                
+                // Afficher le mot trouvé par l'IA
+                centerword2(Joueur2.mot[tourActuel-1]);
+                
+                // Libérer la mémoire allouée
+                free(motIA);
+            }
+        } else {
+            // Tour normal du joueur 2
         gotoxy(EntryFieldX2, EntryFieldY2-1);
         printf("Joueur 2 entrez votre mot:");
 
         //Le joueur 2 entre son mot 
         centeredhash2(Joueur2.mot[tourActuel-1], 10);
 
-        // Effacer le texte du joueur 2 et afficher celui du joueur 1
-        EffacerZone(EntryFieldX2,EntryFieldY2-1,strlen("Joueur 1 entrez votre mot:"),1);
+            // Effacer le texte du joueur 2
+            EffacerZone(EntryFieldX2,EntryFieldY2-1,strlen("Joueur 2 entrez votre mot:"),1);
+        }
+
+        // Tour du joueur 1 toujours humain
         gotoxy(EntryFieldX1, EntryFieldY1-1);
         printf("Joueur 1 entrez votre mot:");
 
@@ -883,11 +1080,13 @@ void DemarrerPartie(char Joueur1name[], char Joueur2name[], int tourActuel, int 
         // Effacer le texte du joueur 1
         EffacerZone(EntryFieldX1,EntryFieldY1-1,strlen("Joueur 1 entrez votre mot:"),1);
 
-        //Puis on affiche les deux mots
-        centerword2(Joueur2.mot[tourActuel-1]);
+        //Puis on affiche les mots s'ils ne sont pas déjà affichés
         centerword1(Joueur1.mot[tourActuel-1]);
+        
+        if (!ConfigurationIA.estActif || strcmp(Joueur2.nom, "Ordinateur") != 0) {
+            centerword2(Joueur2.mot[tourActuel-1]);
+        }
     }
-
 
     //Il y aura peut être un texte pour dire qu'on procède mainteanant à la validation des mots
     Sleep(2000);
@@ -910,18 +1109,512 @@ void DemarrerPartie(char Joueur1name[], char Joueur2name[], int tourActuel, int 
 
     // Mise à jour de l'affichage des scores
     mettreAJourAffichageScores();
-    Sleep(5000);
     
-    // La vérification du dernier tour ne doit pas être faite ici
-    // car cela interrompt la boucle normale dans lancerJeu
-    // Le code ci-dessous est supprimé car il fait arrêter le jeu après un seul tour
-    /*
+    // Vérifier si nous avons terminé tous les tours
     if (tourActuel >= totalTours) {
-        if (verifSauvegarde()) {
-            effacerSauvegarde();
-        }
-        afficherMenu();
+        Sleep(5000);
+        return; // Retourner au lancerJeu() qui gèrera l'affichage des résultats
     }
-    */
+    
+    Sleep(5000);
+}
+
+/**
+ * @brief
+ * Initialise la configuration du mode IA
+ * @param estActif 0 pour désactiver, 1 pour activer le mode IA
+ * @param difficulte Niveau de difficulté (1=facile, 2=moyen, 3=difficile) 
+ */
+void initialiserModeIA(int estActif, int difficulte) {
+    ConfigurationIA.estActif = estActif;
+    ConfigurationIA.difficulte = difficulte;
+    
+    // Temps de réflexion selon la difficulté
+    switch(difficulte) {
+        case 1: // Facile
+            ConfigurationIA.tempsReflexion = 800;
+            break;
+        case 2: // Moyen
+            ConfigurationIA.tempsReflexion = 1200;
+            break;
+        case 3: // Difficile
+            ConfigurationIA.tempsReflexion = 1800;
+            break;
+        default:
+            ConfigurationIA.tempsReflexion = 1000;
+    }
+}
+
+/**
+ * @brief
+ * Gère le tour de l'IA, génère un mot et l'affiche
+ * @param grille La grille de lettres disponibles
+ * @return char* Le mot choisi par l'IA (alloué dynamiquement, doit être libéré après usage)
+ */
+char* jouerTourIA(char grille[]) {
+    // Vérifier si le mode IA est actif
+    if (!ConfigurationIA.estActif) {
+        return NULL;
+    }
+    
+    // Afficher un message indiquant que l'IA réfléchit
+    int messageX = EntryFieldX2 + ((EntryFieldLong - strlen("L'ordinateur reflechit...")) / 2);
+    gotoxy(messageX, EntryFieldY2-1);
+    printf("L'ordinateur reflechit...");
+    
+    // Simuler un temps de réflexion pour plus de réalisme
+    Sleep(ConfigurationIA.tempsReflexion);
+    
+    // Générer un mot selon le niveau de difficulté
+    char* motIA = AIChooseWord(grille, ConfigurationIA.difficulte);
+    
+    // Effacer le message de réflexion
+    EffacerZone(EntryFieldX2, EntryFieldY2-1, EntryFieldLong, 1);
+    
+    // Vérifier si un mot a été trouvé
+    if (motIA == NULL || strlen(motIA) == 0) {
+        // Si aucun mot n'a été trouvé, générer un message d'erreur
+        motIA = malloc(sizeof(char) * 5);
+        strcpy(motIA, "???");
+        return motIA;
+    }
+    
+    return motIA;
+}
+
+/**
+ * @brief
+ * Lance une partie en mode solo contre l'IA
+ * @param nomJoueur Nom du joueur humain
+ * @param nbreTours Nombre de tours pour la partie
+ * @param difficulte Niveau de difficulté de l'IA (1=facile, 2=moyen, 3=difficile)
+ */
+void demarrerPartieSolo(char nomJoueur[], int nbreTours, int difficulte) {
+    // Initialiser les variables
+    InitialiserJoueur();
+    InitialiserPartie();
+    
+    // Configurer le mode IA
+    initialiserModeIA(1, difficulte);
+    
+    // Configurer les noms des joueurs
+    strcpy(Joueur1.nom, nomJoueur);
+    strcpy(Joueur2.nom, "Ordinateur");
+    
+    // Configurer les paramètres de la partie
+    Partie.nbreTours = nbreTours;
+    Partie.numJoueurCommencer = 1; // Le joueur humain commence toujours
+    Partie.tourJoues = 0;
+    
+    // Démarrer la partie
+    DemarrerPartie(Joueur1.nom, Joueur2.nom, 1, nbreTours, 1);
+}
+
+/**
+ * @brief
+ * Affiche le menu de sélection de difficulté pour l'IA et retourne le choix
+ * @return int Niveau de difficulté choisi (1=facile, 2=moyen, 3=difficile)
+ */
+int selectionnerDifficulteIA() {
+    Effacer();
+    int largeurTermi = 0, hauteurTermi = 0;
+    getConsoleSize(&largeurTermi, &hauteurTermi);
+    
+    // Titre du menu
+    char titreDifficulte[] = "CHOISISSEZ LE NIVEAU DE DIFFICULTE DE L'IA";
+    int titreX = (largeurTermi - strlen(titreDifficulte)) / 2;
+    EcritureDynamique(titreDifficulte, titreX, hauteurTermi/4, 50);
+    
+    // Options de difficulté simplifiées
+    char optionFacile[] = "FACILE";
+    char optionMoyen[] = "MOYEN";
+    char optionDifficile[] = "DIFFICILE";
+    
+    // Dimensions des rectangles
+    int rectLargeur = largeurTermi / 2;
+    int rectHauteur = 3;
+    int rectX = largeurTermi / 4;
+    
+    // Position y des options
+    int optionY1 = hauteurTermi/2 - 6;
+    int optionY2 = hauteurTermi/2;
+    int optionY3 = hauteurTermi/2 + 6;
+    
+    // Dessiner les rectangles et afficher les options
+    rectangle(rectX, optionY1, rectLargeur, rectHauteur);
+    gotoxy(rectX + (rectLargeur - strlen(optionFacile)) / 2, optionY1 + 1);
+    printf("1. %s", optionFacile);
+    
+    rectangle(rectX, optionY2, rectLargeur, rectHauteur);
+    gotoxy(rectX + (rectLargeur - strlen(optionMoyen)) / 2, optionY2 + 1);
+    printf("2. %s", optionMoyen);
+    
+    rectangle(rectX, optionY3, rectLargeur, rectHauteur);
+    gotoxy(rectX + (rectLargeur - strlen(optionDifficile)) / 2, optionY3 + 1);
+    printf("3. %s", optionDifficile);
+    
+    // Instructions pour la sélection
+    char instructions[] = "Entrez votre choix (1-3): ";
+    int instrX = (largeurTermi - strlen(instructions)) / 2;
+    gotoxy(instrX, hauteurTermi/2 + 12);
+    printf("%s", instructions);
+    
+    // Récupérer le choix de l'utilisateur
+    int choix = 0;
+    char input[10];
+    int valide = 0;
+    
+    while (!valide) {
+        gotoxy(instrX + strlen(instructions), hauteurTermi/2 + 12);
+        printf("   \b\b\b"); // Effacer l'entrée précédente
+        scanf("%s", input);
+        
+        if (isNumber(input)) {
+            choix = atoi(input);
+            if (choix >= 1 && choix <= 3) {
+                valide = 1;
+            }
+        }
+        
+        if (!valide) {
+            // Message d'erreur
+            char erreur[] = "Veuillez entrer un nombre entre 1 et 3";
+            int erreurX = (largeurTermi - strlen(erreur)) / 2;
+            gotoxy(erreurX, hauteurTermi/2 + 13);
+            printf("%s", erreur);
+            Sleep(1000);
+            EffacerZone(erreurX, hauteurTermi/2 + 13, strlen(erreur), 1);
+        }
+    }
+    
+    return choix;
+}
+
+/**
+ * @brief Trouve le mot le plus court possible parmi les mots valides dans la grille
+ * 
+ * Cette fonction cherche le mot le plus court valide qui peut être formé avec les lettres
+ * de la grille. Elle utilise une approche similaire à LongestWord mais inverse la logique
+ * de sélection pour privilégier les mots courts.
+ * 
+ * @param grille La grille de lettres disponibles
+ * @return char* Le mot le plus court valide (alloué dynamiquement)
+ */
+char *ShortestWord(char grille[])
+{
+    int i = 0;
+    // Initialiser avec une grande taille pour garantir le remplacement
+    char *valideMot = malloc(10 * sizeof(char));
+    strcpy(valideMot, "abcdefghi"); // Mot fictif de taille maximale
+    char name[15] = {'.','.','/','d','i','c','o','/',' ','.','t','x','t'};
+    
+    // Initialiser des copies de la grille
+    char *notUsedchar = malloc(sizeof(char) * (strlen(grille) + 1));
+    strcpy(notUsedchar, grille);
+
+    // Le mot courant du dictionnaire
+    char mot[30];
+    strcpy(mot, "\0");
+    
+    while(grille[i] != '\0')
+    {
+        if(notUsed(notUsedchar, grille[i]))
+        {
+            name[8] = grille[i];
+            FILE *fichier = NULL;
+            fichier = fopen(name, "r");
+
+            if(fichier == NULL)
+            {
+                perror("Erreur d'ouverture de fichier");
+            }
+            else
+            {
+                // Si le fichier est bien ouvert, on récupère chaque mot
+                fgets(mot, 30, fichier);
+                mot[strlen(mot) - 1] = '\0';
+
+                while(!feof(fichier))
+                {
+                    // Si le mot est vide ou d'une seule lettre, on passe au suivant
+                    if(strlen(mot) <= 1) {
+                        fgets(mot, 30, fichier);
+                        if(!feof(fichier)) {
+                            mot[strlen(mot) - 1] = '\0';
+                        }
+                        continue;
+                    }
+                    
+                    // Si le mot du dictionnaire respecte les lettres de la grille
+                    if(validationChar(mot, grille))
+                    {
+                        // On récupère le mot valide seulement s'il est plus court que le précédent
+                        if(strlen(mot) < strlen(valideMot))
+                        {
+                            free(valideMot);
+                            valideMot = malloc(sizeof(char) * (strlen(mot) + 1));
+                            strcpy(valideMot, mot);
+                        }
+                    }
+                    
+                    fgets(mot, 30, fichier);
+                    if(!feof(fichier)) {
+                        mot[strlen(mot) - 1] = '\0';
+                    }
+                }
+            }
+            fclose(fichier);
+        }
+        // Le caractère courant est supprimé des caractères non utilisés
+        removeSameChar(notUsedchar, grille[i]);
+        i++;
+    }
+    
+    free(notUsedchar);
+    return valideMot;
+}
+
+/**
+ * @brief Trouve tous les mots valides dans la grille et choisit un mot de longueur médiane
+ * 
+ * Cette fonction collecte tous les mots valides pour la grille donnée,
+ * calcule la longueur moyenne et sélectionne un mot proche de cette moyenne.
+ * 
+ * @param grille La grille de lettres disponibles
+ * @return char* Un mot de longueur moyenne (alloué dynamiquement)
+ */
+char *MediumWord(char grille[])
+{
+    int i = 0;
+    // Tableau pour stocker jusqu'à 100 mots valides
+    char **motsValides = malloc(100 * sizeof(char*));
+    int nbMotsValides = 0;
+    int longueurTotale = 0;
+    
+    char name[15] = {'.','.','/','d','i','c','o','/',' ','.','t','x','t'};
+    
+    // Initialiser des copies de la grille
+    char *notUsedchar = malloc(sizeof(char) * (strlen(grille) + 1));
+    strcpy(notUsedchar, grille);
+
+    // Le mot courant du dictionnaire
+    char mot[30];
+    strcpy(mot, "\0");
+    
+    // Parcourir toutes les lettres de la grille
+    while(grille[i] != '\0' && nbMotsValides < 100)
+    {
+        if(notUsed(notUsedchar, grille[i]))
+        {
+            name[8] = grille[i];
+            FILE *fichier = NULL;
+            fichier = fopen(name, "r");
+
+            if(fichier == NULL)
+            {
+                perror("Erreur d'ouverture de fichier");
+            }
+            else
+            {
+                // Si le fichier est bien ouvert, on récupère chaque mot
+                fgets(mot, 30, fichier);
+                mot[strlen(mot) - 1] = '\0';
+
+                while(!feof(fichier) && nbMotsValides < 100)
+                {
+                    // Si le mot est vide ou d'une seule lettre, on passe au suivant
+                    if(strlen(mot) <= 1) {
+                        fgets(mot, 30, fichier);
+                        if(!feof(fichier)) {
+                            mot[strlen(mot) - 1] = '\0';
+                        }
+                        continue;
+                    }
+                    
+                    // Si le mot du dictionnaire respecte les lettres de la grille
+                    if(validationChar(mot, grille))
+                    {
+                        // Ajouter le mot valide à notre tableau
+                        motsValides[nbMotsValides] = malloc((strlen(mot) + 1) * sizeof(char));
+                        strcpy(motsValides[nbMotsValides], mot);
+                        longueurTotale += strlen(mot);
+                        nbMotsValides++;
+                    }
+                    
+                    fgets(mot, 30, fichier);
+                    if(!feof(fichier)) {
+                        mot[strlen(mot) - 1] = '\0';
+                    }
+                }
+            }
+            fclose(fichier);
+        }
+        // Le caractère courant est supprimé des caractères non utilisés
+        removeSameChar(notUsedchar, grille[i]);
+        i++;
+    }
+    
+    free(notUsedchar);
+    
+    // Si aucun mot valide n'a été trouvé
+    if(nbMotsValides == 0) {
+        free(motsValides);
+        return ShortestWord(grille); // Retourner le mot le plus court comme fallback
+    }
+    
+    // Calculer la longueur moyenne
+    float longueurMoyenne = (float)longueurTotale / nbMotsValides;
+    
+    // Trouver un mot proche de la longueur moyenne
+    int indiceChoisi = 0;
+    float diff = 10.0; // Grande valeur initiale pour la différence
+    
+    for(i = 0; i < nbMotsValides; i++) {
+        float diffActuelle = fabs(strlen(motsValides[i]) - longueurMoyenne);
+        if(diffActuelle < diff) {
+            diff = diffActuelle;
+            indiceChoisi = i;
+        }
+    }
+    
+    // Sélectionner un mot aléatoirement parmi ceux proches de la moyenne (±1 caractère)
+    int nbProches = 0;
+    int indicesProches[100];
+    
+    for(i = 0; i < nbMotsValides; i++) {
+        if(fabs(strlen(motsValides[i]) - longueurMoyenne) <= 1.0) {
+            indicesProches[nbProches] = i;
+            nbProches++;
+        }
+    }
+    
+    // S'il y a des mots proches, en choisir un au hasard
+    if(nbProches > 0) {
+        indiceChoisi = indicesProches[rand() % nbProches];
+    }
+    
+    // Récupérer le mot choisi
+    char *motChoisi = malloc((strlen(motsValides[indiceChoisi]) + 1) * sizeof(char));
+    strcpy(motChoisi, motsValides[indiceChoisi]);
+    
+    // Libérer la mémoire
+    for(i = 0; i < nbMotsValides; i++) {
+        free(motsValides[i]);
+    }
+    free(motsValides);
+    
+    return motChoisi;
+}
+
+/**
+ * @brief Version améliorée de LongestWord avec une variation aléatoire
+ * 
+ * Cette fonction utilise LongestWord mais ajoute 10% de chances de choisir
+ * un mot légèrement plus court pour simuler une erreur occasionnelle.
+ * 
+ * @param grille La grille de lettres disponibles
+ * @return char* Le mot choisi (alloué dynamiquement)
+ */
+char *DifficultWord(char grille[])
+{
+    // Obtenir le mot le plus long
+    char *motLePlusLong = LongestWord(grille);
+    
+    // 10% de chances de ne pas choisir le mot optimal
+    if(rand() % 100 < 10) {
+        // Stocker le mot le plus long
+        char *motSecondaire = malloc((strlen(motLePlusLong) + 1) * sizeof(char));
+        strcpy(motSecondaire, motLePlusLong);
+        
+        // Chercher un mot légèrement plus court (2ème meilleur)
+        int i = 0;
+        char *motPlusCourtValide = NULL;
+        int longueurCible = strlen(motLePlusLong) - 1;
+        
+        char name[15] = {'.','.','/','d','i','c','o','/',' ','.','t','x','t'};
+        char *notUsedchar = malloc(sizeof(char) * (strlen(grille) + 1));
+        strcpy(notUsedchar, grille);
+        char mot[30];
+        
+        while(grille[i] != '\0')
+        {
+            if(notUsed(notUsedchar, grille[i]))
+            {
+                name[8] = grille[i];
+                FILE *fichier = NULL;
+                fichier = fopen(name, "r");
+
+                if(fichier != NULL)
+                {
+                    fgets(mot, 30, fichier);
+                    mot[strlen(mot) - 1] = '\0';
+
+                    while(!feof(fichier))
+                    {
+                        if(validationChar(mot, grille) && strlen(mot) == longueurCible)
+                        {
+                            // Si on trouve un mot de longueur cible
+                            motPlusCourtValide = malloc((strlen(mot) + 1) * sizeof(char));
+                            strcpy(motPlusCourtValide, mot);
+                            fclose(fichier);
+                            free(notUsedchar);
+                            free(motLePlusLong);
+                            return motPlusCourtValide;
+                        }
+                        
+                        fgets(mot, 30, fichier);
+                        if(!feof(fichier)) {
+                            mot[strlen(mot) - 1] = '\0';
+                        }
+                    }
+                    fclose(fichier);
+                }
+            }
+            removeSameChar(notUsedchar, grille[i]);
+            i++;
+        }
+        
+        free(notUsedchar);
+        
+        // Si on n'a pas trouvé de mot plus court, on retourne le mot original
+        if(motPlusCourtValide == NULL) {
+            return motSecondaire;
+        } else {
+            free(motSecondaire);
+            return motPlusCourtValide;
+        }
+    }
+    
+    // 90% du temps, on retourne le mot optimal
+    return motLePlusLong;
+}
+
+/**
+ * @brief Fonction principale pour choisir un mot selon le niveau de difficulté
+ * 
+ * Cette fonction sélectionne l'algorithme approprié en fonction du niveau de difficulté choisi.
+ * 
+ * @param grille La grille de lettres disponibles
+ * @param niveau Le niveau de difficulté (1=Facile, 2=Moyen, 3=Difficile)
+ * @return char* Le mot choisi selon le niveau (alloué dynamiquement)
+ */
+char *AIChooseWord(char grille[], int niveau)
+{
+    // Initialiser le générateur de nombres aléatoires si ce n'est pas déjà fait
+    static int initialized = 0;
+    if (!initialized) {
+        srand(time(NULL));
+        initialized = 1;
+    }
+    
+    switch(niveau) {
+        case 1: // Facile
+            return ShortestWord(grille);
+        case 2: // Moyen
+            return MediumWord(grille);
+        case 3: // Difficile
+        default:
+            return DifficultWord(grille);
+    }
 }
 
