@@ -23,9 +23,17 @@ typedef struct Joueur{
     int numJoueurCommencer;
   }PartieJ;
 
+// Structure pour la configuration du mode IA
+typedef struct {
+    int estActif;        // 0 = mode 2 joueurs, 1 = mode solo vs IA
+    int difficulte;      // 1 = facile, 2 = moyen, 3 = difficile
+    int tempsReflexion;  // Temps simulé de réflexion en ms
+} ConfigIA;
+
 extern PartieJ Partie;
 extern Joueur Joueur1;
 extern Joueur Joueur2;
+extern ConfigIA ConfigurationIA;
 
 
 // Déclaration des fonctions
@@ -161,5 +169,82 @@ void lancerJeu();
  * @param tour 
  */
 void mettreAJourAffichageScores();
+
+/**
+ * @brief
+ * Initialise la configuration du mode IA
+ * @param estActif 0 pour désactiver, 1 pour activer le mode IA
+ * @param difficulte Niveau de difficulté (1=facile, 2=moyen, 3=difficile) 
+ */
+void initialiserModeIA(int estActif, int difficulte);
+
+/**
+ * @brief
+ * Gère le tour de l'IA, génère un mot et l'affiche
+ * @param grille La grille de lettres disponibles
+ * @return char* Le mot choisi par l'IA (alloué dynamiquement, doit être libéré après usage)
+ */
+char* jouerTourIA(char grille[]);
+
+/**
+ * @brief
+ * Lance une partie en mode solo contre l'IA
+ * @param nomJoueur Nom du joueur humain
+ * @param nbreTours Nombre de tours pour la partie
+ * @param difficulte Niveau de difficulté de l'IA (1=facile, 2=moyen, 3=difficile)
+ */
+void demarrerPartieSolo(char nomJoueur[], int nbreTours, int difficulte);
+
+/**
+ * @brief
+ * Affiche le menu de sélection de difficulté pour l'IA et retourne le choix
+ * @return int Niveau de difficulté choisi (1=facile, 2=moyen, 3=difficile)
+ */
+int selectionnerDifficulteIA();
+
+/**
+ * @brief Trouve le mot le plus court possible parmi les mots valides dans la grille
+ * 
+ * Cette fonction cherche le mot le plus court valide qui peut être formé avec les lettres
+ * de la grille. Elle utilise une approche similaire à LongestWord mais inverse la logique
+ * de sélection pour privilégier les mots courts.
+ * 
+ * @param grille La grille de lettres disponibles
+ * @return char* Le mot le plus court valide (alloué dynamiquement)
+ */
+char *ShortestWord(char grille[]);
+
+/**
+ * @brief Trouve tous les mots valides dans la grille et choisit un mot de longueur médiane
+ * 
+ * Cette fonction collecte tous les mots valides pour la grille donnée,
+ * calcule la longueur moyenne et sélectionne un mot proche de cette moyenne.
+ * 
+ * @param grille La grille de lettres disponibles
+ * @return char* Un mot de longueur moyenne (alloué dynamiquement)
+ */
+char *MediumWord(char grille[]);
+
+/**
+ * @brief Version améliorée de LongestWord avec une variation aléatoire
+ * 
+ * Cette fonction utilise LongestWord mais ajoute 10% de chances de choisir
+ * un mot légèrement plus court pour simuler une erreur occasionnelle.
+ * 
+ * @param grille La grille de lettres disponibles
+ * @return char* Le mot choisi (alloué dynamiquement)
+ */
+char *DifficultWord(char grille[]);
+
+/**
+ * @brief Fonction principale pour choisir un mot selon le niveau de difficulté
+ * 
+ * Cette fonction sélectionne l'algorithme approprié en fonction du niveau de difficulté choisi.
+ * 
+ * @param grille La grille de lettres disponibles
+ * @param niveau Le niveau de difficulté (1=Facile, 2=Moyen, 3=Difficile)
+ * @return char* Le mot choisi selon le niveau (alloué dynamiquement)
+ */
+char *AIChooseWord(char grille[], int niveau);
 
 #endif /* AD958C8B_DA37_4398_8D2B_15FDCBF9A9D1 */
