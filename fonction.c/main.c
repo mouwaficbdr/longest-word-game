@@ -2,8 +2,8 @@
 
 int main(){
 
-  lancerJeu();
-  
+  JouerEncore();
+
   return 0;    
 }
     
