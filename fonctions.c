@@ -9,7 +9,6 @@
 #include <time.h>
 // Définition des constantes
 const int nbreJoueur = 2;
-const int nbreTotalLettresGrille = 9;
 const char voyelles[6] = {'a', 'e', 'i', 'o', 'u', 'y'};
 const char consonnes[20] = {'b', 'c', 'd', 'f', 'g', 'h', 'j', 'k', 'l', 'm', 'n', 'p', 'q', 'r', 's', 't', 'v', 'w', 'x', 'z'};
 
@@ -1326,10 +1325,19 @@ void demanderMotJoueur2(char *mot) {
 
 // Fonction pour demander quel joueur commence
 
+/**
+ * @brief Génère des caractères aléatoires pour la grille 
+ * Mais elle demande d'abord a l'utilisateur de choisir entre 7 et 15 qui representera la taille de la grille.Ensuite les lettres sont generer aleatoirement en fonction de la taille de la grille et sont ensuite affiché dans l'ordre 
+ * 
+ * @param numCommencer 
+ */
 void genererCaractereAleatoires(int numCommencer) {
        char *choixConsonneVoyelle=malloc(sizeof(char)*2);
     // int joueurActuel = demanderJoueurCommence(); // On appelle la fonction ici
- 
+        do{
+            printf("Quelle tailles voudrez-vous donner a la grille?\n");
+            scanf("%d", &nbreTotalLettresGrille);
+        }while(nbreTotalLettresGrille<7 || nbreTotalLettresGrille>15);
     for (int i = 0; i < nbreTotalLettresGrille; i++) { 
         prompt();
         clearLine();
@@ -1339,7 +1347,7 @@ void genererCaractereAleatoires(int numCommencer) {
            
         
         do {
-            srand(time(NULL));  
+            srand(time(NULL)) ; 
             prompt();
             clearLine();
             prompt();
