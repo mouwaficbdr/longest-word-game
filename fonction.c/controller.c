@@ -120,6 +120,10 @@ int enregistrerTour(const char motJoueur1[], const char motJoueur2[], int scoreM
  * @return 1 si le chargement a réussi, 0 en cas d'échec
  */
 int chargerPartie() {
+    // Réinitialiser les structures de données avant de charger
+    InitialiserJoueur();
+    InitialiserPartie();
+    
     FILE *fichier = fopen("sauvegarde.txt", "r");
     if (fichier == NULL) {
         printf("Erreur lors de l'ouverture du fichier de sauvegarde.\n");
@@ -156,14 +160,47 @@ int chargerPartie() {
         fgets(buffer, sizeof(buffer), fichier);
         
         // Lire les données du joueur 1
-        fscanf(fichier, "%*[^:]: Mot: %19[^,], Score: %d\n", Joueur1.mot[i], &Joueur1.score[i]);
+        char tempNom[20];
+        if (fscanf(fichier, "%[^ ] - Mot: %[^,], Score: %d\n", tempNom, Joueur1.mot[i], &Joueur1.score[i]) != 3) {
+            printf("Erreur lors de la lecture des données du joueur 1 au tour %d\n", i+1);
+            fclose(fichier);
+            return 0;
+        }
         
         // Lire les données du joueur 2
-        fscanf(fichier, "%*[^:]: Mot: %19[^,], Score: %d\n", Joueur2.mot[i], &Joueur2.score[i]);
+        if (fscanf(fichier, "%[^ ] - Mot: %[^,], Score: %d\n", tempNom, Joueur2.mot[i], &Joueur2.score[i]) != 3) {
+            printf("Erreur lors de la lecture des données du joueur 2 au tour %d\n", i+1);
+            fclose(fichier);
+            return 0;
+        }
     }
 
     fclose(fichier);
+    
+    // Vérification que les données chargées sont cohérentes
+    if (Partie.nbreTours <= 0 || Partie.tourJoues < 0 || Partie.tourJoues > Partie.nbreTours) {
+        printf("Données de partie incohérentes dans le fichier de sauvegarde.\n");
+        return 0;
+    }
+    
+    // Afficher un message indiquant que la partie a été chargée
     printf("Partie chargee avec succes, incluant l'historique des mots et scores.\n");
+    
+    // Afficher la revue détaillée de la partie chargée
+    Effacer();
+    afficherReviewPartie();
+    
+    // Déterminer qui a le droit de commencer le tour actuel
+    // Alternance entre les joueurs - Si le dernier joueur à commencer était le joueur 1, alors c'est au tour du joueur 2
+    if (Partie.tourJoues % 2 == 0) {
+        Partie.numJoueurCommencer = 1; // Joueur 1 commence
+    } else {
+        Partie.numJoueurCommencer = 2; // Joueur 2 commence
+    }
+    
+    // Lancer la partie avec les données chargées
+    DemarrerPartie(Joueur1.nom, Joueur2.nom, Partie.tourJoues + 1, Partie.nbreTours, Partie.numJoueurCommencer);
+    
     return 1;
 }
 
@@ -229,22 +266,18 @@ int verifSauvegarde(void) {
  * @return 1 si la sauvegarde a été effacée avec succès ou n'existait pas, 0 en cas d'échec
  */
 int effacerSauvegarde(void) {
-    // Vérifier d'abord si le fichier existe
-    if (verifSauvegarde()) {
-        // Le fichier existe, on tente de le supprimer
-        int resultat = remove("sauvegarde.txt");
-        
-        if (resultat == 0) {
-            printf("Sauvegarde precedente effacee avec succes.\n");
-            return 1;
-        } else {
-            printf("Erreur lors de la suppression de la sauvegarde.\n");
-            return 0;
-        }
-    } else {
-        // Le fichier n'existe pas ou n'est pas valide, rien à faire
-        printf("Aucune sauvegarde a effacer.\n");
+    if (!verifSauvegarde()) {
+        // Aucun message
         return 1;  // On considère que c'est un succès puisqu'il n'y a rien à effacer
+    }
+
+    int resultat = remove("sauvegarde.txt");
+    if (resultat == 0) {
+        // Suppression silencieuse - pas de message
+        return 1;
+    } else {
+        // En cas d'erreur, pas de message non plus
+        return 0;
     }
 }
 
@@ -454,6 +487,11 @@ int JouerEncore(){
                     EcritureDynamique(texte,1+((largeurTermi/4)-strlen(texte))/2+(3*largeurTermi)/4,(7*hauteurTermi/8)-1,0);
                     strcpy(texte," Joueur [1]/[2]?");
                     EcritureDynamique(texte,1+((largeurTermi/4)-strlen(texte))/2+(3*largeurTermi)/4,(7*hauteurTermi/8),0);
+                    
+                    // Effacer le caractère 'O' qui reste à l'écran
+                    gotoxy((7*largeurTermi/8),(7*hauteurTermi/8)+1);
+                    printf(" ");
+                    
                     do{
                         gotoxy(1+(3*largeurTermi)/4,(7*hauteurTermi/8)+2);
                         printf("                                ");
@@ -695,10 +733,25 @@ void lancerJeu(){
                     }
                 }
             }else{
+                // Suppression automatique de la sauvegarde à la fin d'une partie complète
+                // (quand tous les tours ont été joués)
+                if(Partie.tourJoues >= Partie.nbreTours && Partie.nbreTours > 0 && verifSauvegarde()) {
+                    effacerSauvegarde(); // Suppression silencieuse, sans message
+                }
+                // Restauration de l'affichage du menu ici pour maintenir le flux correct du jeu
                 afficherMenu();
             }
-        }while(Partie.tourJoues<=Partie.nbreTours);
-      
+        }while(Partie.tourJoues < Partie.nbreTours);
+        
+        // Vérification supplémentaire après la boucle
+        // Si on sort de la boucle et qu'une partie complète a été jouée
+        if(Partie.tourJoues >= Partie.nbreTours && Partie.nbreTours > 0 && verifSauvegarde()) {
+            effacerSauvegarde(); // S'assurer que la sauvegarde est supprimée
+        }
+        // Assurons-nous que le menu est affiché si on sort de la boucle pour une raison quelconque
+        afficherMenu();
+        
+        free(texte);
 }
 
 
@@ -858,5 +911,17 @@ void DemarrerPartie(char Joueur1name[], char Joueur2name[], int tourActuel, int 
     // Mise à jour de l'affichage des scores
     mettreAJourAffichageScores();
     Sleep(5000);
+    
+    // La vérification du dernier tour ne doit pas être faite ici
+    // car cela interrompt la boucle normale dans lancerJeu
+    // Le code ci-dessous est supprimé car il fait arrêter le jeu après un seul tour
+    /*
+    if (tourActuel >= totalTours) {
+        if (verifSauvegarde()) {
+            effacerSauvegarde();
+        }
+        afficherMenu();
+    }
+    */
 }
 
