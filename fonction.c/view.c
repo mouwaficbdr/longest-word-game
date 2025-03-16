@@ -2,10 +2,14 @@
 #include<stdlib.h>
 #include<string.h>
 #include<conio.h>
+#include<windows.h>
 #include "../fonction.h/view.h"
 #include "../fonction.h/utilitaire.h"
 #include "../fonction.h/controller.h"
 
+// Prototypes des fonctions pour éviter les déclarations implicites
+void afficherNotificationTour(int numeroTour);
+void afficherReviewPartie(void);
 
 //Dimensions du terminal et rectangle qui composent l'affichage global
 int width,height;               
@@ -65,7 +69,20 @@ void afficherMenu() {
                 do {
                     choixmenu=getch();
                     if(choixmenu=='\r'){
-                        chargerPartie();
+                        // Vérifier d'abord si une sauvegarde existe
+                        if (verifSauvegarde()) {
+                            chargerPartie(); // Charger la partie seulement si une sauvegarde existe
+                        } else {
+                            // Si aucune sauvegarde n'existe, afficher un message et revenir au menu
+                            Effacer();
+                            int largeurTermi = 0, hauteurTermi = 0;
+                            getConsoleSize(&largeurTermi, &hauteurTermi);
+                            
+                            char message[] = "Aucune sauvegarde trouvee!";
+                            EcritureDynamique(message, (largeurTermi-strlen(message))/2, hauteurTermi/2, 0);
+                            Sleep(2000); // Attendre 2 secondes
+                            afficherMenu(); // Revenir au menu
+                        }
                         break;
                     }
                 }while(choixmenu!='\b');
@@ -361,3 +378,110 @@ void afficherMenu() {
         gotoxy(1+(2*scorefieldX2+scorefieldLong-strlen(Joueur2.nom))/2,score2moveY-(score2moveY/3)-1);
     }
     // Jouer
+
+/**
+ * Affiche un petit rectangle notification indiquant le passage au tour suivant
+ * @param numeroTour Numéro du tour auquel on passe
+ */
+void afficherNotificationTour(int numeroTour) {
+    int largeurTermi = 0, hauteurTermi = 0;
+    
+    // Récupérer les dimensions du terminal
+    getConsoleSize(&largeurTermi, &hauteurTermi);
+    
+    // Définir les dimensions du rectangle de notification
+    int notifWidth = 25;
+    int notifHeight = 5;
+    int notifX = (largeurTermi - notifWidth) / 2;
+    int notifY = hauteurTermi * 0.1; // En haut de l'écran
+    
+    // Dessiner le rectangle pour la notification
+    rectangle(notifX, notifY, notifWidth, notifHeight);
+    
+    // Afficher le message de notification
+    char message[50];
+    sprintf(message, "Passage au tour %d", numeroTour);
+    
+    gotoxy(notifX + (notifWidth - strlen(message)) / 2, notifY + 2);
+    printf("%s", message);
+    
+    // Pas d'attente, car l'affichage doit être simultané avec la revue
+}
+
+/**
+ * Affiche un résumé détaillé de la partie dans un rectangle centré à l'écran.
+ * Utilise les informations de la partie chargée pour afficher les détails.
+ */
+void afficherReviewPartie() {
+    // Effacer complètement l'écran avant d'afficher la revue
+    Effacer();
+    
+    int largeurTermi = 0, hauteurTermi = 0;
+    
+    // Récupérer les dimensions du terminal
+    getConsoleSize(&largeurTermi, &hauteurTermi);
+    
+    // Afficher la notification de passage au tour suivant
+    afficherNotificationTour(Partie.tourJoues + 1);
+    
+    // Définir les dimensions du rectangle de revue
+    int revueWidth = largeurTermi * 0.7;
+    int revueHeight = hauteurTermi * 0.6;
+    int revueX = (largeurTermi - revueWidth) / 2;
+    int revueY = (hauteurTermi - revueHeight) / 2;
+    
+    // Dessiner le rectangle pour la revue
+    rectangle(revueX, revueY, revueWidth, revueHeight);
+    
+    // Afficher le titre centré
+    char titre[] = "RESUME DE LA PARTIE CHARGEE";
+    gotoxy(revueX + (revueWidth - strlen(titre)) / 2, revueY + 2);
+    printf("%s", titre);
+    
+    // Afficher les informations générales
+    gotoxy(revueX + 4, revueY + 5);
+    printf("Joueur 1: %s (Score: %d)", Joueur1.nom, Joueur1.scoreTotal);
+    
+    gotoxy(revueX + 4, revueY + 7);
+    printf("Joueur 2: %s (Score: %d)", Joueur2.nom, Joueur2.scoreTotal);
+    
+    gotoxy(revueX + 4, revueY + 9);
+    printf("Progression: %d tours joues sur %d", Partie.tourJoues, Partie.nbreTours);
+    
+    // Afficher l'historique des tours
+    gotoxy(revueX + 4, revueY + 12);
+    printf("Historique des tours:");
+    
+    int ligneY = revueY + 14;
+    int maxToursAffichables = (revueHeight - 18) / 3; // Nombre maximum de tours affichables
+    int debutTour = 0;
+    
+    // Si trop de tours, n'afficher que les derniers
+    if (Partie.tourJoues > maxToursAffichables) {
+        debutTour = Partie.tourJoues - maxToursAffichables;
+        gotoxy(revueX + 4, ligneY);
+        printf("(Affichage des %d derniers tours sur %d...)", maxToursAffichables, Partie.tourJoues);
+        ligneY += 2;
+    }
+    
+    // Afficher les tours
+    for (int i = debutTour; i < Partie.tourJoues; i++) {
+        gotoxy(revueX + 8, ligneY);
+        printf("Tour %d:", i + 1);
+        
+        gotoxy(revueX + 12, ligneY + 1);
+        printf("%s - Mot: %s, Score: %d", Joueur1.nom, Joueur1.mot[i], Joueur1.score[i]);
+        
+        gotoxy(revueX + 12, ligneY + 2);
+        printf("%s - Mot: %s, Score: %d", Joueur2.nom, Joueur2.mot[i], Joueur2.score[i]);
+        
+        ligneY += 3;
+    }
+    
+    // Afficher message pour continuer
+    gotoxy(revueX + (revueWidth - strlen("Appuyez sur une touche pour continuer...")) / 2, revueY + revueHeight - 2);
+    printf("Appuyez sur une touche pour continuer...");
+    
+    // Attendre que l'utilisateur appuie sur une touche
+    getch();
+}
