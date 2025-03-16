@@ -22,7 +22,17 @@ typedef struct Joueur{
     int tourJoues;
     int numJoueurCommencer;
   }PartieJ;
+       //Liste des mots valides possibles que les joueurs auraient pu trouver 
+typedef struct MotPossible{
+  char *mot;
+ struct MotPossible *suivant;
+}MotPossible;
 
+typedef struct ListeMot{
+  MotPossible *premier;
+}ListeMot;
+
+extern ListeMot ListeDesMots;
 extern PartieJ Partie;
 extern Joueur Joueur1;
 extern Joueur Joueur2;
@@ -161,4 +171,12 @@ void lancerJeu();
  * @param tour 
  */
 void mettreAJourAffichageScores();
+
+   /**
+ * @brief 
+ *  Insere chaque mot valide que les joueurs auraient ou trouver dans la ListeDesMots
+ * @param mot 
+ */
+void motPossibles(char *mot);
+
 #endif /* AD958C8B_DA37_4398_8D2B_15FDCBF9A9D1 */

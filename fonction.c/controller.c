@@ -22,6 +22,7 @@ const char consonnes[20] = {'b', 'c', 'd', 'f', 'g', 'h', 'j', 'k', 'l', 'm', 'n
 Joueur Joueur1;
 Joueur Joueur2;
 PartieJ Partie;
+ListeMot ListeDesMots;
 
 void InitialiserJoueur(){
     strcpy(Joueur1.nom,"\0");
@@ -42,6 +43,7 @@ void InitialiserJoueur(){
    Partie.nbreTours=0;
    Partie.numJoueurCommencer=0;
    Partie.tourJoues=0;
+   ListeDesMots.premier=NULL;
  }
 
 /**
@@ -331,6 +333,40 @@ int validationMots(char mot[]) {
 }
 
 
+void motPossibles(char *mot){
+    MotPossible *ceMotValide=malloc(sizeof(MotPossible*));
+    ceMotValide->mot=malloc(1+strlen(mot)*sizeof(char));
+    strcpy(ceMotValide->mot,mot);
+    ceMotValide->suivant=NULL;
+
+    MotPossible *pointeur=malloc(sizeof(MotPossible*));
+    int compteur=0;
+    static int nbrElement=0;
+    if(nbrElement==15){
+        return;
+    }
+    
+    if(ListeDesMots.premier==NULL){
+        ListeDesMots.premier=ceMotValide;
+    }else{
+        pointeur=ListeDesMots.premier;
+            while(pointeur!=NULL){
+                if(strlen(mot)==strlen(pointeur->mot)){
+                    compteur++; 
+                }
+                nbrElement++;
+                pointeur=pointeur->suivant;
+            }
+            if(nbrElement<15) nbrElement=0;
+            if(compteur>=3){
+                return;
+            }
+            ceMotValide->suivant=ListeDesMots.premier;
+            ListeDesMots.premier=ceMotValide;
+        
+    }
+ }
+
 
 char *LongestWord(char grille[])
 {
@@ -372,6 +408,7 @@ while(grille[i]!='\0')
           }
             if(validationChar(mot,grille))
               {
+                motPossibles(mot);
            //On alloue et on récupère le mot valide seulement s'il est plus long que le précedent
               if(strlen(mot)>strlen(valideMot))
                   {
@@ -685,6 +722,9 @@ void lancerJeu(){
                     if(x) {
                         sauvegarderPartie();
                         Sleep(2000);
+                        afficherMenu();
+                    }else{
+                        afficherMenu();
                     }
                 }
             }else{
