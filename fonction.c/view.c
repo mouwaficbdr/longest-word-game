@@ -494,3 +494,4 @@ void afficherReviewPartie() {
         touche = getch();
     } while (touche != 13); // Attendre la touche ENTRÉE
 }
+

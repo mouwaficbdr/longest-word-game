@@ -909,4 +909,3 @@ void DemarrerPartie(char Joueur1name[], char Joueur2name[], int tourActuel, int 
     mettreAJourAffichageScores();
     Sleep(5000);
 }
-

@@ -5,13 +5,12 @@
 
 int main(){
 
-  lancerJeu();
-    // LongestWord("evlsojvcfk");
-  // MotPossible *motpos=ListeDesMots.premier;
-  // while(motpos!=NULL){
-  //  printf("%s --> %d\n",motpos->mot,strlen(motpos->mot));
-  //  motpos=motpos->suivant;
-  // }
+    LongestWord("tuedjdnsp");
+  MotPossible *motpos=ListeDesMots.premier;
+  while(motpos!=NULL){
+   printf("%s --> %d\n",motpos->mot,strlen(motpos->mot));
+   motpos=motpos->suivant;
+  }
 
   return 0;    
 }
