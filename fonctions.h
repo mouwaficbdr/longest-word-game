@@ -271,6 +271,7 @@ extern void genererCaractereAleatoires(int numCommencer);
 extern void mettreAJourAffichageScores();
 extern void start_server();
 extern void close_server(int server_socket);
-extern void accept_client(int server_socket);
+extern int accept_client(SOCKET server_socket, struct sockaddr_in* client_addr, int* client_addr_len);
 extern void receive_data(int client_socket);
+extern void send_message(SOCKET client_socket, const char *message);
 #endif

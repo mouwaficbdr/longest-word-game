@@ -1687,7 +1687,6 @@ void start_server() {
 }
 
 //Fonction pour accepter un client
-/*
 int accept_client(SOCKET server_socket, struct sockaddr_in* client_addr, int* client_addr_len) {
     SOCKET client_socket = accept(server_socket, (struct sockaddr*)client_addr, client_addr_len);
     if (client_socket == INVALID_SOCKET) {
@@ -1695,8 +1694,16 @@ int accept_client(SOCKET server_socket, struct sockaddr_in* client_addr, int* cl
         return INVALID_SOCKET;
     }
     return client_socket;
-}*/ /*(facultatif puisqu'il est deja fait dans start_server)*/
+}
 
+    /*
+        //Le buffer permet de préparer les données en mémoire avant de les envoyer en une seule opération.
+        //recv() est une fonction qui reçoit des données sur une socket.
+        //client_socket → La socket du client.
+        //buffer → Le buffer de réception.
+        //sizeof(buffer) - 1 → Taille du buffer.
+        //0 → Flag de réception (0 = non-blocking).
+     */
 //Fonction pour reçevoir les données du client
     void receive_data(int client_socket) {
         static char buffer[1024];
@@ -1711,7 +1718,7 @@ int accept_client(SOCKET server_socket, struct sockaddr_in* client_addr, int* cl
     printf("Message reçu du client: %s\n", buffer);
     return buffer;
     }
-
+       
 //Fonction pour fermer les sockets
     void close_server(int server_socket) {
     if (close(server_socket) == -1) {
@@ -1721,3 +1728,52 @@ int accept_client(SOCKET server_socket, struct sockaddr_in* client_addr, int* cl
     printf("Serveur fermé avec succès.\n");
 }
 
+//Fonction connect_to_server
+int connect_to_server(const char *server_ip, int port) {
+    WSADATA wsa;
+    SOCKET client_socket;
+    struct sockaddr_in server_address;
+
+        //Initialisation de Winsock
+    if (WSAStartup(MAKEWORD(2,2), &wsa) != 0) {
+        printf("Échec de l'initialisation de Winsock. Code d'erreur : %d\n", WSAGetLastError());
+        return -1;
+    }
+
+        //Création du socket client
+    client_socket = socket(AF_INET, SOCK_STREAM, 0);
+    if (client_socket == INVALID_SOCKET) {
+        printf("Erreur lors de la création du socket. Code d'erreur : %d\n", WSAGetLastError());
+        WSACleanup();
+        return -1;
+    }
+
+        //Configuration de l'adresse du serveur
+    server_address.sin_family = AF_INET;
+    server_address.sin_port = htons(port);
+    inet_pton(AF_INET, server_ip, &server_address.sin_addr);
+
+        //Connexion au serveur
+    if (connect(client_socket, (struct sockaddr*)&server_address, sizeof(server_address)) == SOCKET_ERROR) {
+        printf("Échec de la connexion. Code d'erreur : %d\n", WSAGetLastError());
+        closesocket(client_socket);
+        WSACleanup();
+        return -1;
+    }
+
+    printf("Connecté au serveur %s:%d avec succès !\n", server_ip, port);
+    return client_socket;
+}
+
+    
+            //Fonction send_message
+    void send_message(SOCKET client_socket, const char *message) {
+        int message_length = strlen(message);
+
+        // Envoi du message au serveur
+        if (send(client_socket, message, message_length, 0) == SOCKET_ERROR) {
+            printf("Erreur lors de l'envoi du message. Code d'erreur : %d\n", WSAGetLastError());
+        } else {
+            printf("Message envoyé au serveur : %s\n", message);
+        }
+    }
