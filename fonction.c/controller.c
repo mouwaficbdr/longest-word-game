@@ -890,7 +890,7 @@ void DemarrerPartie(char Joueur1name[], char Joueur2name[], int tourActuel, int 
     //Il y aura un texte pour dire qu'on procède maintenant à la validation des mots
     int positionLoading = (gameEntryFieldY + gameEntryFieldHeight -1) + ((EntryFieldY1 - (gameEntryFieldY + gameEntryFieldHeight -1))/2);
     
-    EcritureDynamique("Un instant, nous procedons à la validation....", EntryFieldX1 + 2, positionLoading, 50);
+    EcritureDynamique("Un instant, nous procedons a la validation....", EntryFieldX1 + 2, positionLoading, 50);
     Sleep(3000);
         
     Joueur1.score[tourActuel-1]=validationChar(Joueur1.mot[tourActuel-1],Partie.lettreGenerees)?validationMots(Joueur1.mot[tourActuel-1]):0;
@@ -936,19 +936,55 @@ void AfficherGagnantPartie(){
     rectangle(xR, yR, largeurR, 15);
 
     //Positionnement des texte de joueur gagnant
-    gotoxy(((largeurR)- strlen("GAGNANT DE LA PARTIE"))/2 + xR, yR + 4);printf("GAGNANT DE LA PARTIE %d", Partie.tourJoues);
-    gotoxy(xR + 6, yR + 6);printf("Joueur %d :", (Joueur1.score[Partie.tourJoues - 1] > Joueur2.score[Partie.tourJoues - 1]) ? 1 : 2);
-    gotoxy(xR + 6, yR + 8);printf("%s vous etes le gagnant de cette partie", (Joueur1.score[Partie.tourJoues - 1] > Joueur2.score[Partie.tourJoues - 1]) ? Joueur1.nom : Joueur2.nom);
-    gotoxy((((xR + largeurR) - 6) - strlen("Score : ")), yR + 8);printf("Score : %d", (Joueur1.score[Partie.tourJoues - 1] > Joueur2.score[Partie.tourJoues - 1]) ? Joueur1.score[Partie.tourJoues - 1] : Joueur2.score[Partie.tourJoues - 1]);
-    gotoxy(((largeurR)- strlen("VOULEZ VOUS VOIR UNE REVIEW DE LA PARTIE ?"))/2 + xR, yR + 10);printf("VOULEZ VOUS VOIR UNE REVIEW DE LA PARTIE ?");
-    gotoxy(((largeurR)- strlen("Oui [O] | Non [N]"))/2 + xR, yR + 11);printf("Oui [O] | Non [N]");
-    
-    char choix = '\n';
-    do{
-        gotoxy(((largeurR)- strlen("  "))/2 + xR, yR + 13);
-        printf("\b \b");
-        choix = getche();
-    }while(choix != 'O' && choix != 'N');
 
-    Sleep(5000);
+    gotoxy(((largeurR)- strlen("GAGNANT DE LA PARTIE"))/2 + xR, yR + 4);printf("GAGNANT DE LA PARTIE %d", Partie.tourJoues);
+    
+    //Si le score du joueur 1 pour le tour actuel est plus élevé par rapport à celui du joueur 2, il est le gagnant
+    if(Joueur1.score[Partie.tourJoues - 1] > Joueur2.score[Partie.tourJoues - 1]){
+        gotoxy(xR + 6, yR + 6);printf("Joueur %d :", 1);
+        gotoxy(xR + 6, yR + 8);printf("%s vous etes le gagnant de cette partie", Joueur1.nom);
+        gotoxy((((xR + largeurR) - 6) - strlen("Score : ")), yR + 8);printf("Score : %d", Joueur1.score[Partie.tourJoues - 1]);
+    
+    //Si le score du joueur 2 pour le tour actuel est plus élevé par rapport à celui du joueur 1, il est le gagnant
+    }else if(Joueur1.score[Partie.tourJoues - 1] < Joueur2.score[Partie.tourJoues - 1]){
+        gotoxy(xR + 6, yR + 6);printf("Joueur %d :", 2);
+        gotoxy(xR + 6, yR + 8);printf("%s vous etes le gagnant de cette partie", Joueur2.nom);
+        gotoxy((((xR + largeurR) - 6) - strlen("Score : ")), yR + 8);printf("Score : %d", Joueur2.score[Partie.tourJoues - 1]);
+    
+    //Si le score sont égaux, il s'agit d'un match nul
+    }else{
+        gotoxy(xR + 6, yR + 6);printf("Match nul !!!");
+        gotoxy(xR + 6, yR + 8);printf("Vous avez obtenu le meme score pour ce tour.");
+    }
+
+    //On passe ensuite à la partie suivante ou on retourne au Menu
+
+    if(Partie.tourJoues < Partie.nbreTours){
+        gotoxy(((largeurR)- strlen("VOULEZ VOUS RETOURNER AU MENU PRINCIPAL ?"))/2 + xR, yR + 10);printf("VOULEZ VOUS RETOURNER AU MENU PRINCIPAL ?");
+        gotoxy(((largeurR)- strlen("Oui [O] | Non [N]"))/2 + xR, yR + 11);printf("Oui [O] | Non [N]");
+    
+        char choix = '\n';
+        do{
+            gotoxy(((largeurR)- strlen("  "))/2 + xR, yR + 13);
+            printf("\b \b");
+            choix = getche();
+        }while(choix != 'O' && choix != 'N');
+
+        if(choix == 'O'){
+            afficherMenu();
+        }
+    }
+
+    if(Partie.tourJoues == Partie.nbreTours){
+        gotoxy((largeurR- strlen("Ne baisse pas les bras, tu l'auras a la prochaine partie !!"))/2 + xR, yR + 10);printf("Ne baisse pas les bras, tu l'auras a la prochaine partie !!");
+        gotoxy((largeurR - strlen("Appuyez sur la touche ENTRER pour terminer la partie"))/2 + xR, yR + 12);printf("Appuyez sur la touche ENTRER pour terminer la partie");
+
+        char validation = '\n';
+
+        do{
+            printf("\b ");
+            validation = getche();
+        }while(validation != '\r');
+    }
+    
 }
