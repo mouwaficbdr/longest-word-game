@@ -443,7 +443,8 @@ void afficherReviewPartie() {
     int revueHeight = (hauteurTotale < hauteurMax) ? hauteurTotale : hauteurMax;
     
     int revueX = (largeurTermi - revueWidth) / 2;
-    int revueY = (hauteurTermi - revueHeight) / 2;
+    // Ajouter un décalage vertical pour tenir compte de la notification
+    int revueY = (hauteurTermi - revueHeight) / 2 + 3; // Décalage de 10 lignes vers le bas
     
     // Dessiner le rectangle pour la revue
     rectangle(revueX, revueY, revueWidth, revueHeight);
