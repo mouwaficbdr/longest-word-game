@@ -604,7 +604,7 @@ int bon=0;
         }
         strcpy(lesinfos[0],"Nom du joueur 1: \n");
         strcpy(lesinfos[1],"Nom du joueur 2: \n");
-        strcpy(lesinfos[2],"Combien de parties voulez-vous effectuez?\n");
+        strcpy(lesinfos[2],"Combien de tours voulez-vous effectuer?\n");
         strcpy(lesinfos[3],"Qui desire entamer la partie: Joueur [1] / [2]\n");
         
         int largeurT=0;
