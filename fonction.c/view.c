@@ -429,14 +429,14 @@ void afficherReviewPartie() {
     // Définir les dimensions du rectangle de revue
     int revueWidth = largeurTermi * 0.7;
     // Hauteur fixe pour la partie supérieure (titre et infos générales)
-    int hauteurFixe = 15;
+    int hauteurFixe = 12;
     // Hauteur de chaque tour (3 lignes par tour)
     int hauteurParTour = 3;
     // Hauteur supplémentaire pour le message de navigation
     int hauteurNav = 4;
     
     // Nombre de tours à afficher (derniers tours)
-    int toursAffiches = 5; // On affiche les 5 derniers tours
+    int toursAffiches = 3; // On affiche les 3 derniers tours
     
     // Calculer la hauteur totale nécessaire
     int revueHeight = hauteurFixe + (toursAffiches * hauteurParTour) + hauteurNav;
@@ -453,24 +453,24 @@ void afficherReviewPartie() {
     printf("%s", titre);
     
     // Afficher les informations générales
-    gotoxy(revueX + 4, revueY + 5);
+    gotoxy(revueX + 4, revueY + 4);
     printf("Joueur 1: %s (Score: %d)", Joueur1.nom, Joueur1.scoreTotal);
     
-    gotoxy(revueX + 4, revueY + 7);
+    gotoxy(revueX + 4, revueY + 6);
     printf("Joueur 2: %s (Score: %d)", Joueur2.nom, Joueur2.scoreTotal);
     
-    gotoxy(revueX + 4, revueY + 9);
+    gotoxy(revueX + 4, revueY + 8);
     printf("Progression: %d tours joues sur %d", Partie.tourJoues, Partie.nbreTours);
     
     // Afficher l'historique des tours
-    gotoxy(revueX + 4, revueY + 12);
+    gotoxy(revueX + 4, revueY + 10);
     printf("Derniers tours joues:");
     
     // Calculer le point de départ pour l'affichage des tours
     int debutAffichage = (Partie.tourJoues > toursAffiches) ? Partie.tourJoues - toursAffiches : 0;
     
     // Afficher les tours
-    int ligneY = revueY + 14;
+    int ligneY = revueY + 12;
     for (int i = debutAffichage; i < Partie.tourJoues; i++) {
         gotoxy(revueX + 8, ligneY);
         printf("Tour %d:", i + 1);
