@@ -23,6 +23,7 @@ Joueur Joueur1;
 Joueur Joueur2;
 PartieJ Partie;
 ListeMot ListeDesMots;
+int partieChargee = 0; // Indique si une partie vient d'être chargée
 
 void InitialiserJoueur(){
     strcpy(Joueur1.nom,"\0");
@@ -157,14 +158,15 @@ int chargerPartie() {
         fgets(buffer, sizeof(buffer), fichier);
         
         // Lire les données du joueur 1
-        fscanf(fichier, "%*[^:]: Mot: %19[^,], Score: %d\n", Joueur1.mot[i], &Joueur1.score[i]);
+        fscanf(fichier, "%[^-]- Mot: %[^,], Score: %d\n", buffer, Joueur1.mot[i], &Joueur1.score[i]);
         
         // Lire les données du joueur 2
-        fscanf(fichier, "%*[^:]: Mot: %19[^,], Score: %d\n", Joueur2.mot[i], &Joueur2.score[i]);
+        fscanf(fichier, "%[^-]- Mot: %[^,], Score: %d\n", buffer, Joueur2.mot[i], &Joueur2.score[i]);
     }
 
     fclose(fichier);
     printf("Partie chargee avec succes, incluant l'historique des mots et scores.\n");
+    partieChargee = 1; // Indique que la partie vient d'être chargée
     return 1;
 }
 
@@ -436,6 +438,12 @@ while(grille[i]!='\0')
 
 
 int JouerEncore(){
+    // Si une partie vient d'être chargée, passer automatiquement au tour suivant
+    if (partieChargee) {
+        partieChargee = 0; // Réinitialiser pour les prochains tours
+        return 1;
+    }
+
     char texte[]="On passe au tour suivant?";
     int largeurTermi=0, hauteurTermi=0;
 
@@ -681,57 +689,68 @@ void lancerJeu(){
     
     Effacer();
     int largeurTermi=0, hauteurTermi=0;
-        
-    //Definir les dimensions du terminal pour les affichages
+    
+    // Récupérer les dimensions du terminal pour les affichages
     getConsoleSize(&largeurTermi, &hauteurTermi);
 
-    char TexteDebut[]="QUI AURA LE LONGEST WORD?";
-    //Pause
-    Sleep(1000);
+    // Variable pour stocker si on vient de charger une partie
+    int vientDeCharger = partieChargee;
+    
+    // Si on ne vient pas de charger une partie, afficher l'animation de début
+    if (!vientDeCharger) {
+        char TexteDebut[]="QUI AURA LE LONGEST WORD?";
+        //Pause
+        Sleep(1000);
 
-    //Position du curseur
-    int x=(largeurTermi-strlen(TexteDebut))/2;
-    int y= hauteurTermi/2;
+        //Position du curseur
+        int x=(largeurTermi-strlen(TexteDebut))/2;
+        int y= hauteurTermi/2;
 
-    //Afficher le message progressivement caractère par caractère
-    EcritureDynamique(TexteDebut,x,y,100);
+        //Afficher le message progressivement caractère par caractère
+        EcritureDynamique(TexteDebut,x,y,100);
 
-    //Pause et effacer pour lancer le Jeu
-    Sleep(1000);
+        //Pause et effacer pour lancer le Jeu
+        Sleep(1000);
+    }
 
-       char *convert;
-       char *texte=malloc(sizeof(char)*65);
-       do{
-            if(Partie.tourJoues<Partie.nbreTours){
-                if(JouerEncore()){ 
-                 DemarrerPartie(Joueur1.nom,  Joueur2.nom, Partie.tourJoues+1,Partie.nbreTours,Partie.numJoueurCommencer);
-                }else{
-                    Effacer();
-                    strcpy(texte,"Point de sauvegarde!");
-                    EcritureDynamique(texte,(largeurTermi-strlen(texte))/2,(hauteurTermi/2)-1,0);            
-                    strcpy(texte,"Sauvegardez votre progression (1).Si (0) elle sera perdue.[1/0]");
-                    EcritureDynamique(texte,(largeurTermi-strlen(texte))/2,(hauteurTermi/2),0); 
-                    do{
-                        gotoxy(largeurTermi/2,(hauteurTermi/2)+1);
-                        clearLine();
-                        gotoxy(largeurTermi/2,(hauteurTermi/2)+1);
-                        scanf("%s",texte);
-                        x=strtol(texte,&convert,10);
-                    }while((x!=1 && x!=0) || !isNumber(texte)); 
-                    x=strtol(texte,&convert,10);    
-                    if(x) {
-                        sauvegarderPartie();
-                        Sleep(2000);
-                        afficherMenu();
-                    }else{
-                        afficherMenu();
-                    }
-                }
+    char *convert;
+    char *texte=malloc(sizeof(char)*65);
+    int x = 0; // Déclarer la variable x utilisée plus tard
+    do{
+        if(Partie.tourJoues<Partie.nbreTours){
+            if(JouerEncore()){ 
+             DemarrerPartie(Joueur1.nom,  Joueur2.nom, Partie.tourJoues+1,Partie.nbreTours,Partie.numJoueurCommencer);
             }else{
-                afficherMenu();
+                Effacer();
+                strcpy(texte,"Point de sauvegarde!");
+                EcritureDynamique(texte,(largeurTermi-strlen(texte))/2,(hauteurTermi/2)-1,0);            
+                strcpy(texte,"Sauvegardez votre progression (1).Si (0) elle sera perdue.[1/0]");
+                EcritureDynamique(texte,(largeurTermi-strlen(texte))/2,(hauteurTermi/2),0); 
+                do{
+                    gotoxy(largeurTermi/2,(hauteurTermi/2)+1);
+                    clearLine();
+                    gotoxy(largeurTermi/2,(hauteurTermi/2)+1);
+                    scanf("%s",texte);
+                    x=strtol(texte,&convert,10);
+                }while((x!=1 && x!=0) || !isNumber(texte)); 
+                x=strtol(texte,&convert,10);    
+                if(x) {
+                    sauvegarderPartie();
+                    Sleep(2000);
+                    afficherMenu();
+                }else{
+                    afficherMenu();
+                }
             }
-        }while(Partie.tourJoues<=Partie.nbreTours);
-      
+        }else{
+            // Si tous les tours ont été joués, supprimer la sauvegarde avant de revenir au menu
+            if (verifSauvegarde()) {
+                effacerSauvegarde();
+            }
+            afficherMenu();
+        }
+    }while(Partie.tourJoues<=Partie.nbreTours);
+  
 }
 
 

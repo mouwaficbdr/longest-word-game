@@ -72,6 +72,8 @@ void afficherMenu() {
                         // Vérifier d'abord si une sauvegarde existe
                         if (verifSauvegarde()) {
                             chargerPartie(); // Charger la partie seulement si une sauvegarde existe
+                            afficherReviewPartie(); // Afficher la review de la partie chargée
+                            lancerJeu(); // Passer directement au tour suivant au lieu de revenir au menu
                         } else {
                             // Si aucune sauvegarde n'existe, afficher un message et revenir au menu
                             Effacer();
@@ -426,7 +428,20 @@ void afficherReviewPartie() {
     
     // Définir les dimensions du rectangle de revue
     int revueWidth = largeurTermi * 0.7;
-    int revueHeight = hauteurTermi * 0.6;
+    // Hauteur fixe pour la partie supérieure (titre et infos générales)
+    int hauteurFixe = 15;
+    // Hauteur de chaque tour (3 lignes par tour)
+    int hauteurParTour = 3;
+    // Hauteur supplémentaire pour le message de navigation
+    int hauteurNav = 4;
+    
+    // Hauteur totale nécessaire pour afficher tous les tours
+    int hauteurTotale = hauteurFixe + (Partie.tourJoues * hauteurParTour) + hauteurNav;
+    
+    // Limiter la hauteur maximale à 80% de la hauteur du terminal
+    int hauteurMax = (int)(hauteurTermi * 0.8);
+    int revueHeight = (hauteurTotale < hauteurMax) ? hauteurTotale : hauteurMax;
+    
     int revueX = (largeurTermi - revueWidth) / 2;
     int revueY = (hauteurTermi - revueHeight) / 2;
     
@@ -452,36 +467,69 @@ void afficherReviewPartie() {
     gotoxy(revueX + 4, revueY + 12);
     printf("Historique des tours:");
     
-    int ligneY = revueY + 14;
-    int maxToursAffichables = (revueHeight - 18) / 3; // Nombre maximum de tours affichables
-    int debutTour = 0;
+    // Calculer combien de tours peuvent être affichés à la fois
+    int maxToursVisibles = (revueHeight - hauteurFixe - hauteurNav) / hauteurParTour;
     
-    // Si trop de tours, n'afficher que les derniers
-    if (Partie.tourJoues > maxToursAffichables) {
-        debutTour = Partie.tourJoues - maxToursAffichables;
-        gotoxy(revueX + 4, ligneY);
-        printf("(Affichage des %d derniers tours sur %d...)", maxToursAffichables, Partie.tourJoues);
-        ligneY += 2;
+    // Position de départ pour l'affichage des tours
+    int tourDebut = 0;
+    // Position courante dans la liste des tours
+    int tourCourant = tourDebut;
+    
+    // Boucle principale de navigation
+    char touche;
+    int continuer = 1;
+    
+    while (continuer) {
+        // Effacer la zone d'affichage des tours
+        for (int y = revueY + 14; y < revueY + revueHeight - hauteurNav; y++) {
+            gotoxy(revueX + 4, y);
+            for (int x = 0; x < revueWidth - 8; x++) {
+                printf(" ");
+            }
+        }
+        
+        // Afficher les tours visibles
+        int ligneY = revueY + 14;
+        int finTour = tourCourant + maxToursVisibles;
+        if (finTour > Partie.tourJoues) finTour = Partie.tourJoues;
+        
+        for (int i = tourCourant; i < finTour; i++) {
+            gotoxy(revueX + 8, ligneY);
+            printf("Tour %d:", i + 1);
+            
+            gotoxy(revueX + 12, ligneY + 1);
+            printf("%s - Mot: %s, Score: %d", Joueur1.nom, Joueur1.mot[i], Joueur1.score[i]);
+            
+            gotoxy(revueX + 12, ligneY + 2);
+            printf("%s - Mot: %s, Score: %d", Joueur2.nom, Joueur2.mot[i], Joueur2.score[i]);
+            
+            ligneY += hauteurParTour;
+        }
+        
+        // Afficher les instructions de navigation
+        gotoxy(revueX + 4, revueY + revueHeight - hauteurNav);
+        if (Partie.tourJoues > maxToursVisibles) {
+            printf("Utilisez les fleches HAUT/BAS pour naviguer. ");
+            printf("Position: %d-%d sur %d", tourCourant + 1, finTour, Partie.tourJoues);
+        }
+        
+        // Afficher message pour continuer
+        gotoxy(revueX + (revueWidth - strlen("Appuyez sur ENTREE pour continuer...")) / 2, revueY + revueHeight - 2);
+        printf("Appuyez sur ENTREE pour continuer...");
+        
+        // Attendre l'entrée utilisateur
+        touche = getch();
+        
+        // Traiter l'entrée
+        if (touche == 13) { // Touche ENTRÉE
+            continuer = 0; // Sortir de la boucle
+        } else if (touche == 0 || touche == 224) { // Touche spéciale (flèches)
+            touche = getch(); // Lire le code de la touche spéciale
+            if (touche == 72) { // Flèche HAUT
+                if (tourCourant > 0) tourCourant--;
+            } else if (touche == 80) { // Flèche BAS
+                if (tourCourant + maxToursVisibles < Partie.tourJoues) tourCourant++;
+            }
+        }
     }
-    
-    // Afficher les tours
-    for (int i = debutTour; i < Partie.tourJoues; i++) {
-        gotoxy(revueX + 8, ligneY);
-        printf("Tour %d:", i + 1);
-        
-        gotoxy(revueX + 12, ligneY + 1);
-        printf("%s - Mot: %s, Score: %d", Joueur1.nom, Joueur1.mot[i], Joueur1.score[i]);
-        
-        gotoxy(revueX + 12, ligneY + 2);
-        printf("%s - Mot: %s, Score: %d", Joueur2.nom, Joueur2.mot[i], Joueur2.score[i]);
-        
-        ligneY += 3;
-    }
-    
-    // Afficher message pour continuer
-    gotoxy(revueX + (revueWidth - strlen("Appuyez sur une touche pour continuer...")) / 2, revueY + revueHeight - 2);
-    printf("Appuyez sur une touche pour continuer...");
-    
-    // Attendre que l'utilisateur appuie sur une touche
-    getch();
 }
