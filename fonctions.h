@@ -270,4 +270,7 @@ extern void demanderMotJoueur2(char *mot);
 extern void genererCaractereAleatoires(int numCommencer);
 extern void mettreAJourAffichageScores();
 extern void start_server();
+extern void close_server(int server_socket);
+extern void accept_client(int server_socket);
+extern void receive_data(int client_socket);
 #endif

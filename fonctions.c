@@ -1571,10 +1571,10 @@ void start_server() {
     struct sockaddr_in server_addr, client_addr; //Adresse du serveur (IP + port) et du client 
     int client_addr_len = sizeof(client_addr);//Taille de client_addr pour accept()
     int port;
-        // Initialisation de Winsock
-        /*
-            WSAStartup() prends en parametre la version de winsock utilisé et un  pointeur vers une structure WSADATA qui recevra les informations sur Winsock.Elle renvoi 0 si l'initialisation est reussi et un resuletat different de 0 sinon
-        */
+            /*
+                WSAStartup() prends en parametre la version de winsock utilisé et un  pointeur vers une structure WSADATA qui recevra les informations sur Winsock.Elle renvoi 0 si l'initialisation est reussi et un resuletat different de 0 sinon
+            */
+                // Initialisation de Winsock
     if (WSAStartup(MAKEWORD(2,2), &wsa) != 0) {
         printf("Échec de l'initialisation de Winsock. Code d'erreur : %d\n", WSAGetLastError());
         exit(EXIT_FAILURE);
@@ -1591,12 +1591,12 @@ void start_server() {
     printf("Serveur demarrant sur le port : %d\n", port);
 
 
-    // Création de la socket du serveur
             /*
                 -La fonction socket() prends en parametre le domaine qui  spécifie la famille d'adresses (IPv4 ou IPv6). AF_INET<- dans notre cas 
                 -Ensuite le type de socket (TCP ou UPD) SOCK_STREAM<- dans notre cas pour TCP
                 -Et enfin le protocol 0 generalement
             */
+               // Création de la socket du serveur  
     server_socket = socket(AF_INET, SOCK_STREAM, 0);
     if (server_socket == INVALID_SOCKET) {
         printf("Erreur lors de la création de la socket. Code d'erreur : %d\n", WSAGetLastError());
@@ -1606,7 +1606,6 @@ void start_server() {
     printf("Socket serveur créée avec succès.\n");
 
 
-        //Configuration de l'adresse du serveur
             /*
                 memset() est une fonction de la bibliothèque standard C qui remplit une zone mémoire avec une valeur spécifique.Elle prends en parametre un pointeur vers la zone mémoire à remplir.Valeur (en octet) à copier dans la mémoire (0 à 255).et Nombre d’octets à remplir.
 
@@ -1616,17 +1615,18 @@ void start_server() {
                 sin_addr.s_addr : Adresse IP
                 sin_port : Port d'écoute 
             */
-            memset(&server_addr, 0, sizeof(server_addr));
-            server_addr.sin_family = AF_INET;
-            server_addr.sin_addr.s_addr = INADDR_ANY;
-            server_addr.sin_port = htons(port);
+                   //Configuration de l'adresse du serveur
+        memset(&server_addr, 0, sizeof(server_addr));
+        server_addr.sin_family = AF_INET;
+        server_addr.sin_addr.s_addr = INADDR_ANY;
+        server_addr.sin_port = htons(port);
 
-        //Liaison de la socket (bind)
             /*
-                -bind() attache la socket à une adresse et un port.
+                -bind() attache le socket à une adresse et un port.
                 -(struct sockaddr*)&server_addr → On cast server_addr en struct sockaddr* car bind() attend ce type.
                 -sizeof(server_addr) → Taille de la structure server_addr.
             */
+                   //Liaison de la socket (bind)
     if (bind(server_socket, (struct sockaddr*)&server_addr, sizeof(server_addr)) == SOCKET_ERROR) {
         printf("Erreur lors du bind. Code d'erreur : %d\n", WSAGetLastError());
         closesocket(server_socket);
@@ -1635,12 +1635,12 @@ void start_server() {
     }
     printf("Bind réussi sur le port %d.\n", port);
 
-        //Passage en mode écoute
             /*
                 listen() permet de passer une socket en mode écoute, c'est-à-dire qu'elle commence à attendre des connexions entrantes.
                 -server_socket → La socket du serveur.
                 -5 → Taille de la file d'attente des connexions.
             */
+                   //Passage en mode écoute
     if (listen(server_socket, 5) == SOCKET_ERROR) {
         printf("Erreur lors du listen. Code d'erreur : %d\n", WSAGetLastError());
         closesocket(server_socket);
@@ -1649,13 +1649,13 @@ void start_server() {
     }
     printf("Le serveur est en attente de connexions...\n");
 
-        //Acceptation d'une connexion entrante
             /*
                 -accept() accepte une connexion entrante.
                 -server_socket → La socket du serveur.
                 -(struct sockaddr*)&client_addr → On cast client_addr en struct sockaddr* car accept() attend ce type.
                 -&client_addr_len → Taille de client_addr pour accept().
             */
+                   //Acceptation d'une connexion entrante
     client_socket = accept(server_socket, (struct sockaddr*)&client_addr, &client_addr_len);
     if (client_socket == INVALID_SOCKET) {
         printf("Erreur lors de l'acceptation de la connexion. Code d'erreur : %d\n", WSAGetLastError());
@@ -1669,7 +1669,6 @@ void start_server() {
             
          */
 
-        //Envoi d'un message au client
             /*
                 -send() envoie des données sur une socket.
                 -client_socket → La socket du client.
@@ -1677,6 +1676,7 @@ void start_server() {
                 -strlen(message) → Taille du message.
                 -0 → Flag de l'envoi (0 = non-blocking).
             */
+                   //Envoi d'un message au client   
     char *message = "Bienvenue sur le serveur !\n";
     send(client_socket, message, strlen(message), 0);
 
@@ -1685,3 +1685,39 @@ void start_server() {
     closesocket(server_socket);
     WSACleanup();
 }
+
+//Fonction pour accepter un client
+/*
+int accept_client(SOCKET server_socket, struct sockaddr_in* client_addr, int* client_addr_len) {
+    SOCKET client_socket = accept(server_socket, (struct sockaddr*)client_addr, client_addr_len);
+    if (client_socket == INVALID_SOCKET) {
+        printf("Erreur lors de l'acceptation de la connexion. Code d'erreur : %d\n", WSAGetLastError());
+        return INVALID_SOCKET;
+    }
+    return client_socket;
+}*/ /*(facultatif puisqu'il est deja fait dans start_server)*/
+
+//Fonction pour reçevoir les données du client
+    void receive_data(int client_socket) {
+        static char buffer[1024];
+        int bytes_received = recv(client_socket, buffer, sizeof(buffer) - 1, 0);
+        
+        if (bytes_received == -1) {
+            perror("Erreur lors de la réception des données");
+            exit(1);
+    }
+    
+    buffer[bytes_received] = '\0'; // Terminer la chaîne
+    printf("Message reçu du client: %s\n", buffer);
+    return buffer;
+    }
+
+//Fonction pour fermer les sockets
+    void close_server(int server_socket) {
+    if (close(server_socket) == -1) {
+        perror("Erreur lors de la fermeture du serveur");
+        exit(1);
+    }
+    printf("Serveur fermé avec succès.\n");
+}
+
