@@ -57,3 +57,6 @@ sauvegarde.txt
 
 #JSON
 *.json
+*.client.client
+*.server.server
+*test.c
