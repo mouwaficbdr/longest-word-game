@@ -1513,4 +1513,100 @@ void mettreAJourAffichageScores() {
     printf("%d", scoreJoueur2);
 }
 
+/* Winsock (Windows Sockets) est une interface de programmation réseau spécifique à Windows, permettant de gérer les communications via TCP/IP.*/
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <winsock2.h>
+#include <ws2tcpip.h>  // Pour inet_ntoa et autres
+#pragma comment(lib, "ws2_32.lib") // Lien avec la bibliothèque Winsock
 
+void start_server(int port) {
+    WSADATA wsa; //C'est une structure fournie par Winsock.Sans cette initialisation, aucune communication réseau ne peut se faire sous Windows.*/
+    SOCKET server_socket, client_socket; //Socket du serveur et du client apres connexion
+    struct sockaddr_in server_addr, client_addr; //Adresse du serveur (IP + port) et du client 
+    int client_addr_len = sizeof(client_addr);//Taille de client_addr pour accept()
+
+        // Initialisation de Winsock
+
+        /*
+            WSAStartup() prends en parametre la version de winsock utilisé et un  pointeur vers une structure WSADATA qui recevra les informations sur Winsock.Elle renvoi 0 si l'initialisation est reussi et un resuletat different de 0 sinon
+        */
+    if (WSAStartup(MAKEWORD(2,2), &wsa) != 0) {
+        printf("Échec de l'initialisation de Winsock. Code d'erreur : %d\n", WSAGetLastError());
+        exit(EXIT_FAILURE);
+    }
+    printf("Winsock initialisé avec succès.\n");
+
+        // Création de la socket du serveur
+            /*
+                -La fonction socket() prends en parametre le domaine qui  spécifie la famille d'adresses (IPv4 ou IPv6). AF_INET<- dans notre cas 
+                -Ensuite le type de socket (TCP ou UPD) SOCK_STREAM<- dans notre cas pour TCP
+                -Et enfin le protocol 0 generalement
+            */
+    server_socket = socket(AF_INET, SOCK_STREAM, 0);
+    if (server_socket == INVALID_SOCKET) {
+        printf("Erreur lors de la création de la socket. Code d'erreur : %d\n", WSAGetLastError());
+        WSACleanup();
+        exit(EXIT_FAILURE);
+    }
+    printf("Socket serveur créée avec succès.\n");
+
+
+        //Configuration de l'adresse du serveur
+            /*
+                memset() est une fonction de la bibliothèque standard C qui remplit une zone mémoire avec une valeur spécifique.Elle prends en parametre un pointeur vers la zone mémoire à remplir.Valeur (en octet) à copier dans la mémoire (0 à 255).et Nombre d’octets à remplir.
+
+                htons() (Host TO Network Short) convertit un entier court (16 bits, uint16_t) du format hôte (little-endian ou big-endian) vers le format réseau (big-endian).
+
+                sin_family : Type d’adresse (IPv4 → AF_INET)
+                sin_addr.s_addr : Adresse IP
+                sin_port : Port d'écoute 
+            */
+            memset(&server_addr, 0, sizeof(server_addr));
+            server_addr.sin_family = AF_INET;
+            server_addr.sin_addr.s_addr = INADDR_ANY;
+            server_addr.sin_port = htons(port);
+
+        //Liaison de la socket (bind)
+            /*
+                -bind() attache la socket à une adresse et un port.
+                
+            */
+    if (bind(server_socket, (struct sockaddr*)&server_addr, sizeof(server_addr)) == SOCKET_ERROR) {
+        printf("Erreur lors du bind. Code d'erreur : %d\n", WSAGetLastError());
+        closesocket(server_socket);
+        WSACleanup();
+        exit(EXIT_FAILURE);
+    }
+    printf("Bind réussi sur le port %d.\n", port);
+
+        //Passage en mode écoute
+    if (listen(server_socket, 5) == SOCKET_ERROR) {
+        printf("Erreur lors du listen. Code d'erreur : %d\n", WSAGetLastError());
+        closesocket(server_socket);
+        WSACleanup();
+        exit(EXIT_FAILURE);
+    }
+    printf("Le serveur est en attente de connexions...\n");
+
+        //Acceptation d'une connexion entrante
+    client_socket = accept(server_socket, (struct sockaddr*)&client_addr, &client_addr_len);
+    if (client_socket == INVALID_SOCKET) {
+        printf("Erreur lors de l'acceptation de la connexion. Code d'erreur : %d\n", WSAGetLastError());
+        closesocket(server_socket);
+        WSACleanup();
+        exit(EXIT_FAILURE);
+    }
+    printf("Connexion acceptée depuis %s:%d\n",
+           inet_ntoa(client_addr.sin_addr), ntohs(client_addr.sin_port));
+
+        //Envoi d'un message au client
+    char *message = "Bienvenue sur le serveur !\n";
+    send(client_socket, message, strlen(message), 0);
+
+        //Fermeture des sockets
+    closesocket(client_socket);
+    closesocket(server_socket);
+    WSACleanup();
+}
