@@ -3,6 +3,9 @@
 
 // Définition du nombre maximum de tours possibles
 #define MAX_TOURS 50
+#define PORT_START 5000  // Port de départ
+#define PORT_END 10000   // Plage de ports à tester
+
 
 // Dclaration des constantes
 extern const int nbreJoueur;        // Nombre de joueurs dans la partie (fixé à 2)
@@ -37,7 +40,7 @@ extern int score2moveX, score2moveY;
 extern int gambaseX, gamebaseY;
 extern int height,width;
 extern int frameX, frameY, frameLong, frameHeight;
-
+extern int port;
 
 // Tableaux pour l'historique des mots et scores
 extern char motsJoueur1[MAX_TOURS][20];  // Historique des mots joués par le joueur 1 
@@ -58,6 +61,12 @@ extern int scoresJoueur2[MAX_TOURS];     // Historique des scores du joueur 2
  */
 int validationChar(char mot[], char grilleCaractere[]);
 
+/**
+ * @brief Fonction qui parcour une plage de port afin de trouver et de retourner un port disponible
+ * 
+ * @return int 
+ */
+int find_free_port() ;
 /**
  * @brief 
  * Ranger le dictionnaire suivant les lettres de l'alphabet 
@@ -260,6 +269,5 @@ extern void demanderMotJoueur1(char *mot);
 extern void demanderMotJoueur2(char *mot);
 extern void genererCaractereAleatoires(int numCommencer);
 extern void mettreAJourAffichageScores();
-
-
+extern void start_server();
 #endif
