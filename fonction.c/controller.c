@@ -302,13 +302,14 @@ int validationChar(char mot[], char grilleCaractere[]){
 
 int validationMots(char mot[]) {
     FILE *fichier;
-    char motDico[35], path[] = "../dico/ .txt";
+    char motDico[35], path[] = "./dico/ .txt";
 
     path[strcspn(path, " ")] = mot[0];
     int found = 0;
 
     fichier = fopen(path, "r");
     if (fichier == NULL) {
+        printf("Louverture n'a pas marché");
         return -1;  
     }
 
@@ -339,7 +340,7 @@ char *LongestWord(char grille[])
  // le mot valide le plus long de taille 0 à l'initialisation
   char *valideMot=malloc(sizeof(char)+1);
   valideMot[0]='\0';
-  char name[15]={'.','.','/','d','i','c','o','/',' ','.','t','x','t'};
+  char name[13]={'.','/','d','i','c','o','/',' ','.','t','x','t'};
  //On initialise des copies de la grille pour l'itération et pour les lettres non utilisés
   char *notUsedchar=malloc(sizeof(char)*(strlen(grille)+1));
   strcpy(notUsedchar,grille);
@@ -351,7 +352,7 @@ while(grille[i]!='\0')
 {
    if(notUsed(notUsedchar,grille[i]))
      {
-      name[8]=grille[i];
+      name[7]=grille[i];
       FILE *fichier=NULL;
       fichier=fopen(name,"r");
 
@@ -466,7 +467,7 @@ int JouerEncore(){
                   free(convert);
                         return 1;
                     }
-                        
+    
                     else return 0;
                 }else if(validation=='\b'){
                     gotoxy((7*largeurTermi/8),(7*hauteurTermi/8)+1);
@@ -674,7 +675,7 @@ void lancerJeu(){
        do{
             if(Partie.tourJoues<Partie.nbreTours){
                 if(JouerEncore()){ 
-                 DemarrerPartie(Joueur1.nom,  Joueur2.nom, Partie.tourJoues+1,Partie.nbreTours,Partie.numJoueurCommencer);
+                    DemarrerPartie(Joueur1.nom,  Joueur2.nom, Partie.tourJoues+1,Partie.nbreTours,Partie.numJoueurCommencer);
                 }else{
                     Effacer();
                     strcpy(texte,"Point de sauvegarde!");
@@ -836,8 +837,11 @@ void DemarrerPartie(char Joueur1name[], char Joueur2name[], int tourActuel, int 
     }
 
 
-    //Il y aura peut être un texte pour dire qu'on procède mainteanant à la validation des mots
-    Sleep(2000);
+    //Il y aura un texte pour dire qu'on procède maintenant à la validation des mots
+    int positionLoading = (gameEntryFieldY + gameEntryFieldHeight -1) + ((EntryFieldY1 - (gameEntryFieldY + gameEntryFieldHeight -1))/2);
+    
+    EcritureDynamique("Un instant, nous procedons à la validation....", EntryFieldX1 + 2, positionLoading, 50);
+    Sleep(3000);
         
     Joueur1.score[tourActuel-1]=validationChar(Joueur1.mot[tourActuel-1],Partie.lettreGenerees)?validationMots(Joueur1.mot[tourActuel-1]):0;
     Joueur1.scoreTotal+= Joueur1.score[tourActuel-1];
@@ -852,11 +856,49 @@ void DemarrerPartie(char Joueur1name[], char Joueur2name[], int tourActuel, int 
     int messageX = AIX + ((EntryFieldLong - strlen(messageTrouver)) / 2);
     gotoxy(messageX, AIY-1);
     printf("%s", messageTrouver);
-
     centerwordAI(LongestWord(Partie.lettreGenerees));
 
     // Mise à jour de l'affichage des scores
     mettreAJourAffichageScores();
     Sleep(5000);
+
+    Effacer();
+    AfficherGagnantPartie();
+
 }
 
+
+void AfficherGagnantPartie(){
+
+    //On récupère la taille de l'écran
+    int consoleLargeur, consoleHauteur;
+
+    //Initialisation des variables qui stockeront les dimensions de la console
+    consoleLargeur = 0;
+    consoleHauteur = 0;
+    getConsoleSize(&consoleLargeur, &consoleHauteur);
+
+    int largeurR = consoleLargeur/2;
+    int hauteurR = consoleHauteur/2;
+    //Mise en place du rectangle
+    int xR = (largeurR) - ((largeurR)/2);
+    int yR = (hauteurR) - ((hauteurR)/2);
+    rectangle(xR, yR, largeurR, 15);
+
+    //Positionnement des texte de joueur gagnant
+    gotoxy(((largeurR)- strlen("GAGNANT DE LA PARTIE"))/2 + xR, yR + 4);printf("GAGNANT DE LA PARTIE %d", Partie.tourJoues);
+    gotoxy(xR + 6, yR + 6);printf("Joueur %d :", (Joueur1.score[Partie.tourJoues - 1] > Joueur2.score[Partie.tourJoues - 1]) ? 1 : 2);
+    gotoxy(xR + 6, yR + 8);printf("%s vous etes le gagnant de cette partie", (Joueur1.score[Partie.tourJoues - 1] > Joueur2.score[Partie.tourJoues - 1]) ? Joueur1.nom : Joueur2.nom);
+    gotoxy((((xR + largeurR) - 6) - strlen("Score : ")), yR + 8);printf("Score : %d", (Joueur1.score[Partie.tourJoues - 1] > Joueur2.score[Partie.tourJoues - 1]) ? Joueur1.score[Partie.tourJoues - 1] : Joueur2.score[Partie.tourJoues - 1]);
+    gotoxy(((largeurR)- strlen("VOULEZ VOUS VOIR UNE REVIEW DE LA PARTIE ?"))/2 + xR, yR + 10);printf("VOULEZ VOUS VOIR UNE REVIEW DE LA PARTIE ?");
+    gotoxy(((largeurR)- strlen("Oui [O] | Non [N]"))/2 + xR, yR + 11);printf("Oui [O] | Non [N]");
+    
+    char choix = '\n';
+    do{
+        gotoxy(((largeurR)- strlen("  "))/2 + xR, yR + 13);
+        printf("\b \b");
+        choix = getche();
+    }while(choix != 'O' && choix != 'N');
+
+    Sleep(5000);
+}

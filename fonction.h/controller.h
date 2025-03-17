@@ -162,4 +162,10 @@ void lancerJeu();
  */
 void mettreAJourAffichageScores();
 
+/**
+ * @brief 
+ * Affiche dans un rectangle le gagnant de la partie qui vient de s'achever 
+ */
+void AfficherGagnantPartie();
+
 #endif /* AD958C8B_DA37_4398_8D2B_15FDCBF9A9D1 */
