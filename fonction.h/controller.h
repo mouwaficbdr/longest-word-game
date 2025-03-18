@@ -32,6 +32,22 @@ typedef struct ListeMot{
   MotPossible *premier;
 }ListeMot;
 
+/**
+ * @brief Énumération pour les niveaux de difficulté de l'IA
+ */
+typedef enum {
+    FACILE,
+    MOYEN,
+    DIFFICILE
+} NiveauDifficulteIA;
+
+/**
+ * @brief Structure pour configurer l'IA
+ */
+typedef struct {
+    NiveauDifficulteIA niveau;
+} ConfigurationIA;
+
 extern ListeMot ListeDesMots;
 extern PartieJ Partie;
 extern Joueur Joueur1;
@@ -131,6 +147,13 @@ void nouvellePartie();
 
 
 /**
+ * @brief 
+ * Génère des caractères aléatoires pour la grille de jeu en mode multijoueur
+ * @param numCommencer Le joueur qui commence à choisir (1 ou 2)
+ */
+void genererCaractereAleatoires(int numCommencer);
+
+/**
  * Récupère les variables nécessaire et démarre une nouvelle partie ou charge une partie sauvegardée
  * @param Joueur1 
  * @param Joueur2 
@@ -166,15 +189,43 @@ int JouerEncore();
 void lancerJeu();
 
 /**
- * @brief 
- * Mets a jours les scores des joueurs aur tour actuel
+ * @brief Génère la grille de caractères aléatoires pour le mode Solo
+ * @param numCommencer Le joueur qui commence (1 = humain, 2 = IA)
+ * @param niveau Le niveau de difficulté de l'IA
+ */
+void genererCaractereAletoiresSolo(int numCommencer, NiveauDifficulteIA niveau);
+
+/**
+ * @brief Démarre une partie en mode solo contre l'IA
+ * @param Joueur1name Nom du joueur humain
+ * @param niveauIA Niveau de difficulté de l'IA (FACILE, MOYEN, DIFFICILE)
+ * @param tourActuel Tour actuel à jouer
+ * @param totalTours Nombre total de tours pour la partie
+ * @param numCommencer Joueur qui commence (1 = humain, 2 = IA)
+ */
+void DemarrerPartieSolo(char Joueur1name[], NiveauDifficulteIA niveauIA, int tourActuel, int totalTours, int numCommencer);
+
+/**
+ * @brief Lance une partie en mode solo contre l'IA
+ * Permet de choisir le niveau de difficulté
+ */
+void lancerJeuSolo();
+
+/**
+ * @brief Initialise une nouvelle partie en mode solo contre l'IA
+ * Permet de configurer le nom du joueur, le nombre de tours, et qui commence
+ */
+void nouvellePartieSolo();
+
+/**
+ * @brief Mets a jours les scores des joueurs aur tour actuel
  * @param tour 
  */
 void mettreAJourAffichageScores();
 
-   /**
+/**
  * @brief 
- *  Insere chaque mot valide que les joueurs auraient ou trouver dans la ListeDesMots
+ * Insere chaque mot valide que les joueurs auraient ou trouver dans la ListeDesMots
  * @param mot 
  */
 void motPossibles(char *mot);
@@ -190,5 +241,46 @@ void AfficherGagnantTour();
  * Affiche dans un rectangle le gagnant de la partie qui vient de s'achever 
  */
 void AfficherGagnantPartie();
+
+/**
+ * @brief Réinitialise la liste des mots possibles
+ * Libère la mémoire des mots existants et remet la liste à vide
+ */
+void InitialiserListeDesMots(void);
+
+/**
+ * @brief Trouve le mot le plus court possible parmi les mots valides pour le niveau facile
+ * @param grille La grille de caractères à utiliser
+ * @return Un pointeur vers le mot le plus court trouvé
+ */
+char *trouverMotCourt(char grille[]);
+
+/**
+ * @brief Trouve un mot de longueur moyenne pour le niveau moyen
+ * @param grille La grille de caractères à utiliser
+ * @return Un pointeur vers un mot de longueur moyenne
+ */
+char *trouverMotMoyen(char grille[]);
+
+/**
+ * @brief Trouve le mot le plus long possible avec une variation aléatoire pour le niveau difficile
+ * @param grille La grille de caractères à utiliser
+ * @return Un pointeur vers le mot le plus long ou le deuxième meilleur mot
+ */
+char *trouverMotDifficile(char grille[]);
+
+/**
+ * @brief Choisit un mot en fonction du niveau de difficulté de l'IA
+ * @param grille La grille de caractères à utiliser
+ * @param niveau Le niveau de difficulté de l'IA
+ * @return Un pointeur vers le mot choisi
+ */
+char *choisirMotIA(char grille[], NiveauDifficulteIA niveau);
+
+/**
+ * @brief Fonction de démonstration des niveaux de difficulté de l'IA
+ * @param grille La grille de caractères à utiliser pour les tests
+ */
+void demonstrationIA(char grille[]);
 
 #endif /* AD958C8B_DA37_4398_8D2B_15FDCBF9A9D1 */
