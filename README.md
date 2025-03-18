@@ -1,4 +1,4 @@
-gir# 🎯 Le Mot Le Plus Long  
+🎯 Le Mot Le Plus Long  
 
 ## 📌 Objectifs  
 
@@ -32,6 +32,6 @@ Ce projet consiste à implémenter le jeu *Le Mot Le Plus Long*, où deux joueur
 
 - [**AIHOUNHIN Eunock**](https://github.com/Eunock-web)  
 - [**ATOHOUN Andy**](https://github.com/e-mandy)  
-- [**BADAROU Mouwafic**](https://github.com/mouwaficbdr) *(moi)*  
+- [**BADAROU Mouwafic**](https://github.com/mouwaficbdr)
 - [**OGOUDEDJI Seathiel**](https://github.com/seathiel-12)  
 - [**OKWUDIAFOR Wesley**](https://github.com/wesley-kami)  

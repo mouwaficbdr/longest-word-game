@@ -1,0 +1,10 @@
+Nom Joueur 1: Mouwafic
+Nom Joueur 2: Musashi
+Score Joueur 1: 0
+Score Joueur 2: 3
+Tours joués: 1
+Tours totaux: 2
+Review de la partie:
+Tour 1:
+Mouwafic - Mot: , Score: 0
+Musashi - Mot: , Score: 0
