@@ -1,4 +1,4 @@
-# 🎯 Le Mot Le Plus Long  
+# 🎯 Le Mot Le Plus Long
 
 ## 📌 Objectifs  
 
