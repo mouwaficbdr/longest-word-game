@@ -442,7 +442,7 @@ void afficherReviewPartie() {
     int revueHeight = hauteurFixe + (toursAffiches * hauteurParTour) + hauteurNav;
     
     int revueX = (largeurTermi - revueWidth) / 2;
-    int revueY = (hauteurTermi - revueHeight) / 2 + 3;
+    int revueY = (hauteurTermi - revueHeight) / 2 + 4;
     
     // Dessiner le rectangle pour la revue
     rectangle(revueX, revueY, revueWidth, revueHeight);
