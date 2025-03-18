@@ -48,8 +48,9 @@ void afficherMenu() {
        
        gotoxy(menuX+(menuWidth-4)/2,menuY+(upper/2)-3); printf("MENU");
        
-       gotoxy(menuX+3,menuY+upper+optionZone*0.3-3);printf("[X] - Charger Partie");
-       gotoxy(menuX+3,menuY+upper+optionZone*0.5-3);printf("[Y] - Nouvelle Partie");
+       gotoxy(menuX+3,menuY+upper+optionZone*0.25-3);printf("[X] - Charger Partie");
+       gotoxy(menuX+3,menuY+upper+optionZone*0.45-3);printf("[Y] - Nouvelle Partie Multijoueur");
+       gotoxy(menuX+3,menuY+upper+optionZone*0.65-3);printf("[S] - Nouvelle Partie Solo (vs IA)");
        gotoxy(menuX+3,menuY+upper+optionZone*0.9-3);printf("[Q] - Quitter");
        rectangle(menuX,menuY+menuHeight-1,menuWidth,menuHeight*0.35);
 
@@ -73,7 +74,14 @@ void afficherMenu() {
                         if (verifSauvegarde()) {
                             chargerPartie(); // Charger la partie seulement si une sauvegarde existe
                             afficherReviewPartie(); // Afficher la review de la partie chargée
-                            lancerJeu(); // Passer directement au tour suivant au lieu de revenir au menu
+                            // Vérifier si c'est une partie solo ou multijoueur
+                            if (strcmp(Joueur2.nom, "Ordinateur") == 0) {
+                                // C'est une partie solo, on utilise le niveau par défaut (MOYEN)
+                                lancerJeuSolo();
+                            } else {
+                                // C'est une partie multijoueur
+                                lancerJeu(); 
+                            }
                         } else {
                             // Si aucune sauvegarde n'existe, afficher un message et revenir au menu
                             Effacer();
@@ -111,11 +119,29 @@ void afficherMenu() {
                 }
                 break;
             }
+            case 'S':{
+                printf("S");
+                do {
+                    choixmenu=getch();
+                    if(choixmenu=='\r'){
+                        nouvellePartieSolo();
+                        break;
+                    }
+                }while(choixmenu!='\b');
+                if(choixmenu=='\b') 
+                {
+                    printf("\b \b");
+                    choixmenu='\n';
+                }
+                break;
+            }
             case 'Q':{
                 printf("Q");
                 do {
                     choixmenu=getch();
                     if(choixmenu=='\r'){
+                        Effacer();
+                        Sleep(1000);
                         exit(0);
                         break;
                     }
@@ -127,14 +153,8 @@ void afficherMenu() {
                 }
                 break;
             }
-            default: choixmenu='\n';
-            break;
         }
-    }while(choixmenu=='\n');
-                
-        
-        
-    
+     }while(1);
 }
 
      //-----hashage-----
@@ -506,6 +526,7 @@ void afficherListeMotsPossibles(){
         sprintf(score,"%c%d",'+',strlen(pointeur->mot));
         EcritureDynamique(pointeur->mot,((width/8)-strlen(pointeur->mot))/2,((3*height)/4)-7+compteur,0);
         EcritureDynamique(score,((width/4)+(width/8)-strlen(score))/2,((3*height)/4)-7+compteur,0);
+        free(score); // Libérer la mémoire allouée
         pointeur=pointeur->suivant;
     }
     EcritureDynamique("Quelques mots en plus:",((width/4)-21)/2,((3*height)/4)-13,0);
@@ -516,7 +537,14 @@ void afficherListeMotsPossibles(){
     rectangle(0,((3*height)/4)-10,width/4,3);
     rectangle(0,((3*height)/4)-10,width/8,compteur+3);
     rectangle(0,((3*height)/4)-10,width/4,compteur+3);
-    gotoxy(2,height-1);
-    system("pause");
-
+    
+    // Afficher un message clair pour l'utilisateur
+    char message[] = "Appuyez sur ENTREE pour continuer...";
+    EcritureDynamique(message, (width - strlen(message)) / 2, height-2, 0);
+    
+    // Attendre que l'utilisateur appuie sur Entrée
+    char touche;
+    do {
+        touche = getch();
+    } while (touche != 13); // 13 est le code ASCII pour Entrée
 }   
