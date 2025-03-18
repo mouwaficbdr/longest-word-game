@@ -494,3 +494,29 @@ void afficherReviewPartie() {
         touche = getch();
     } while (touche != 13); // Attendre la touche ENTRÉE
 }
+
+void afficherListeMotsPossibles(){
+    getConsoleSize(&width, &height);
+    MotPossible *pointeur=ListeDesMots.premier;
+    int compteur=0;
+
+    while(pointeur!=NULL){
+        compteur++;
+        char *score=malloc(sizeof(char)*Intlen(strlen(pointeur->mot))+2);
+        sprintf(score,"%c%d",'+',strlen(pointeur->mot));
+        EcritureDynamique(pointeur->mot,((width/8)-strlen(pointeur->mot))/2,((3*height)/4)-7+compteur,0);
+        EcritureDynamique(score,((width/4)+(width/8)-strlen(score))/2,((3*height)/4)-7+compteur,0);
+        pointeur=pointeur->suivant;
+    }
+    EcritureDynamique("Quelques mots en plus:",((width/4)-21)/2,((3*height)/4)-13,0);
+    EcritureDynamique("Mots",((width/8)-4)/2,((3*height)/4)-8,0);
+    EcritureDynamique("Scores",((width/4)+(width/8)-6)/2,((3*height)/4)-8,0);
+
+    rectangle(((width/4)-24)/2,((3*height)/4)-14,25,3);
+    rectangle(0,((3*height)/4)-10,width/4,3);
+    rectangle(0,((3*height)/4)-10,width/8,compteur+3);
+    rectangle(0,((3*height)/4)-10,width/4,compteur+3);
+    gotoxy(2,height-1);
+    system("pause");
+
+}   

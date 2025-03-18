@@ -345,7 +345,7 @@ void motPossibles(char *mot){
     MotPossible *pointeur=malloc(sizeof(MotPossible*));
     int compteur=0;
     static int nbrElement=0;
-    if(nbrElement==15){
+    if(nbrElement==13){
         return;
     }
     
@@ -360,7 +360,7 @@ void motPossibles(char *mot){
                 nbrElement++;
                 pointeur=pointeur->suivant;
             }
-            if(nbrElement<15) nbrElement=0;
+            if(nbrElement<13) nbrElement=0;
             if(compteur>=3){
                 return;
             }
@@ -910,7 +910,8 @@ void DemarrerPartie(char Joueur1name[], char Joueur2name[], int tourActuel, int 
 
     // Mise à jour de l'affichage des scores
     mettreAJourAffichageScores();
-    Sleep(5000);
+    Sleep(1500);
+    afficherListeMotsPossibles();
 
     Effacer();
     AfficherGagnantPartie();
@@ -957,32 +958,16 @@ void AfficherGagnantPartie(){
         gotoxy(xR + 6, yR + 8);printf("Vous avez obtenu le meme score pour ce tour.");
     }
 
-    //On passe ensuite à la partie suivante ou on retourne au Menu
-
-    if(Partie.tourJoues < Partie.nbreTours){
-        gotoxy(((largeurR)- strlen("VOULEZ VOUS RETOURNER AU MENU PRINCIPAL ?"))/2 + xR, yR + 10);printf("VOULEZ VOUS RETOURNER AU MENU PRINCIPAL ?");
-        gotoxy(((largeurR)- strlen("Oui [O] | Non [N]"))/2 + xR, yR + 11);printf("Oui [O] | Non [N]");
-    
-        char choix = '\n';
-        do{
-            gotoxy(((largeurR)- strlen("  "))/2 + xR, yR + 13);
-            printf("\b \b");
-            choix = getche();
-        }while(choix != 'O' && choix != 'N');
-
-        if(choix == 'O'){
-            afficherMenu();
-        }
-    }
 
     if(Partie.tourJoues == Partie.nbreTours){
         gotoxy((largeurR- strlen("Ne baisse pas les bras, tu l'auras a la prochaine partie !!"))/2 + xR, yR + 10);printf("Ne baisse pas les bras, tu l'auras a la prochaine partie !!");
-        gotoxy((largeurR - strlen("Appuyez sur la touche ENTRER pour terminer la partie"))/2 + xR, yR + 12);printf("Appuyez sur la touche ENTRER pour terminer la partie");
+        gotoxy((largeurR - strlen("Appuyez sur la touche ENTRER pour terminer la partie"))/2 + xR-1, yR + 12);printf("Appuyez sur la touche ENTRER pour terminer la partie");
 
+        gotoxy((2*xR+largeurR)/2,yR + 13);
         char validation = '\n';
 
         do{
-            printf("\b ");
+            printf("\b \b");
             validation = getche();
         }while(validation != '\r');
     }
