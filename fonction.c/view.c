@@ -516,5 +516,7 @@ void afficherListeMotsPossibles(){
     rectangle(0,((3*height)/4)-10,width/4,3);
     rectangle(0,((3*height)/4)-10,width/8,compteur+3);
     rectangle(0,((3*height)/4)-10,width/4,compteur+3);
+    gotoxy(2,height-1);
+    system("pause");
 
 }   
