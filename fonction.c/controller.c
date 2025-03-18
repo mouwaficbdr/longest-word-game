@@ -914,12 +914,14 @@ void DemarrerPartie(char Joueur1name[], char Joueur2name[], int tourActuel, int 
     afficherListeMotsPossibles();
 
     Effacer();
-    AfficherGagnantPartie();
+    AfficherGagnantTour();
+
+    
 
 }
 
 
-void AfficherGagnantPartie(){
+void AfficherGagnantTour(){
 
     //On récupère la taille de l'écran
     int consoleLargeur, consoleHauteur;
@@ -938,7 +940,7 @@ void AfficherGagnantPartie(){
 
     //Positionnement des texte de joueur gagnant
 
-    gotoxy(((largeurR)- strlen("GAGNANT DE LA PARTIE"))/2 + xR, yR + 4);printf("GAGNANT DE LA PARTIE %d", Partie.tourJoues);
+    gotoxy(((largeurR)- strlen("GAGNANT DU PARTIE  "))/2 + xR, yR + 4);printf("GAGNANT DE LA PARTIE %d", Partie.tourJoues);
     
     //Si le score du joueur 1 pour le tour actuel est plus élevé par rapport à celui du joueur 2, il est le gagnant
     if(Joueur1.score[Partie.tourJoues - 1] > Joueur2.score[Partie.tourJoues - 1]){
@@ -960,18 +962,69 @@ void AfficherGagnantPartie(){
 
 
     if(Partie.tourJoues == Partie.nbreTours){
-        gotoxy((largeurR- strlen("Ne baisse pas les bras, tu l'auras a la prochaine partie !!"))/2 + xR, yR + 10);printf("Ne baisse pas les bras, tu l'auras a la prochaine partie !!");
-        gotoxy((largeurR - strlen("Appuyez sur la touche ENTRER pour terminer la partie"))/2 + xR-1, yR + 12);printf("Appuyez sur la touche ENTRER pour terminer la partie");
+        gotoxy((largeurR - strlen("Appuyez sur la touche ENTRER pour afficher le gagnant de la partie"))/2 + xR, yR + 12);printf("Appuyez sur la touche ENTRER pour terminer la partie");
 
-        gotoxy((2*xR+largeurR)/2,yR + 13);
         char validation = '\n';
 
         do{
-            printf("\b \b");
+            printf(" \b ");
             validation = getche();
         }while(validation != '\r');
+
+        Effacer();
+        AfficherGagnantPartie();
     }
     
 }
 
+void AfficherGagnantPartie(){
+    //On récupère la taille de l'écran
+    int consoleLargeur, consoleHauteur;
+
+    //Initialisation des variables qui stockeront les dimensions de la console
+    consoleLargeur = 0;
+    consoleHauteur = 0;
+    getConsoleSize(&consoleLargeur, &consoleHauteur);
+
+    int largeurR = consoleLargeur/2;
+    int hauteurR = consoleHauteur/2;
+    //Mise en place du rectangle
+    int xR = (largeurR) - ((largeurR)/2);
+    int yR = (hauteurR) - ((hauteurR)/2);
+    rectangle(xR, yR, largeurR, 20);
+
+    gotoxy(((largeurR)- strlen("GAGNANT DE LA PARTIE"))/2 + xR, yR + 4);printf("GAGNANT DE LA PARTIE");
+
+    //Si le score total du joueur 1 pour la partie actuel est plus élevé par rapport à celui du joueur 2, il est le gagnant
+    if(Joueur1.scoreTotal > Joueur2.scoreTotal){
+        gotoxy(xR + 6, yR + 6);printf("Joueur %d :", 1);
+        gotoxy(xR + 6, yR + 8);printf("%s vous etes le gagnant de cette partie", Joueur1.nom);
+        gotoxy((((xR + largeurR) - 6) - strlen("Score total:  ")) - 1, yR + 8);printf("Score : %d", Joueur1.scoreTotal);
+    
+    //Si le score total du joueur 2 pour la partie actuel est plus élevé par rapport à celui du joueur 1, il est le gagnant
+    }else if(Joueur1.score[Partie.tourJoues - 1] < Joueur2.score[Partie.tourJoues - 1]){
+        gotoxy(xR + 6, yR + 6);printf("Joueur %d :", 2);
+        gotoxy(xR + 6, yR + 8);printf("%s vous etes le gagnant de cette partie", Joueur2.nom);
+        gotoxy((((xR + largeurR) - 6) - strlen("Score :  ")) - 1, yR + 8);printf("Score : %d", Joueur2.scoreTotal);
+    
+    //Si le score sont égaux, il s'agit d'un match nul
+    }else{
+        gotoxy(xR + 6, yR + 6);printf("Match nul !!!");
+        gotoxy(xR + 6, yR + 8);printf("Vous avez obtenu le meme score total pour cette partie.");
+        gotoxy(xR + 6, yR + 11);printf("Joueur 1 : %s", Joueur1.nom);
+        gotoxy((((xR + largeurR) - 6) - (strlen("Joueur 2 : ") + strlen(Joueur2.nom))), yR + 11);printf("Joueur 2 : %s", Joueur2.nom);
+        gotoxy(xR + 6, yR + 13);printf("Score : %d", Joueur1.scoreTotal);
+        gotoxy((((xR + largeurR) - 6) - strlen("Score :  ")), yR + 13);printf("Score : %d", Joueur2.scoreTotal);
+        gotoxy((largeurR- strlen("Ne baisse pas les bras, tu l'auras a la prochaine partie !!"))/2 + xR, yR + 15);printf("Ne baisse pas les bras, tu l'auras a la prochaine partie !!");
+    }
+
+    gotoxy(xR + 6, yR + 17);printf("Saisissez la touche ENTRER pour terminer la partie");
+    char validation = '\n';
+
+    do{
+        printf(" \b ");
+        validation = getche();
+    }while(validation != '\r');
+    
+}
 

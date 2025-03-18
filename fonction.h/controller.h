@@ -178,6 +178,13 @@ void mettreAJourAffichageScores();
  * @param mot 
  */
 void motPossibles(char *mot);
+
+/**
+ * @brief 
+ * Affiche dans un rectangle le gagnant du tour qui vient de s'achever 
+ */
+void AfficherGagnantTour();
+
 /**
  * @brief 
  * Affiche dans un rectangle le gagnant de la partie qui vient de s'achever 
