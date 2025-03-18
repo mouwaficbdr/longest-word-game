@@ -344,7 +344,7 @@ void motPossibles(char *mot){
     MotPossible *pointeur=malloc(sizeof(MotPossible*));
     int compteur=0;
     static int nbrElement=0;
-    if(nbrElement==15){
+    if(nbrElement==13){
         return;
     }
     
@@ -359,7 +359,7 @@ void motPossibles(char *mot){
                 nbrElement++;
                 pointeur=pointeur->suivant;
             }
-            if(nbrElement<15) nbrElement=0;
+            if(nbrElement<13) nbrElement=0;
             if(compteur>=3){
                 return;
             }
@@ -907,5 +907,8 @@ void DemarrerPartie(char Joueur1name[], char Joueur2name[], int tourActuel, int 
 
     // Mise à jour de l'affichage des scores
     mettreAJourAffichageScores();
-    Sleep(5000);
+    Sleep(1500);
+    afficherListeMotsPossibles();
+    Sleep(3000);
 }
+ 

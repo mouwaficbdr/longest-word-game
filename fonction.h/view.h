@@ -57,7 +57,11 @@ extern void afficherMenu();
  */
 extern void afficherReviewPartie(void);
 
-
+/**
+ * @brief 
+ * affiche la liste des mots possibles et les scores que les joueurs auraient pu avoir
+ */
+extern void afficherListeMotsPossibles();
 
 extern void hashWord(char*word, int size);
 extern void gotoxy(int x, int y);
