@@ -4,7 +4,7 @@
 #define MAX_TOURS 50
 
 extern const int nbreJoueur;        // Nombre de joueurs dans la partie (fixé à 2)
-extern const int nbreTotalLettresGrille;  // Nombre total de lettres dans la grille de jeu (9 lettres)
+extern int nbreTotalLettresGrille;  // Nombre total de lettres dans la grille de jeu (9 lettres)
 extern const char voyelles[6];      // Tableau contenant toutes les voyelles disponibles pour le jeu
 extern const char consonnes[20];    // Tableau contenant toutes les consonnes disponibles pour le jeu
 

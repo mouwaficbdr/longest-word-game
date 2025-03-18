@@ -8,6 +8,7 @@
 int main(){
 
 lancerJeu();
+
   // MotPossible *motpos=ListeDesMots.premier;
   // while(motpos!=NULL)
   //  printf("%s --> %d\n",motpos->mot,strlen(motpos->mot));

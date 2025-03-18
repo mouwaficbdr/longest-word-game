@@ -319,12 +319,12 @@ void afficherMenu() {
                 scorefieldX2 = mainframeX + mainframeLong + 3;
                 scorefieldY2 = scorefieldY1;
             
-                gameEntryFieldX = mainframeX + (mainframeLong / 8);
+                gameEntryFieldX = mainframeX + (mainframeLong / 5);
                 gameEntryFieldY = scorefieldY1;
                 gameEntryFieldHeight = scorefieldHeight;
                 gameEntryFieldLong = (3 * mainframeLong) / 4;
             
-                EntryFieldX1 = gameEntryFieldX;
+                EntryFieldX1 = mainframeX + (mainframeLong / 8);
                 EntryFieldY1 = mainframeY + (mainframeHeight / 2);
                 EntryFieldLong = gameEntryFieldLong;
                 EntryFieldHeight = gameEntryFieldHeight / 2;
@@ -392,7 +392,7 @@ void afficherMenu() {
         rectangle(scorefieldX1,scorefieldY1,scorefieldLong,scorefieldHeight);
         rectangle(mainframeX,mainframeY,mainframeLong,mainframeHeight);
         rectangle(scorefieldX2,scorefieldY2,scorefieldLong,scorefieldHeight);
-        rectangle(gameEntryFieldX,gameEntryFieldY,gameEntryFieldLong,gameEntryFieldHeight);
+        // rectangle(gameEntryFieldX,gameEntryFieldY,gameEntryFieldLong,gameEntryFieldHeight);
         rectangle(EntryFieldX1, EntryFieldY1, EntryFieldLong, EntryFieldHeight);
         rectangle(EntryFieldX2, EntryFieldY2, EntryFieldLong, EntryFieldHeight);
         rectangle(AIX,AIY,EntryFieldLong,EntryFieldHeight);

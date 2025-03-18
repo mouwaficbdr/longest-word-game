@@ -12,7 +12,7 @@
 #define MAX_TOURS 50
 
 const int nbreJoueur = 2;
-const int nbreTotalLettresGrille = 9;
+int nbreTotalLettresGrille = 9;
 const char voyelles[6] = {'a', 'e', 'i', 'o', 'u', 'y'};
 const char consonnes[20] = {'b', 'c', 'd', 'f', 'g', 'h', 'j', 'k', 'l', 'm', 'n', 'p', 'q', 'r', 's', 't', 'v', 'w', 'x', 'z'};
 
@@ -833,14 +833,21 @@ void lancerJeu(){
  * @param niveau Le niveau de difficulté de l'IA
  */
 void genererCaractereAletoiresSolo(int numCommencer, NiveauDifficulteIA niveau) {
-    char choixConsonneVoyelle[2];
     
+    char choixConsonneVoyelle[2];
+    for(int i = 0; i<nbreTotalLettresGrille;i++){
+        initialiserVariables();
+        Sleep(100);
+        rectangle(gameEntryFieldX+(i*(gameEntryFieldLong/nbreTotalLettresGrille)), gameEntryFieldY, gameEntryFieldLong/nbreTotalLettresGrille, gameEntryFieldHeight);
+    }
     // Initialiser le générateur de nombres aléatoires
     srand(time(NULL));
     
     // Compteurs pour la stratégie de l'IA
     int nbVoyelles = 0;
     int nbConsonnes = 0;
+
+    
 
  for (int i = 0; i < nbreTotalLettresGrille; i++) { 
      prompt();
@@ -919,7 +926,7 @@ void genererCaractereAletoiresSolo(int numCommencer, NiveauDifficulteIA niveau) 
         Partie.lettreGenerees[i+1] = '\0';
         
         // Afficher la lettre générée
-     EntryField();
+        gotoxy((gameEntryFieldX+(i*(gameEntryFieldLong/nbreTotalLettresGrille))) + (gameEntryFieldLong/nbreTotalLettresGrille)/2, gameEntryFieldY+(gameEntryFieldHeight/2));
         printf("%c", Partie.lettreGenerees[i]);
      fflush(stdin);
      gambaseX++;
@@ -1103,11 +1110,12 @@ void AfficherGagnantTour(){
 
 
     if(Partie.tourJoues == Partie.nbreTours){
-        gotoxy((largeurR - strlen("Appuyez sur la touche ENTRER pour afficher le gagnant de la partie"))/2 + xR, yR + 12);printf("Appuyez sur la touche ENTRER pour terminer la partie");
+        gotoxy((largeurR - strlen("Appuyez ENTRER pour afficher le gagnant de la partie"))/2 + xR, yR + 12);printf("Appuyez ENTRER pour afficher le gagnant de la partie");
 
         char validation = '\n';
 
         do{
+            gotoxy(consoleLargeur/2,yR+13);
             printf(" \b \b");
             validation = getche();
         }while(validation != '\r');
@@ -1528,8 +1536,12 @@ void demonstrationIA(char grille[]) {
 
 void genererCaractereAleatoires(int numCommencer) {
     char *choixConsonneVoyelle=malloc(sizeof(char)*2);
- // int joueurActuel = demanderJoueurCommence(); // On appelle la fonction ici
-
+    // int joueurActuel = demanderJoueurCommence(); // On appelle la fonction ici
+       for(int i = 0; i<nbreTotalLettresGrille;i++){
+           initialiserVariables();
+           Sleep(100);
+           rectangle(gameEntryFieldX+(i*(gameEntryFieldLong/nbreTotalLettresGrille)), gameEntryFieldY, gameEntryFieldLong/nbreTotalLettresGrille, gameEntryFieldHeight);
+       }
  for (int i = 0; i < nbreTotalLettresGrille; i++) { 
      prompt();
      clearLine();
@@ -1556,8 +1568,8 @@ void genererCaractereAleatoires(int numCommencer) {
      if(numCommencer==1) numCommencer=2;
      else numCommencer=1;
      
-     EntryField();
-      printf("%c",Partie.lettreGenerees[i]);
+     gotoxy((gameEntryFieldX+(i*(gameEntryFieldLong/nbreTotalLettresGrille))) + (gameEntryFieldLong/nbreTotalLettresGrille)/2, gameEntryFieldY+(gameEntryFieldHeight/2));
+     printf("%c",Partie.lettreGenerees[i]);
      fflush(stdin);
      gambaseX++;
      // Changer de joueur sans ternaire
@@ -1718,29 +1730,24 @@ void DemarrerPartieSolo(char Joueur1name[], NiveauDifficulteIA niveauIA, int tou
     // Mise à jour de l'affichage des scores
     mettreAJourAffichageScores();
     Sleep(1500);
-
-    // Ajouter un message de débug pour vérifier si cette partie est exécutée
-    gotoxy(0, 0);
-    printf("Affichage de la liste des mots possibles...");
-    Sleep(500);
     
     // Afficher la liste des mots possibles - assurons-nous qu'elle n'est pas vide
-    MotPossible *temp = ListeDesMots.premier;
-    int compteur = 0;
-    while (temp != NULL) {
-        compteur++;
-        temp = temp->suivant;
-    }
+    // MotPossible *temp = ListeDesMots.premier;
+    // int compteur = 0;
+    // while (temp != NULL) {
+    //     compteur++;
+    //     temp = temp->suivant;
+    // }
     
     // Si ListeDesMots est vide, ajoutons un mot fictif pour tester
-    if (compteur == 0) {
-        // Créer un mot fictif pour le test
-        MotPossible *nouveauMot = (MotPossible*)malloc(sizeof(MotPossible));
-        nouveauMot->mot = (char*)malloc(5 * sizeof(char));
-        strcpy(nouveauMot->mot, "test");
-        nouveauMot->suivant = NULL;
-        ListeDesMots.premier = nouveauMot;
-    }
+    // if (compteur == 0) {
+    //     // Créer un mot fictif pour le test
+    //     MotPossible *nouveauMot = (MotPossible*)malloc(sizeof(MotPossible));
+    //     nouveauMot->mot = (char*)malloc(5 * sizeof(char));
+    //     strcpy(nouveauMot->mot, "test");
+    //     nouveauMot->suivant = NULL;
+    //     ListeDesMots.premier = nouveauMot;
+    // }
     
     // Affichage de la liste des mots possibles
     afficherListeMotsPossibles();
@@ -1753,6 +1760,18 @@ void DemarrerPartieSolo(char Joueur1name[], NiveauDifficulteIA niveauIA, int tou
     Effacer();
     printf("\n");
     AfficherGagnantTour();
+    
+    
+    getConsoleSize( &width, &height);
+    EcritureDynamique("Appuyez sur ENTREE pour continuer", (width-strlen("Appuyez sur ENTREE pour continuer"))/2,22,0);
+    
+    char validation = '\n';
+
+        do{
+            gotoxy(width/2, 23);
+            printf(" \b \b");
+            validation = getche();
+        }while(validation != '\r');
     
     // Ne pas revenir au menu après la fin du tour
     // La fonction lancerJeuSolo gérera le passage au tour suivant
