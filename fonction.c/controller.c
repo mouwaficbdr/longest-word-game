@@ -45,6 +45,7 @@ void InitialiserJoueur(){
    Partie.numJoueurCommencer=0;
    Partie.tourJoues=0;
    ListeDesMots.premier=NULL;
+   InitialiserListeDesMots();
  }
 
 /**
@@ -767,14 +768,8 @@ void lancerJeu(){
     // Récupérer les dimensions du terminal pour les affichages
     getConsoleSize(&largeurTermi, &hauteurTermi);
 
-    // Variable pour stocker si on vient de charger une partie
-    int vientDeCharger = partieChargee;
-    
-    // Si on ne vient pas de charger une partie, afficher l'animation de début
-    if (!vientDeCharger) {
+       
         char TexteDebut[]="QUI AURA LE LONGEST WORD?";
-        //Pause
-        Sleep(1000);
 
         //Position du curseur
         int x=(largeurTermi-strlen(TexteDebut))/2;
@@ -785,11 +780,11 @@ void lancerJeu(){
 
         //Pause et effacer pour lancer le Jeu
         Sleep(1000);
-    }
+
 
     char *convert;
     char *texte=malloc(sizeof(char)*65);
-    int x = 0; // Déclarer la variable x utilisée plus tard
+     x = 0; // Utiliser la variable x utilisée plus tôt
     do{
         if(Partie.tourJoues<Partie.nbreTours){
             if(JouerEncore()){ 
@@ -961,9 +956,7 @@ void genererCaractereAletoiresSolo(int numCommencer, NiveauDifficulteIA niveau) 
 
 void DemarrerPartie(char Joueur1name[], char Joueur2name[], int tourActuel, int totalTours, int numCommencer){
     
-    // Réinitialiser la liste des mots possibles pour éviter les problèmes
-    InitialiserListeDesMots();
-    
+    // Réinitialiser la liste des mots possibles pour éviter les problèmes    
     Effacer();
     gotoxy(0,4);
     printf(" Tour %d", tourActuel);
@@ -1153,7 +1146,7 @@ void AfficherGagnantPartie(){
         gotoxy((((xR + largeurR) - 6) - strlen("Score total:  ")) - 1, yR + 8);printf("Score : %d", Joueur1.scoreTotal);
     
     //Si le score total du joueur 2 pour la partie actuel est plus élevé par rapport à celui du joueur 1, il est le gagnant
-    }else if(Joueur1.score[Partie.tourJoues - 1] < Joueur2.score[Partie.tourJoues - 1]){
+    }else if(Joueur1.scoreTotal < Joueur2.scoreTotal){
         gotoxy(xR + 6, yR + 6);printf("Joueur %d :", 2);
         gotoxy(xR + 6, yR + 8);printf("%s vous etes le gagnant de cette partie", Joueur2.nom);
         gotoxy((((xR + largeurR) - 6) - strlen("Score :  ")) - 1, yR + 8);printf("Score : %d", Joueur2.scoreTotal);
@@ -1582,7 +1575,7 @@ void genererCaractereAleatoires(int numCommencer) {
 void InitialiserListeDesMots() {
     // Si la liste n'est pas vide, on la vide
     MotPossible *courant = ListeDesMots.premier;
-    MotPossible *suivant;
+    MotPossible *suivant=NULL;
     
     while (courant != NULL) {
         suivant = courant->suivant;
@@ -1764,7 +1757,7 @@ void DemarrerPartieSolo(char Joueur1name[], NiveauDifficulteIA niveauIA, int tou
     
     getConsoleSize( &width, &height);
     EcritureDynamique("Appuyez sur ENTREE pour continuer", (width-strlen("Appuyez sur ENTREE pour continuer"))/2,22,0);
-    
+
     char validation = '\n';
 
         do{
