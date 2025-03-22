@@ -118,6 +118,7 @@ void afficherMenu() {
                     printf("\b \b");
                     choixmenu='\n';
                 }
+                
                 break;
             }
             case 'S':{
